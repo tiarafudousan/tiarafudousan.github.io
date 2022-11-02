@@ -7,6 +7,45 @@ use yew::prelude::*;
 //     }
 // }
 
+use yew::{Component, Context, html, Html, Properties, Children};
+
+enum MyMsg {
+    Click,
+}
+
+#[derive(PartialEq, Properties)]
+struct Props {
+    // children: Children,
+    // text: String,
+    label: String,
+    unit: String,
+    #[prop_or_default]
+    width: Option<u32>
+}
+
+struct Input;
+
+impl Component for Input {
+    type Message = MyMsg;
+    type Properties = Props;
+
+    fn create(_ctx: &Context<Self>) -> Self {
+        Self
+    }
+
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        // let onclick = ctx.link().callback(|_| MyMsg::Click);
+        let width = &ctx.props().width.unwrap_or(300);
+        html! {
+            <div class="flex flex-row items-center">
+                <label class="w-[130px]">{&ctx.props().label}</label>
+                <input class={format!("w-[{width}px] px-2 py-0.5 text-right border border-gray-100 rounded-sm")} />
+                <div class="ml-1">{&ctx.props().unit}</div>
+            </div>
+        }
+    }
+}
+
 enum Msg {
     AddOne,
 }
@@ -48,18 +87,9 @@ impl Component for App {
                         <div class="text-lg">{"物件情報"}</div>
 
                         <div class="bg-red-100 space-y-2 py-2 px-3">
-                            <div class="flex flex-row items-center">
-                                <label class="w-[130px]">{"物件価格"}</label>
-                                <input class="w-[70px] px-2 py-0.5 text-right border border-gray-100 rounded-sm" />
-                                <div class="ml-1">{"万円"}</div>
-                            </div>
+                            <Input label="物件価格" unit="万円" width={Some(70)}/>
+                            <Input label="満室時想定年収" unit="万円" width={Some(70)}/>
 
-                            <div class="flex flex-row">
-                                <label class="w-[130px]">{"満室時想定年収"}</label>
-                                <input />
-                                <div>{"万円"}</div>
-                            </div>
-                            
                             <div class="flex flex-row">
                                 <label class="w-[130px]">{"想定空室率"}</label>
                                 <input />
