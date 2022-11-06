@@ -433,6 +433,7 @@ dependencies = [
 name = "yew-app"
 version = "0.1.0"
 dependencies = [
+ "wasm-bindgen",
  "yew",
 ]
 
