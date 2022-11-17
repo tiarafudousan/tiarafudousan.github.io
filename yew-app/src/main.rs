@@ -1,4 +1,7 @@
 use yew::prelude::*;
+use wasm_bindgen::JsCast; 
+use web_sys::{HtmlInputElement};
+use gloo_console::log;
 
 // #[function_component(App)]
 // fn app() -> Html {
@@ -17,11 +20,21 @@ struct InputProps {
 
 #[function_component(Input)]
 fn input(props: &InputProps) -> Html {
+    // TODO: on change
+    let on_change = Callback::from(|e: Event| {
+        let value = e.target().unwrap().unchecked_into::<HtmlInputElement>().value();
+        log!(value);
+    });
+
     let width = &props.width.unwrap_or(300);
+
     html! {
         <div class="flex flex-row items-center">
             <label class="w-[130px]">{&props.label}</label>
-            <input class={format!("w-[{width}px] px-2 py-0.5 text-right border border-gray-100 rounded-sm")} />
+            <input 
+                class={format!("w-[{width}px] px-2 py-0.5 text-right border border-gray-100 focus:outline-none focus:ring focus:ring-blue-200 rounded-sm")} 
+                onchange={on_change}
+            />
             <div class="ml-1">{&props.unit}</div>
         </div>
     }
