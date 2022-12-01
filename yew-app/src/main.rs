@@ -18,9 +18,23 @@ struct Inputs {
     interest_rate: String,
 }
 
+impl Clone for Inputs {
+    fn clone(&self) -> Self {
+        Self {
+            property_price: self.property_price.to_string(),
+            yearly_income: self.yearly_income.to_string(),
+            vacancy_rate: self.vacancy_rate.to_string(),
+            running_cost_rate: self.running_cost_rate.to_string(),
+            cash: self.cash.to_string(),
+            loan: self.loan.to_string(),
+            n: self.n.to_string(),
+            interest_rate: self.interest_rate.to_string(),
+        }
+    }
+}
+
 #[function_component(App)]
 fn app() -> Html {
-    // TODO: state
     let inputs = use_state(|| Inputs {
         property_price: String::new(),
         yearly_income: String::new(),
@@ -43,15 +57,10 @@ fn app() -> Html {
                             unit="万円" 
                             width={Some(70)} 
                             on_change={Callback::from(move |text| {
+                                let _inputs = &*inputs;
                                 inputs.set(Inputs { 
                                     property_price: text,
-                                    yearly_income: inputs.yearly_income.to_string(),
-                                    vacancy_rate: inputs.vacancy_rate.to_string(),
-                                    running_cost_rate: inputs.running_cost_rate.to_string(),
-                                    cash: inputs.cash.to_string(),
-                                    loan: inputs.loan.to_string(),
-                                    n: inputs.n.to_string(),
-                                    interest_rate: inputs.interest_rate.to_string(),
+                                    .._inputs.clone()
                                  });
                             })}
                         />
