@@ -1,38 +1,17 @@
 import React, { useState } from "react"
 import "./App.css"
+import { Inputs, Errors } from "./types"
 import Input from "./components/Input"
 
-interface Inputs<a> {
-  propertyPrice: a
-  yearlyIncome: a
-  vacancyRate: a
-  runningCostRate: a
-  cash: a
-  loan: a
-  n: a
-  interestRate: a
-}
-
-interface Errors {
-  propertyPrice?: string
-  yearlyIncome?: string
-  vacancyRate?: string
-  runningCostRate?: string
-  cash?: string
-  loan?: string
-  n?: string
-  interestRate?: string
-}
-
 const INITIAL_STATE: Inputs<string> = {
-  propertyPrice: "",
-  yearlyIncome: "",
-  vacancyRate: "",
-  runningCostRate: "",
+  property_price: "",
+  yearly_income: "",
+  vacancy_rate: "",
+  running_cost_rate: "",
   cash: "",
   loan: "",
-  n: "",
-  interestRate: "",
+  years: "",
+  interest_rate: "",
 }
 
 function validateNum(
@@ -59,47 +38,47 @@ function validate(
   inputs: Inputs<string>
 ): [errors: Errors | null, values: Inputs<number>] {
   const values: Inputs<number> = {
-    propertyPrice: 0,
-    yearlyIncome: 0,
-    vacancyRate: 0,
-    runningCostRate: 0,
+    property_price: 0,
+    yearly_income: 0,
+    vacancy_rate: 0,
+    running_cost_rate: 0,
     cash: 0,
     loan: 0,
-    n: 0,
-    interestRate: 0,
+    years: 0,
+    interest_rate: 0,
   }
   const errors: Errors = {}
 
   {
-    const [error, value] = validateNum(inputs.propertyPrice)
+    const [error, value] = validateNum(inputs.property_price)
     if (error) {
-      errors.propertyPrice = error
+      errors.property_price = error
     } else {
-      values.propertyPrice = value
+      values.property_price = value
     }
   }
   {
-    const [error, value] = validateNum(inputs.yearlyIncome)
+    const [error, value] = validateNum(inputs.yearly_income)
     if (error) {
-      errors.yearlyIncome = error
+      errors.yearly_income = error
     } else {
-      values.yearlyIncome = value
+      values.yearly_income = value
     }
   }
   {
-    const [error, value] = validateNum(inputs.vacancyRate, false, 0, 100)
+    const [error, value] = validateNum(inputs.vacancy_rate, false, 0, 100)
     if (error) {
-      errors.vacancyRate = error
+      errors.vacancy_rate = error
     } else {
-      values.vacancyRate = value
+      values.vacancy_rate = value
     }
   }
   {
-    const [error, value] = validateNum(inputs.runningCostRate, false, 0, 100)
+    const [error, value] = validateNum(inputs.running_cost_rate, false, 0, 100)
     if (error) {
-      errors.runningCostRate = error
+      errors.running_cost_rate = error
     } else {
-      values.runningCostRate = value
+      values.running_cost_rate = value
     }
   }
   {
@@ -119,19 +98,19 @@ function validate(
     }
   }
   {
-    const [error, value] = validateNum(inputs.n)
+    const [error, value] = validateNum(inputs.years)
     if (error) {
-      errors.n = error
+      errors.years = error
     } else {
-      values.n = value
+      values.years = value
     }
   }
   {
-    const [error, value] = validateNum(inputs.interestRate, false, 0)
+    const [error, value] = validateNum(inputs.interest_rate, false, 0)
     if (error) {
-      errors.interestRate = error
+      errors.interest_rate = error
     } else {
-      values.interestRate = value
+      values.interest_rate = value
     }
   }
 
@@ -140,17 +119,13 @@ function validate(
 
 function App() {
   const [inputs, setInputs] = useState<Inputs<string>>(INITIAL_STATE)
+  const [errors, setErrors] = useState<Errors>({})
 
   function onChange(name: string, value: string) {
     setInputs((inputs) => ({
       ...inputs,
       [name]: value,
     }))
-  }
-
-  function onClickReset(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    e.preventDefault()
-    setInputs(INITIAL_STATE)
   }
 
   function onSubmit(
@@ -160,9 +135,22 @@ function App() {
   ) {
     e.preventDefault()
 
+    setErrors({})
+
     const [errors, values] = validate(inputs)
 
+    if (errors) {
+      setErrors(errors)
+    } else {
+    }
+
     // TODO: calculate
+  }
+
+  function onClickReset(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    e.preventDefault()
+    setInputs(INITIAL_STATE)
+    setErrors({})
   }
 
   return (
@@ -172,30 +160,34 @@ function App() {
         <Input
           label="物件価格"
           unit="万円"
-          name="propertyPrice"
-          value={inputs.propertyPrice}
+          name="property_price"
+          value={inputs.property_price}
           onChange={onChange}
+          error={errors?.property_price}
         />
         <Input
           label="満室時想定年収"
           unit="万円"
-          name="yearlyIncome"
-          value={inputs.yearlyIncome}
+          name="yearly_income"
+          value={inputs.yearly_income}
           onChange={onChange}
+          error={errors?.property_price}
         />
         <Input
           label="想定空室率"
           unit="%"
-          name="vacancyRate"
-          value={inputs.vacancyRate}
+          name="vacancy_rate"
+          value={inputs.vacancy_rate}
           onChange={onChange}
+          error={errors?.vacancy_rate}
         />
         <Input
           label="諸経費率"
           unit="%"
-          name="runningCostRate"
-          value={inputs.runningCostRate}
+          name="running_cost_rate"
+          value={inputs.running_cost_rate}
           onChange={onChange}
+          error={errors?.running_cost_rate}
         />
 
         <h1 className="text-xl font-bold">資金計画</h1>
@@ -205,6 +197,7 @@ function App() {
           name="cash"
           value={inputs.cash}
           onChange={onChange}
+          error={errors?.cash}
         />
         <Input
           label="借入金額"
@@ -212,20 +205,23 @@ function App() {
           name="loan"
           value={inputs.loan}
           onChange={onChange}
+          error={errors?.loan}
         />
         <Input
           label="借入期間"
           unit="年"
-          name="n"
-          value={inputs.n}
+          name="years"
+          value={inputs.years}
           onChange={onChange}
+          error={errors?.years}
         />
         <Input
           label="借入金利"
           unit="%"
-          name="interestRate"
-          value={inputs.interestRate}
+          name="interest_rate"
+          value={inputs.interest_rate}
           onChange={onChange}
+          error={errors?.interest_rate}
         />
 
         <div className="flex flex-row justify-center space-x-2 mt-4">
