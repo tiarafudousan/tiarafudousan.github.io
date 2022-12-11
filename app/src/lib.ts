@@ -55,13 +55,13 @@ function calc_ccr(yearly_profit: number, cash: number) {
 }
 
 export function simulate(inputs: Inputs<number>) {
-  const property_price = inputs.property_price
-  const yearly_income = inputs.yearly_income
-  const vacancy_rate = inputs.vacancy_rate
-  const running_cost_rate = inputs.running_cost_rate
+  const property_price = Math.floor(inputs.property_price)
+  const yearly_income = Math.floor(inputs.yearly_income)
+  const vacancy_rate = inputs.vacancy_rate / 100
+  const running_cost_rate = inputs.running_cost_rate / 100
 
-  const cash = inputs.cash
-  const loan = property_price - cash
+  const cash = Math.floor(inputs.cash)
+  const loan = Math.floor(inputs.loan)
   const n = inputs.years * 12
   const interest_rate = inputs.interest_rate / 12
 
@@ -93,13 +93,13 @@ export function simulate(inputs: Inputs<number>) {
   const ccr = calc_ccr(yearly_profit, cash)
 
   return {
-    monthly_debt_payment: monthly_debt_payment,
-    yearly_expense: yearly_expense,
-    yearly_payment: yearly_payment,
-    yearly_profit: yearly_profit,
-    gross_yield: gross_yield,
-    real_yield: real_yield,
-    yield_after_repayment: yield_after_repayment,
-    ccr: ccr,
+    monthly_debt_payment: Math.round(monthly_debt_payment),
+    yearly_expense: Math.round(yearly_expense),
+    yearly_payment: Math.round(yearly_payment),
+    yearly_profit: Math.round(yearly_profit),
+    gross_yield,
+    real_yield,
+    yield_after_repayment,
+    ccr,
   }
 }

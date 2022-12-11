@@ -2,16 +2,17 @@ import React, { useState } from "react"
 import "./App.css"
 import { Inputs, Errors } from "./types"
 import Input from "./components/Input"
+import { simulate } from "./lib"
 
 const INITIAL_STATE: Inputs<string> = {
   property_price: "",
   yearly_income: "",
-  vacancy_rate: "",
-  running_cost_rate: "",
+  vacancy_rate: "15",
+  running_cost_rate: "20",
   cash: "",
   loan: "",
-  years: "",
-  interest_rate: "",
+  years: "10",
+  interest_rate: "3",
 }
 
 function validateNum(
@@ -145,6 +146,8 @@ function App() {
     }
 
     // TODO: calculate
+    const res = simulate(values)
+    console.log(res)
   }
 
   function onClickReset(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
