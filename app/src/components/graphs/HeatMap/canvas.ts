@@ -4,7 +4,7 @@ import { lerp, lin, bound } from "../lib"
 // gradients 100 (r, g, b, a) numbers
 const G = 100
 
-const GRAPH_PADDING_LEFT = 50
+const GRAPH_PADDING_LEFT = 60
 const GRAPH_PADDING_RIGHT = 20
 const GRAPH_Y_PADDING = 20
 const GRAPH_X_LABEL_PADDING_TOP = 10

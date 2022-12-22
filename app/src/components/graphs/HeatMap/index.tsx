@@ -64,12 +64,10 @@ const HeatMap: React.FC<Props> = ({
         renderZ,
       })
     }
-  }, [])
+  }, [zs])
 
   return (
-    <div
-      style={{ position: "relative", width, height, backgroundColor: "grey" }}
-    >
+    <div style={{ position: "relative", width, height, backgroundColor: "" }}>
       <canvas
         ref={(ref) => (refs.current.axes = ref)}
         style={{ position: "absolute", top: 0, left: 0 }}

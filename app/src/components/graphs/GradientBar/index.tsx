@@ -1,10 +1,6 @@
 import React, { useRef, useEffect } from "react"
 import { draw, Context } from "./canvas"
 
-function render(x: number): string {
-  return x.toString()
-}
-
 interface Refs {
   axes: HTMLCanvasElement | null
   graph: HTMLCanvasElement | null
@@ -35,7 +31,7 @@ const GradientBar: React.FC<Props> = ({
     if (ctx.current) {
       draw(ctx.current, { width, height, zMin, zMax, render })
     }
-  }, [])
+  }, [zMin, zMax])
 
   return (
     <div style={{ position: "relative", width, height }}>

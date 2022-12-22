@@ -34,7 +34,7 @@ const Input: React.FC<Props> = ({
         <label className="w-[120px] mr-2">{label}</label>
         <input
           className={append(
-            "w-[100px] px-2 py-0.5 text-right border border-gray-100 focus:outline-none focus:ring focus:ring-blue-200 rounded-sm",
+            "w-[100px] px-2 py-0.5 text-right bg-gray-200 border border-gray-100 focus:outline-none focus:ring focus:ring-blue-200 rounded-sm",
             "bg-red-100 border-red-200",
             !!error
           )}

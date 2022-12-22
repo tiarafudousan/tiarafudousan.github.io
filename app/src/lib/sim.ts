@@ -1,4 +1,4 @@
-import { Inputs } from "./types"
+import { Inputs } from "./form"
 
 // 毎月返済額の計算 - 元利均等返済
 function calc_monthly_debt_payment(p: number, r: number, n: number) {

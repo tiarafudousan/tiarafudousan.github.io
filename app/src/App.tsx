@@ -1,242 +1,59 @@
 import React, { useState } from "react"
 import "./App.css"
-import { Inputs, Errors } from "./types"
+import { Inputs, Errors, validate, INPUTS } from "./lib/form"
+import { simulate } from "./lib/sim"
 import Input from "./components/Input"
 import { lerp } from "./components/graphs/lib"
 import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
-import { simulate } from "./lib"
-
-const PRICE_DELTA = 0.05
-const MIN_YIELD = 2
-const MIN_CCR = 20
-
-const INITIAL_STATE: Inputs<string> = {
-  property_price: "",
-  yearly_income: "",
-  vacancy_rate: "15",
-  running_cost_rate: "20",
-  cash: "",
-  loan: "",
-  years: "10",
-  interest_rate: "3",
-}
-
-function validateNum(
-  input: string,
-  int: boolean = true,
-  min = 0,
-  max = Infinity
-): [error: string | null, value: number] {
-  let error = null
-  const value = int ? parseInt(input) : parseFloat(input)
-
-  if (isNaN(value)) {
-    error = "数字を入力してください"
-  } else if (value < min) {
-    error = `${min}より大きい数字を入力してください`
-  } else if (value > max) {
-    error = `${max}より小さい数字を入力してください`
-  }
-
-  return [error, value]
-}
-
-function validate(
-  inputs: Inputs<string>
-): [errors: Errors | null, values: Inputs<number>] {
-  const values: Inputs<number> = {
-    property_price: 0,
-    yearly_income: 0,
-    vacancy_rate: 0,
-    running_cost_rate: 0,
-    cash: 0,
-    loan: 0,
-    years: 0,
-    interest_rate: 0,
-  }
-  const errors: Errors = {}
-
-  {
-    const [error, value] = validateNum(inputs.property_price)
-    if (error) {
-      errors.property_price = error
-    } else {
-      values.property_price = value
-    }
-  }
-  {
-    const [error, value] = validateNum(inputs.yearly_income)
-    if (error) {
-      errors.yearly_income = error
-    } else {
-      values.yearly_income = value
-    }
-  }
-  {
-    const [error, value] = validateNum(inputs.vacancy_rate, false, 0, 100)
-    if (error) {
-      errors.vacancy_rate = error
-    } else {
-      values.vacancy_rate = value
-    }
-  }
-  {
-    const [error, value] = validateNum(inputs.running_cost_rate, false, 0, 100)
-    if (error) {
-      errors.running_cost_rate = error
-    } else {
-      values.running_cost_rate = value
-    }
-  }
-  {
-    const [error, value] = validateNum(inputs.cash)
-    if (error) {
-      errors.cash = error
-    } else {
-      values.cash = value
-    }
-  }
-  {
-    const [error, value] = validateNum(inputs.loan)
-    if (error) {
-      errors.loan = error
-    } else {
-      values.loan = value
-    }
-  }
-  {
-    const [error, value] = validateNum(inputs.years)
-    if (error) {
-      errors.years = error
-    } else {
-      values.years = value
-    }
-  }
-  {
-    const [error, value] = validateNum(inputs.interest_rate, false, 0)
-    if (error) {
-      errors.interest_rate = error
-    } else {
-      values.interest_rate = value
-    }
-  }
-
-  return [Object.keys(errors).length > 0 ? errors : null, values]
-}
 
 // Heat map
 function renderX(x: number): string {
-  return x.toString()
+  return `${x} %`
 }
 
 function renderY(y: number): string {
-  return y.toString()
+  return `${y} 万`
 }
 
 function renderZ(z: number): string {
   return z.toFixed(2)
 }
 
+const PRICE_DELTA = 0.05
+
 const X_MIN = 0
 const X_MAX = 100
 const XS = [
-  lerp(X_MIN, X_MAX, 0),
-  lerp(X_MIN, X_MAX, 0.1),
-  lerp(X_MIN, X_MAX, 0.2),
-  lerp(X_MIN, X_MAX, 0.3),
-  lerp(X_MIN, X_MAX, 0.4),
-  lerp(X_MIN, X_MAX, 0.5),
-  lerp(X_MIN, X_MAX, 0.6),
-  lerp(X_MIN, X_MAX, 0.7),
-  lerp(X_MIN, X_MAX, 0.8),
-  lerp(X_MIN, X_MAX, 0.9),
-  lerp(X_MIN, X_MAX, 1),
+  Math.floor(lerp(X_MIN, X_MAX, 0)),
+  Math.floor(lerp(X_MIN, X_MAX, 0.1)),
+  Math.floor(lerp(X_MIN, X_MAX, 0.2)),
+  Math.floor(lerp(X_MIN, X_MAX, 0.3)),
+  Math.floor(lerp(X_MIN, X_MAX, 0.4)),
+  Math.floor(lerp(X_MIN, X_MAX, 0.5)),
+  Math.floor(lerp(X_MIN, X_MAX, 0.6)),
+  Math.floor(lerp(X_MIN, X_MAX, 0.7)),
+  Math.floor(lerp(X_MIN, X_MAX, 0.8)),
+  Math.floor(lerp(X_MIN, X_MAX, 0.9)),
+  Math.floor(lerp(X_MIN, X_MAX, 1)),
 ]
 
-const values = {
-  property_price: 2500,
-  yearly_income: 274,
-  vacancy_rate: 7.5,
-  running_cost_rate: 20,
-  cash: 0,
-  loan: 1000,
-  years: 10,
-  interest_rate: 2,
-}
-
-let zMin = 0
-let zMax = 0
-
-const zs: number[][] = []
-for (let i = 0; i <= 10; i++) {
-  zs.push([])
-
-  const price = values.property_price * (1 - i * PRICE_DELTA)
-  for (let j = 0; j <= 10; j++) {
-    const cash = (price * j) / 10
-
-    const res = simulate({
-      ...values,
-      property_price: price,
-      cash,
-      loan: price - cash,
-    })
-
-    const z = res.yield_after_repayment * 100
-    // const z = res.ccr * 100
-    zMax = Math.max(zMax, z)
-    zMin = Math.min(zMin, z)
-
-    // TODO: ccr
-    zs[i].push(z)
-  }
-}
-
-zMax = 5
-console.log(zs)
-console.log(zMin, zMax)
-
-// for (let i = 0; i <= 10; i++) {
-//   const row = []
-//   for (let j = 0; j <= 10; j++) {
-//     row.push(i + 10 * j)
-//   }
-//   zs.push(row)
-// }
-
-// TODO: hover detail
 // TODO:L zMax from input
+const Z_MAX = 2
+
+interface HeatMapData {
+  ys: number[]
+  zs: number[][]
+  yMin: number
+  yMax: number
+  zMin: number
+  zMax: number
+}
+
 function App() {
-  const [inputs, setInputs] = useState<Inputs<string>>(INITIAL_STATE)
+  const [inputs, setInputs] = useState<Inputs<string>>(INPUTS)
   const [errors, setErrors] = useState<Errors>({})
-  const [data, setData] = useState<{
-    ys: number[]
-    zs: number[][]
-    yMin: number
-    yMax: number
-    zMin: number
-    zMax: number
-  } | null>({
-    ys: [
-      lerp(1000, 2000, 0),
-      lerp(1000, 2000, 0.1),
-      lerp(1000, 2000, 0.2),
-      lerp(1000, 2000, 0.3),
-      lerp(1000, 2000, 0.4),
-      lerp(1000, 2000, 0.5),
-      lerp(1000, 2000, 0.6),
-      lerp(1000, 2000, 0.7),
-      lerp(1000, 2000, 0.8),
-      lerp(1000, 2000, 0.9),
-      lerp(1000, 2000, 1),
-    ],
-    zs,
-    yMax: 2000,
-    yMin: 2000 * (1 - 10 * PRICE_DELTA),
-    zMin: zMin,
-    zMax: zMax,
-  })
+  const [data, setHeatMapData] = useState<HeatMapData | null>(null)
 
   function onChange(name: string, value: string) {
     setInputs((inputs) => ({
@@ -251,58 +68,86 @@ function App() {
       | React.FormEvent<HTMLFormElement>
   ) {
     e.preventDefault()
+    setErrors({})
+
+    const [errors, values] = validate(inputs)
+
+    if (errors) {
+      setErrors(errors)
+      return
+    }
+
+    const yMax = values.property_price
+    const yMin = values.property_price * (1 - 10 * PRICE_DELTA)
+
+    const ys = [
+      lerp(yMin, yMax, 0),
+      lerp(yMin, yMax, 0.1),
+      lerp(yMin, yMax, 0.2),
+      lerp(yMin, yMax, 0.3),
+      lerp(yMin, yMax, 0.4),
+      lerp(yMin, yMax, 0.5),
+      lerp(yMin, yMax, 0.6),
+      lerp(yMin, yMax, 0.7),
+      lerp(yMin, yMax, 0.8),
+      lerp(yMin, yMax, 0.9),
+      lerp(yMin, yMax, 1),
+    ]
+
+    let zMin = 0
+    let zMax = 0
+
+    const zs: number[][] = []
+    for (let i = 0; i <= 10; i++) {
+      zs.push([])
+
+      const price = values.property_price * (1 - i * PRICE_DELTA)
+      for (let j = 0; j <= 10; j++) {
+        const cash = (price * j) / 10
+
+        const res = simulate({
+          ...values,
+          property_price: price,
+          cash,
+          loan: price - cash,
+        })
+
+        const z = res.yield_after_repayment * 100
+        // const z = res.ccr * 100
+        zMax = Math.max(zMax, z)
+        zMin = Math.min(zMin, z)
+
+        // TODO: ccr
+        zs[i].push(z)
+      }
+    }
+
+    zMax = Z_MAX
+
+    setHeatMapData((state) => ({
+      ...state,
+      ys,
+      zs,
+      yMax,
+      yMin,
+      zMin,
+      zMax,
+    }))
 
     return
-
-    // console.log(zs)
-
-    // setErrors({})
-
-    // const [errors, values] = validate(inputs)
-
-    // if (errors) {
-    //   setErrors(errors)
-    // } else {
-    // }
   }
 
   function onClickReset(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault()
-    setInputs(INITIAL_STATE)
+    setInputs(INPUTS)
     setErrors({})
+    setHeatMapData(null)
   }
 
   return (
-    <div className="my-5 mx-5 max-w-[300px] bg-gray-200">
-      {data != null ? (
-        <>
-          <GradientBar
-            width={500}
-            height={60}
-            zMin={data.zMin}
-            zMax={data.zMax}
-            render={(z) => z.toFixed(2)}
-          />
-          <HeatMap
-            width={600}
-            height={600}
-            xs={XS}
-            ys={data.ys}
-            zs={data.zs}
-            xMin={X_MIN}
-            xMax={X_MAX}
-            yMin={data.yMin}
-            yMax={data.yMax}
-            zMin={data.zMin}
-            zMax={data.zMax}
-            renderX={renderX}
-            renderY={renderY}
-            renderZ={renderZ}
-          />
-        </>
-      ) : null}
-      <h1 className="text-xl font-bold">物件情報</h1>
+    <div className="flex flex-col items-center py-10 mx-auto max-w-[800px]">
       <form onSubmit={onSubmit}>
+        <h1 className="text-xl font-bold">物件情報</h1>
         <Input
           label="物件価格"
           unit="万円"
@@ -385,6 +230,35 @@ function App() {
           </button>
         </div>
       </form>
+
+      {data != null ? (
+        <div className="flex flex-col items-center">
+          <GradientBar
+            width={500}
+            height={60}
+            zMin={data.zMin}
+            zMax={data.zMax}
+            render={(z) => z.toFixed(2)}
+          />
+          <HeatMap
+            width={600}
+            height={600}
+            xs={XS}
+            ys={data.ys}
+            zs={data.zs}
+            xMin={X_MIN}
+            xMax={X_MAX}
+            yMin={data.yMin}
+            yMax={data.yMax}
+            zMin={data.zMin}
+            zMax={data.zMax}
+            renderX={renderX}
+            renderY={renderY}
+            renderZ={renderZ}
+          />
+          <div className="text-sm">X = 自己資金比率 Y = 物件価格</div>
+        </div>
+      ) : null}
     </div>
   )
 }
