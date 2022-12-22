@@ -5,21 +5,6 @@ function calc_monthly_debt_payment(p: number, r: number, n: number) {
   return (p * r * (1 + r) ** n) / ((1 + r) ** n - 1)
 }
 
-// TODO:
-// 総返済額の計算
-// function calc_total_payment(p: number, n: number, u: number, r: number) {
-//     const debt = p
-//     let total_interest = 0
-//     const monthly_repayment = calc_monthly_repayment(p, r, n)
-
-//     for (let i = 0; i < n; i++) {
-//         const mi = calc_monthly_interest(debt, r)
-//         total_interest += mi
-//     }
-
-//     return debt + total_interest
-// }
-
 function calc_yearly_expense(
   yearly_income: number,
   vacancy_rate: number,
@@ -69,7 +54,19 @@ function calc_ccr(yearly_profit: number, cash: number) {
   return yearly_profit / cash
 }
 
-export function simulate(inputs: Inputs<number>) {
+export interface SimData {
+  total_payment: number
+  monthly_debt_payment: number
+  yearly_expense: number
+  yearly_payment: number
+  yearly_profit: number
+  gross_yield: number
+  real_yield: number
+  yield_after_repayment: number
+  ccr: number
+}
+
+export function simulate(inputs: Inputs<number>): SimData {
   const property_price = Math.floor(inputs.property_price)
   const yearly_income = Math.floor(inputs.yearly_income)
   const vacancy_rate = inputs.vacancy_rate / 100
@@ -108,10 +105,11 @@ export function simulate(inputs: Inputs<number>) {
   const ccr = calc_ccr(yearly_profit, cash)
 
   return {
-    monthly_debt_payment: Math.round(monthly_debt_payment),
-    yearly_expense: Math.round(yearly_expense),
-    yearly_payment: Math.round(yearly_payment),
-    yearly_profit: Math.round(yearly_profit),
+    total_payment: n * monthly_debt_payment,
+    monthly_debt_payment,
+    yearly_expense,
+    yearly_payment,
+    yearly_profit,
     gross_yield,
     real_yield,
     yield_after_repayment,

@@ -65,7 +65,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         error={errors?.property_price}
       />
       <Input
-        label="満室時想定年収"
+        label="満室年収"
         unit="万円"
         name="yearly_income"
         value={inputs.yearly_income}
@@ -73,7 +73,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         error={errors?.property_price}
       />
       <Input
-        label="想定空室率"
+        label="空室率"
         unit="%"
         name="vacancy_rate"
         value={inputs.vacancy_rate}

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import "./App.css"
 import { Inputs } from "./lib/form"
-import { simulate } from "./lib/sim"
+import { simulate, SimData } from "./lib/sim"
 import { lerp } from "./components/graphs/lib"
 import Form from "./components/Form"
 import HeatMap from "./components/graphs/HeatMap"
@@ -50,10 +50,22 @@ interface HeatMapData {
   zMax: number
 }
 
+function Yen(value: number): string {
+  return Math.round(value * 10000).toLocaleString()
+}
+
+function Percent(value: number): string {
+  return (value * 100).toFixed(2)
+}
+
 function App() {
+  const [res, setSimData] = useState<SimData | null>(null)
   const [data, setHeatMapData] = useState<HeatMapData | null>(null)
 
   function onSubmit(values: Inputs<number>) {
+    const res = simulate(values)
+    setSimData(res)
+
     const yMax = values.property_price
     const yMin = values.property_price * (1 - 10 * PRICE_DELTA)
 
@@ -115,14 +127,60 @@ function App() {
 
   function onReset() {
     setHeatMapData(null)
+    setSimData(null)
   }
 
   return (
     <div className="flex flex-col items-center py-10 mx-auto max-w-[800px]">
       <Form onSubmit={onSubmit} onReset={onReset} />
 
+      {res != null ? (
+        <div className="mt-8 min-w-[300px]">
+          <div className="text-xl font-semibold mb-2">収支試算の結果</div>
+          <table className="w-full">
+            <tbody>
+              <tr>
+                <td>返済総額</td>
+                <td style={{ textAlign: "right" }}>
+                  {Yen(res.total_payment)} 円
+                </td>
+              </tr>
+              <tr>
+                <td>返済額（月）</td>
+                <td style={{ textAlign: "right" }}>
+                  {Yen(res.monthly_debt_payment)} 円
+                </td>
+              </tr>
+              <tr>
+                <td>空室 + 諸経費 （年）</td>
+                <td style={{ textAlign: "right" }}>
+                  {Yen(res.yearly_expense)} 円
+                </td>
+              </tr>
+              <tr>
+                <td>手取り（年）</td>
+                <td style={{ textAlign: "right" }}>
+                  {Yen(res.yearly_profit)} 円
+                </td>
+              </tr>
+              <tr>
+                <td>返済後利回り</td>
+                <td style={{ textAlign: "right" }}>
+                  {Percent(res.yield_after_repayment)} %
+                </td>
+              </tr>
+              <tr>
+                <td>CCR</td>
+                <td style={{ textAlign: "right" }}>{Percent(res.ccr)} %</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      ) : null}
+
       {data != null ? (
-        <div className="flex flex-col items-center">
+        <div className="mt-8 flex flex-col items-center">
+          <div className="text-xl font-semibold">返済後利回り</div>
           <GradientBar
             width={500}
             height={60}
