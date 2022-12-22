@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import "./App.css"
 import { Inputs, Errors } from "./types"
 import Input from "./components/Input"
+import { lerp } from "./components/graphs/lib"
 import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
 import { simulate } from "./lib"
@@ -120,6 +121,19 @@ function validate(
   return [Object.keys(errors).length > 0 ? errors : null, values]
 }
 
+// Heat map
+function renderX(x: number): string {
+  return x.toString()
+}
+
+function renderY(y: number): string {
+  return y.toString()
+}
+
+function renderZ(z: number): string {
+  return z.toString()
+}
+
 function App() {
   const [inputs, setInputs] = useState<Inputs<string>>(INITIAL_STATE)
   const [errors, setErrors] = useState<Errors>({})
@@ -157,8 +171,69 @@ function App() {
     setErrors({})
   }
 
+  const xMin = 0
+  const xMax = 100
+  const yMin = 1000
+  const yMax = 2000
+  const zMin = 0
+  const zMax = 110
+
+  const xs = [
+    lerp(xMin, xMax, 0),
+    lerp(xMin, xMax, 0.1),
+    lerp(xMin, xMax, 0.2),
+    lerp(xMin, xMax, 0.3),
+    lerp(xMin, xMax, 0.4),
+    lerp(xMin, xMax, 0.5),
+    lerp(xMin, xMax, 0.6),
+    lerp(xMin, xMax, 0.7),
+    lerp(xMin, xMax, 0.8),
+    lerp(xMin, xMax, 0.9),
+    lerp(xMin, xMax, 1),
+  ]
+
+  const ys = [
+    lerp(yMin, yMax, 0),
+    lerp(yMin, yMax, 0.1),
+    lerp(yMin, yMax, 0.2),
+    lerp(yMin, yMax, 0.3),
+    lerp(yMin, yMax, 0.4),
+    lerp(yMin, yMax, 0.5),
+    lerp(yMin, yMax, 0.6),
+    lerp(yMin, yMax, 0.7),
+    lerp(yMin, yMax, 0.8),
+    lerp(yMin, yMax, 0.9),
+    lerp(yMin, yMax, 1),
+  ]
+
+  const zs: number[][] = []
+  for (let i = 0; i <= 10; i++) {
+    const row = []
+    for (let j = 0; j <= 10; j++) {
+      row.push(i + 10 * j)
+    }
+    zs.push(row)
+  }
+
   return (
     <div className="my-5 mx-5 max-w-[300px] bg-gray-200">
+      {/* <GradientBar width={300} height={60} xMin={0} xMax={20} /> */}
+      <HeatMap
+        width={600}
+        height={600}
+        xs={xs}
+        ys={ys}
+        zs={zs}
+        xMin={xMin}
+        xMax={xMax}
+        yMin={yMin}
+        yMax={yMax}
+        zMin={zMin}
+        zMax={zMax}
+        renderX={renderX}
+        renderY={renderY}
+        renderZ={renderZ}
+      />
       <h1 className="text-xl font-bold">物件情報</h1>
       <form onSubmit={onSubmit}>
         <Input
@@ -243,11 +318,6 @@ function App() {
           </button>
         </div>
       </form>
-
-      {/*}
-      <HeatMap />
-  */}
-      <GradientBar width={300} height={60} xMin={0} xMax={20} />
     </div>
   )
 }

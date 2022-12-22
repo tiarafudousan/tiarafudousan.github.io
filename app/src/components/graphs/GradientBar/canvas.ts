@@ -1,4 +1,4 @@
-import { lerp, lin } from "./lib"
+import { lerp, lin } from "../lib"
 
 const GRADIENTS = [
   {
@@ -59,27 +59,24 @@ export function draw(ctx: Context, params: Params) {
   ctx.graph.clearRect(0, 0, width, height)
 
   // Draw x labels
-  {
-    //   ctx.axes.font = "16px"
-    ctx.axes.fillStyle = "black"
-    ctx.axes.textAlign = "center"
-    ctx.axes.textBaseline = "middle"
+  ctx.axes.fillStyle = "black"
+  ctx.axes.textAlign = "center"
+  ctx.axes.textBaseline = "middle"
 
-    const dx = xMax - xMin
-    const xs = [
-      lerp(xMin, xMax, 0),
-      lerp(xMin, xMax, 0.25),
-      lerp(xMin, xMax, 0.5),
-      lerp(xMin, xMax, 0.75),
-      lerp(xMin, xMax, 1),
-    ]
+  const dx = xMax - xMin
+  const xs = [
+    lerp(xMin, xMax, 0),
+    lerp(xMin, xMax, 0.25),
+    lerp(xMin, xMax, 0.5),
+    lerp(xMin, xMax, 0.75),
+    lerp(xMin, xMax, 1),
+  ]
 
-    for (const x of xs) {
-      const t = lin(1, dx, x, 0)
-      const canvasX = lerp(graphX0, graphX1, t)
-      const canvasY = graphY1 + GRAPH_LABEL_PADDING_TOP
-      ctx.axes.fillText(render(x), canvasX, canvasY)
-    }
+  for (const x of xs) {
+    const t = lin(1, dx, x, 0)
+    const canvasX = lerp(graphX0, graphX1, t)
+    const canvasY = graphY1 + GRAPH_LABEL_PADDING_TOP
+    ctx.axes.fillText(render(x), canvasX, canvasY)
   }
 
   // Draw graph
