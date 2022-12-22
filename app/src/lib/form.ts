@@ -120,5 +120,10 @@ export function validate(
     }
   }
 
+  // loan + cash >= property price
+  if (!(values.loan + values.cash >= values.property_price)) {
+    errors.loan = "自己資金 + 借入金額 < 物件価格"
+  }
+
   return [Object.keys(errors).length > 0 ? errors : null, values]
 }
