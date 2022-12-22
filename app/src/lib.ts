@@ -5,6 +5,21 @@ function calc_monthly_debt_payment(p: number, r: number, n: number) {
   return (p * r * (1 + r) ** n) / ((1 + r) ** n - 1)
 }
 
+// TODO:
+// 総返済額の計算
+// function calc_total_payment(p: number, n: number, u: number, r: number) {
+//     const debt = p
+//     let total_interest = 0
+//     const monthly_repayment = calc_monthly_repayment(p, r, n)
+
+//     for (let i = 0; i < n; i++) {
+//         const mi = calc_monthly_interest(debt, r)
+//         total_interest += mi
+//     }
+
+//     return debt + total_interest
+// }
+
 function calc_yearly_expense(
   yearly_income: number,
   vacancy_rate: number,
@@ -63,7 +78,7 @@ export function simulate(inputs: Inputs<number>) {
   const cash = Math.floor(inputs.cash)
   const loan = Math.floor(inputs.loan)
   const n = inputs.years * 12
-  const interest_rate = inputs.interest_rate / 12
+  const interest_rate = inputs.interest_rate / (100 * 12)
 
   const monthly_debt_payment = calc_monthly_debt_payment(loan, interest_rate, n)
   const yearly_expense = calc_yearly_expense(

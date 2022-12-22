@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import "./App.css"
 import { Inputs, Errors } from "./types"
 import Input from "./components/Input"
+import HeatMap from "./components/graphs/HeatMap"
+import GradientBar from "./components/graphs/GradientBar"
 import { simulate } from "./lib"
 
 const INITIAL_STATE: Inputs<string> = {
@@ -145,7 +147,6 @@ function App() {
     } else {
     }
 
-    // TODO: calculate
     const res = simulate(values)
     console.log(res)
   }
@@ -242,6 +243,11 @@ function App() {
           </button>
         </div>
       </form>
+
+      {/*}
+      <HeatMap />
+  */}
+      <GradientBar width={300} height={60} xMin={0} xMax={20} />
     </div>
   )
 }
