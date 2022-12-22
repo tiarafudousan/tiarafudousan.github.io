@@ -13,11 +13,18 @@ interface Refs {
 interface Props {
   width: number
   height: number
-  xMin: number
-  xMax: number
+  zMin: number
+  zMax: number
+  render: (z: number) => string
 }
 
-const GradientBar: React.FC<Props> = ({ width, height, xMin, xMax }) => {
+const GradientBar: React.FC<Props> = ({
+  width,
+  height,
+  zMin,
+  zMax,
+  render,
+}) => {
   const refs = useRef<Refs>({ axes: null, graph: null })
   const ctx = useRef<Context>({ axes: null, graph: null })
 
@@ -26,7 +33,7 @@ const GradientBar: React.FC<Props> = ({ width, height, xMin, xMax }) => {
     ctx.current.graph = refs.current.graph?.getContext("2d")
 
     if (ctx.current) {
-      draw(ctx.current, { width, height, xMin, xMax, render })
+      draw(ctx.current, { width, height, zMin, zMax, render })
     }
   }, [])
 

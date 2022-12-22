@@ -1,27 +1,5 @@
-import { lerp, lin } from "../lib"
-
-const GRADIENTS = [
-  {
-    value: 0.4,
-    color: "blue",
-  },
-  {
-    value: 0.6,
-    color: "cyan",
-  },
-  {
-    value: 0.7,
-    color: "lime",
-  },
-  {
-    value: 0.8,
-    color: "yellow",
-  },
-  {
-    value: 1.0,
-    color: "red",
-  },
-]
+import { GRADIENTS } from "../config"
+import { lerp, lin, bound } from "../lib"
 
 // gradients 100 (r, g, b, a) numbers
 const G = 100
@@ -111,7 +89,7 @@ export function draw(ctx: Context, params: Params) {
   ctx.axes.textBaseline = "middle"
 
   for (const x of xs) {
-    const t = lin(1, dx, x, 0)
+    const t = lin(1, dx, x - xMin, 0)
     const canvasX = lerp(graphX0 + boxWidth / 2, graphX1 - boxWidth / 2, t)
     const canvasY = graphY1 + GRAPH_X_LABEL_PADDING_TOP
     ctx.axes.fillText(renderX(x), canvasX, canvasY)
@@ -122,7 +100,7 @@ export function draw(ctx: Context, params: Params) {
   ctx.axes.textBaseline = "middle"
 
   for (const y of ys) {
-    const t = lin(1, dy, y, -1)
+    const t = lin(1, dy, y - yMin, 0)
     const canvasX = GRAPH_PADDING_LEFT - GRAPH_Y_LABEL_PADDING_RIGHT
     const canvasY = lerp(graphY1 - boxHeight / 2, graphY0 + boxHeight / 2, t)
     ctx.axes.fillText(renderY(y), canvasX, canvasY)
@@ -139,7 +117,11 @@ export function draw(ctx: Context, params: Params) {
 
       // Linear map z to color
       const z = zs[i][j]
-      const c = Math.min(Math.floor(lin(G - 1, dz, z, 0)) * 4, 4 * (G - 1))
+      const c = bound(
+        Math.floor(lin(G - 1, dz, z - zMin, 0)) * 4,
+        0,
+        4 * (G - 1)
+      )
 
       const r = rgba[c]
       const g = rgba[c + 1]

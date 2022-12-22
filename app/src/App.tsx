@@ -7,6 +7,10 @@ import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
 import { simulate } from "./lib"
 
+const PRICE_DELTA = 0.05
+const MIN_YIELD = 2
+const MIN_CCR = 20
+
 const INITIAL_STATE: Inputs<string> = {
   property_price: "",
   yearly_income: "",
@@ -131,12 +135,108 @@ function renderY(y: number): string {
 }
 
 function renderZ(z: number): string {
-  return z.toString()
+  return z.toFixed(2)
 }
 
+const X_MIN = 0
+const X_MAX = 100
+const XS = [
+  lerp(X_MIN, X_MAX, 0),
+  lerp(X_MIN, X_MAX, 0.1),
+  lerp(X_MIN, X_MAX, 0.2),
+  lerp(X_MIN, X_MAX, 0.3),
+  lerp(X_MIN, X_MAX, 0.4),
+  lerp(X_MIN, X_MAX, 0.5),
+  lerp(X_MIN, X_MAX, 0.6),
+  lerp(X_MIN, X_MAX, 0.7),
+  lerp(X_MIN, X_MAX, 0.8),
+  lerp(X_MIN, X_MAX, 0.9),
+  lerp(X_MIN, X_MAX, 1),
+]
+
+const values = {
+  property_price: 2500,
+  yearly_income: 274,
+  vacancy_rate: 7.5,
+  running_cost_rate: 20,
+  cash: 0,
+  loan: 1000,
+  years: 10,
+  interest_rate: 2,
+}
+
+let zMin = 0
+let zMax = 0
+
+const zs: number[][] = []
+for (let i = 0; i <= 10; i++) {
+  zs.push([])
+
+  const price = values.property_price * (1 - i * PRICE_DELTA)
+  for (let j = 0; j <= 10; j++) {
+    const cash = (price * j) / 10
+
+    const res = simulate({
+      ...values,
+      property_price: price,
+      cash,
+      loan: price - cash,
+    })
+
+    const z = res.yield_after_repayment * 100
+    // const z = res.ccr * 100
+    zMax = Math.max(zMax, z)
+    zMin = Math.min(zMin, z)
+
+    // TODO: ccr
+    zs[i].push(z)
+  }
+}
+
+zMax = 5
+console.log(zs)
+console.log(zMin, zMax)
+
+// for (let i = 0; i <= 10; i++) {
+//   const row = []
+//   for (let j = 0; j <= 10; j++) {
+//     row.push(i + 10 * j)
+//   }
+//   zs.push(row)
+// }
+
+// TODO: hover detail
+// TODO:L zMax from input
 function App() {
   const [inputs, setInputs] = useState<Inputs<string>>(INITIAL_STATE)
   const [errors, setErrors] = useState<Errors>({})
+  const [data, setData] = useState<{
+    ys: number[]
+    zs: number[][]
+    yMin: number
+    yMax: number
+    zMin: number
+    zMax: number
+  } | null>({
+    ys: [
+      lerp(1000, 2000, 0),
+      lerp(1000, 2000, 0.1),
+      lerp(1000, 2000, 0.2),
+      lerp(1000, 2000, 0.3),
+      lerp(1000, 2000, 0.4),
+      lerp(1000, 2000, 0.5),
+      lerp(1000, 2000, 0.6),
+      lerp(1000, 2000, 0.7),
+      lerp(1000, 2000, 0.8),
+      lerp(1000, 2000, 0.9),
+      lerp(1000, 2000, 1),
+    ],
+    zs,
+    yMax: 2000,
+    yMin: 2000 * (1 - 10 * PRICE_DELTA),
+    zMin: zMin,
+    zMax: zMax,
+  })
 
   function onChange(name: string, value: string) {
     setInputs((inputs) => ({
@@ -152,17 +252,18 @@ function App() {
   ) {
     e.preventDefault()
 
-    setErrors({})
+    return
 
-    const [errors, values] = validate(inputs)
+    // console.log(zs)
 
-    if (errors) {
-      setErrors(errors)
-    } else {
-    }
+    // setErrors({})
 
-    const res = simulate(values)
-    console.log(res)
+    // const [errors, values] = validate(inputs)
+
+    // if (errors) {
+    //   setErrors(errors)
+    // } else {
+    // }
   }
 
   function onClickReset(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -171,69 +272,35 @@ function App() {
     setErrors({})
   }
 
-  const xMin = 0
-  const xMax = 100
-  const yMin = 1000
-  const yMax = 2000
-  const zMin = 0
-  const zMax = 110
-
-  const xs = [
-    lerp(xMin, xMax, 0),
-    lerp(xMin, xMax, 0.1),
-    lerp(xMin, xMax, 0.2),
-    lerp(xMin, xMax, 0.3),
-    lerp(xMin, xMax, 0.4),
-    lerp(xMin, xMax, 0.5),
-    lerp(xMin, xMax, 0.6),
-    lerp(xMin, xMax, 0.7),
-    lerp(xMin, xMax, 0.8),
-    lerp(xMin, xMax, 0.9),
-    lerp(xMin, xMax, 1),
-  ]
-
-  const ys = [
-    lerp(yMin, yMax, 0),
-    lerp(yMin, yMax, 0.1),
-    lerp(yMin, yMax, 0.2),
-    lerp(yMin, yMax, 0.3),
-    lerp(yMin, yMax, 0.4),
-    lerp(yMin, yMax, 0.5),
-    lerp(yMin, yMax, 0.6),
-    lerp(yMin, yMax, 0.7),
-    lerp(yMin, yMax, 0.8),
-    lerp(yMin, yMax, 0.9),
-    lerp(yMin, yMax, 1),
-  ]
-
-  const zs: number[][] = []
-  for (let i = 0; i <= 10; i++) {
-    const row = []
-    for (let j = 0; j <= 10; j++) {
-      row.push(i + 10 * j)
-    }
-    zs.push(row)
-  }
-
   return (
     <div className="my-5 mx-5 max-w-[300px] bg-gray-200">
-      {/* <GradientBar width={300} height={60} xMin={0} xMax={20} /> */}
-      <HeatMap
-        width={600}
-        height={600}
-        xs={xs}
-        ys={ys}
-        zs={zs}
-        xMin={xMin}
-        xMax={xMax}
-        yMin={yMin}
-        yMax={yMax}
-        zMin={zMin}
-        zMax={zMax}
-        renderX={renderX}
-        renderY={renderY}
-        renderZ={renderZ}
-      />
+      {data != null ? (
+        <>
+          <GradientBar
+            width={500}
+            height={60}
+            zMin={data.zMin}
+            zMax={data.zMax}
+            render={(z) => z.toFixed(2)}
+          />
+          <HeatMap
+            width={600}
+            height={600}
+            xs={XS}
+            ys={data.ys}
+            zs={data.zs}
+            xMin={X_MIN}
+            xMax={X_MAX}
+            yMin={data.yMin}
+            yMax={data.yMax}
+            zMin={data.zMin}
+            zMax={data.zMax}
+            renderX={renderX}
+            renderY={renderY}
+            renderZ={renderZ}
+          />
+        </>
+      ) : null}
       <h1 className="text-xl font-bold">物件情報</h1>
       <form onSubmit={onSubmit}>
         <Input

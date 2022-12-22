@@ -6,3 +6,7 @@ export function lerp(p0: number, p1: number, t: number): number {
 export function lin(dy: number, dx: number, x: number, y0: number): number {
   return (dy / dx) * x + y0
 }
+
+export function bound(x: number, a: number, b: number): number {
+  return Math.min(b, Math.max(a, x))
+}

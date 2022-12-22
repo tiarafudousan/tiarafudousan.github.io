@@ -1,27 +1,5 @@
+import { GRADIENTS } from "../config"
 import { lerp, lin } from "../lib"
-
-const GRADIENTS = [
-  {
-    value: 0.4,
-    color: "blue",
-  },
-  {
-    value: 0.6,
-    color: "cyan",
-  },
-  {
-    value: 0.7,
-    color: "lime",
-  },
-  {
-    value: 0.8,
-    color: "yellow",
-  },
-  {
-    value: 1.0,
-    color: "red",
-  },
-]
 
 const GRAPH_X_PADDING = 20
 const GRAPH_Y_PADDING = 20
@@ -35,8 +13,8 @@ export interface Context {
 interface Params {
   width: number
   height: number
-  xMin: number
-  xMax: number
+  zMin: number
+  zMax: number
   render: (x: number) => string
 }
 
@@ -45,7 +23,7 @@ export function draw(ctx: Context, params: Params) {
     return
   }
 
-  const { width, height, xMin, xMax, render } = params
+  const { width, height, zMin, zMax, render } = params
 
   const graphWidth = width - 2 * GRAPH_X_PADDING
   const graphHeight = height - 2 * GRAPH_Y_PADDING
@@ -63,20 +41,20 @@ export function draw(ctx: Context, params: Params) {
   ctx.axes.textAlign = "center"
   ctx.axes.textBaseline = "middle"
 
-  const dx = xMax - xMin
-  const xs = [
-    lerp(xMin, xMax, 0),
-    lerp(xMin, xMax, 0.25),
-    lerp(xMin, xMax, 0.5),
-    lerp(xMin, xMax, 0.75),
-    lerp(xMin, xMax, 1),
+  const dz = zMax - zMin
+  const zs = [
+    lerp(zMin, zMax, 0),
+    lerp(zMin, zMax, 0.25),
+    lerp(zMin, zMax, 0.5),
+    lerp(zMin, zMax, 0.75),
+    lerp(zMin, zMax, 1),
   ]
 
-  for (const x of xs) {
-    const t = lin(1, dx, x, 0)
+  for (const z of zs) {
+    const t = lin(1, dz, z - zMin, 0)
     const canvasX = lerp(graphX0, graphX1, t)
     const canvasY = graphY1 + GRAPH_LABEL_PADDING_TOP
-    ctx.axes.fillText(render(x), canvasX, canvasY)
+    ctx.axes.fillText(render(z), canvasX, canvasY)
   }
 
   // Draw graph
