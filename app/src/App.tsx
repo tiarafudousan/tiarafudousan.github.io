@@ -82,6 +82,7 @@ function App() {
       for (let j = 0; j <= 10; j++) {
         const cash = (price * j) / 10
 
+        // TODO: simulate when loan > property price
         const res = simulate({
           ...values,
           property_price: price,
