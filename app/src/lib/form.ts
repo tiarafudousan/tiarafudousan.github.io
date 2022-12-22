@@ -20,17 +20,6 @@ export interface Errors {
   interest_rate?: string
 }
 
-export const INPUTS: Inputs<string> = {
-  property_price: "",
-  yearly_income: "",
-  vacancy_rate: "15",
-  running_cost_rate: "20",
-  cash: "",
-  loan: "",
-  years: "10",
-  interest_rate: "3",
-}
-
 function validateNum(
   input: string,
   int: boolean = true,

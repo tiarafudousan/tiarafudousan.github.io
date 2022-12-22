@@ -1,6 +1,17 @@
 import React, { useState } from "react"
-import { Inputs, Errors, validate, INPUTS } from "../lib/form"
+import { Inputs, Errors, validate } from "../lib/form"
 import Input from "./Input"
+
+const INPUTS: Inputs<string> = {
+  property_price: "",
+  yearly_income: "",
+  vacancy_rate: "15",
+  running_cost_rate: "20",
+  cash: "0",
+  loan: "",
+  years: "10",
+  interest_rate: "3",
+}
 
 interface Props {
   onSubmit: (values: Inputs<number>) => void
