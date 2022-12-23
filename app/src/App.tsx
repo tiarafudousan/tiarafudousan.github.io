@@ -6,6 +6,7 @@ import { lerp } from "./components/graphs/lib"
 import Form from "./components/Form"
 import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
+import Range from "./components/Range"
 
 // Heat map
 function renderX(x: number): string {
@@ -21,6 +22,7 @@ function renderZ(z: number): string {
 }
 
 const PRICE_DELTA = 0.05
+const MIN_YIELD = 2
 
 const X_MIN = 0
 const X_MAX = 100
@@ -37,9 +39,6 @@ const XS = [
   Math.floor(lerp(X_MIN, X_MAX, 0.9)),
   Math.floor(lerp(X_MIN, X_MAX, 1)),
 ]
-
-// TODO:L zMax from input
-const Z_MAX = 2
 
 interface HeatMapData {
   ys: number[]
@@ -59,6 +58,7 @@ function Percent(value: number): string {
 }
 
 function App() {
+  const [minYield, setMinYield] = useState(MIN_YIELD)
   const [res, setSimData] = useState<SimData | null>(null)
   const [data, setHeatMapData] = useState<HeatMapData | null>(null)
 
@@ -112,7 +112,7 @@ function App() {
       }
     }
 
-    zMax = Z_MAX
+    zMax = minYield
 
     setHeatMapData((state) => ({
       ...state,
@@ -128,6 +128,20 @@ function App() {
   function onReset() {
     setHeatMapData(null)
     setSimData(null)
+    setMinYield(MIN_YIELD)
+  }
+
+  function onChangeMinYield(value: number) {
+    setMinYield(value)
+    setHeatMapData((state) => {
+      if (state) {
+        return {
+          ...state,
+          zMax: value,
+        }
+      }
+      return null
+    })
   }
 
   return (
@@ -187,6 +201,13 @@ function App() {
             zMin={data.zMin}
             zMax={data.zMax}
             render={(z) => z.toFixed(2)}
+          />
+          <Range
+            label="返済後利回り"
+            min={0}
+            max={10}
+            value={minYield}
+            onChange={onChangeMinYield}
           />
           <HeatMap
             width={600}

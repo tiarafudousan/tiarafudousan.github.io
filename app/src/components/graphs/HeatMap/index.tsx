@@ -64,7 +64,7 @@ const HeatMap: React.FC<Props> = ({
         renderZ,
       })
     }
-  }, [zs])
+  }, [zMin, zMax, zs])
 
   return (
     <div style={{ position: "relative", width, height, backgroundColor: "" }}>
