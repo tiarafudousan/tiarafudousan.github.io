@@ -205,7 +205,7 @@ function App() {
           <Range
             label="返済後利回り"
             min={0}
-            max={10}
+            max={20}
             value={minYield}
             onChange={onChangeMinYield}
           />
