@@ -212,19 +212,19 @@ function App() {
       {data != null ? (
         <div className="mt-8 flex flex-col items-center mx-auto">
           <div className="text-xl font-semibold">返済後利回り</div>
-          <GradientBar
-            width={canvasSize}
-            height={60}
-            zMin={data.zMin}
-            zMax={data.zMax}
-            render={(z) => `${z.toFixed(2)} %`}
-          />
           <Range
             label="返済後利回り"
             min={0}
             max={20}
             value={minYield}
             onChange={onChangeMinYield}
+          />
+          <GradientBar
+            width={canvasSize}
+            height={60}
+            zMin={data.zMin}
+            zMax={data.zMax}
+            render={(z) => `${z.toFixed(2)} %`}
           />
           <HeatMap
             width={canvasSize}
