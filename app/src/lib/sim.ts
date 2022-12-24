@@ -77,7 +77,8 @@ export function simulate(inputs: Inputs<number>): SimData {
   const n = inputs.years * 12
   const interest_rate = inputs.interest_rate / (100 * 12)
 
-  const monthly_debt_payment = calc_monthly_debt_payment(loan, interest_rate, n)
+  const monthly_debt_payment =
+    n > 0 ? calc_monthly_debt_payment(loan, interest_rate, n) : 0
   const yearly_expense = calc_yearly_expense(
     yearly_income,
     vacancy_rate,

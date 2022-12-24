@@ -125,5 +125,10 @@ export function validate(
     errors.loan = "自己資金 + 借入金額 < 物件価格"
   }
 
+  // if loan > 0 then years > 0
+  if (values.loan > 0 && values.years == 0) {
+    errors.years = "借入金額 > 0, 0より大きい数字を入力してください"
+  }
+
   return [Object.keys(errors).length > 0 ? errors : null, values]
 }
