@@ -16,6 +16,9 @@ const Range: React.FC<Props> = ({ label, min, max, value, onChange }) => {
 
   return (
     <>
+      <label>
+        {label} {value}
+      </label>
       <input
         className="min-w-[300px]"
         type="range"
@@ -25,9 +28,6 @@ const Range: React.FC<Props> = ({ label, min, max, value, onChange }) => {
         onChange={_onChange}
         value={value}
       />
-      <label>
-        {label} {value}
-      </label>
     </>
   )
 }
