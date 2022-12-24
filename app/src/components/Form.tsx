@@ -3,12 +3,12 @@ import { Inputs, Errors, validate } from "../lib/form"
 import Input from "./Input"
 
 const INPUTS: Inputs<string> = {
-  property_price: "",
-  yearly_income: "",
+  property_price: "2000",
+  yearly_income: "100",
   vacancy_rate: "15",
   running_cost_rate: "20",
   cash: "0",
-  loan: "",
+  loan: "2000",
   years: "10",
   interest_rate: "3",
 }

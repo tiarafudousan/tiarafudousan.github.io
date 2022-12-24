@@ -1,8 +1,8 @@
-import React, { useState } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import "./App.css"
 import { Inputs } from "./lib/form"
 import { simulate, SimData } from "./lib/sim"
-import { lerp } from "./components/graphs/lib"
+import { lerp, bound } from "./components/graphs/lib"
 import Form from "./components/Form"
 import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
@@ -40,6 +40,9 @@ const XS = [
   Math.floor(lerp(X_MIN, X_MAX, 1)),
 ]
 
+const MIN_GRAPH_WIDTH = 350
+const MAX_GRAPH_WIDTH = 600
+
 interface HeatMapData {
   ys: number[]
   zs: number[][]
@@ -58,9 +61,20 @@ function Percent(value: number): string {
 }
 
 function App() {
+  const ref = useRef(null)
+  const [canvasSize, setCanvasSize] = useState(0)
+
   const [minYield, setMinYield] = useState(MIN_YIELD)
   const [res, setSimData] = useState<SimData | null>(null)
   const [data, setHeatMapData] = useState<HeatMapData | null>(null)
+
+  useEffect(() => {
+    if (ref.current) {
+      // @ts-ignore
+      const w = ref.current.offsetWidth
+      setCanvasSize(bound(w, MIN_GRAPH_WIDTH, MAX_GRAPH_WIDTH))
+    }
+  }, [])
 
   function onSubmit(values: Inputs<number>) {
     const res = simulate(values)
@@ -145,7 +159,10 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col items-center py-10 mx-auto max-w-[800px]">
+    <div
+      ref={ref}
+      className="flex flex-col items-center py-10 mx-auto max-w-[800px]"
+    >
       <Form onSubmit={onSubmit} onReset={onReset} />
 
       {res != null ? (
@@ -193,14 +210,14 @@ function App() {
       ) : null}
 
       {data != null ? (
-        <div className="mt-8 flex flex-col items-center">
+        <div className="mt-8 flex flex-col items-center mx-auto">
           <div className="text-xl font-semibold">返済後利回り</div>
           <GradientBar
-            width={500}
+            width={canvasSize}
             height={60}
             zMin={data.zMin}
             zMax={data.zMax}
-            render={(z) => z.toFixed(2)}
+            render={(z) => `${z.toFixed(2)} %`}
           />
           <Range
             label="返済後利回り"
@@ -210,8 +227,8 @@ function App() {
             onChange={onChangeMinYield}
           />
           <HeatMap
-            width={600}
-            height={600}
+            width={canvasSize}
+            height={canvasSize}
             xs={XS}
             ys={data.ys}
             zs={data.zs}
