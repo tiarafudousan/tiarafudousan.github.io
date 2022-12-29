@@ -107,8 +107,10 @@ function App() {
 
       for (let j = 0; j <= 10; j++) {
         const price = values.property_price * (1 - j * PRICE_DELTA)
-        const cash = values.years > 0 ? (price * i) / 10 : price
+        const cash =
+          values.loan > 0 && values.years > 0 ? (price * i) / 10 : price
 
+        // TODO: fix sim - when loan = 0 or years = 0
         // TODO: simulate when loan > property price
         const res = simulate({
           ...values,
