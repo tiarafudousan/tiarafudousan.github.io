@@ -110,6 +110,7 @@ export function draw(ctx: Context, params: Params) {
   ctx.graph.textAlign = "center"
   ctx.graph.textBaseline = "middle"
 
+  // i, j = column i, row j
   for (let i = 0; i < xs.length; i++) {
     for (let j = 0; j < ys.length; j++) {
       const canvasX = graphX0 + i * boxWidth

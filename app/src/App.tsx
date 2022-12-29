@@ -100,13 +100,14 @@ function App() {
     let zMin = 0
     let zMax = 0
 
+    // i, j = column i, row j
     const zs: number[][] = []
     for (let i = 0; i <= 10; i++) {
       zs.push([])
 
-      const price = values.property_price * (1 - i * PRICE_DELTA)
       for (let j = 0; j <= 10; j++) {
-        const cash = (price * j) / 10
+        const price = values.property_price * (1 - j * PRICE_DELTA)
+        const cash = values.years > 0 ? (price * i) / 10 : price
 
         // TODO: simulate when loan > property price
         const res = simulate({
