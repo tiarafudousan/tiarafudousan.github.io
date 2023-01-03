@@ -10,6 +10,7 @@ function append(c1: string, c2: string, bool: boolean) {
 interface Props {
   label: string
   unit: string
+  step?: number
   name: string
   value: string
   onChange: (name: string, value: string) => void
@@ -19,6 +20,7 @@ interface Props {
 const Input: React.FC<Props> = ({
   label,
   unit,
+  step = 1,
   name,
   value,
   onChange,
@@ -40,6 +42,7 @@ const Input: React.FC<Props> = ({
           )}
           type="number"
           min={0}
+          step={step}
           value={value}
           onChange={_onChange}
         />

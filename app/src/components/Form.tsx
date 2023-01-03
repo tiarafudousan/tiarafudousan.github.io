@@ -117,6 +117,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
       <Input
         label="借入金利"
         unit="%"
+        step={0.01}
         name="interest_rate"
         value={inputs.interest_rate}
         onChange={onChange}
