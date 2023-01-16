@@ -1,10 +1,10 @@
-import { CanvasContext, Layout, XAxisAt } from "./types"
+import { CanvasContext, Layout, XAxisAlign, XAxis } from "./types"
 import { getCanvasX, stepBelow } from "./math"
 
 const TICK_TEXT_PADDING = 10
 
-interface DrawTickProps {
-  xAxisAt: XAxisAt
+interface Tick {
+  xAxisAlign: XAxisAlign
   xAxisFont: string
   xAxisLineColor: string
   xAxisTextColor: string
@@ -14,18 +14,13 @@ interface DrawTickProps {
   xMax: number
 }
 
-function drawTick(
-  ctx: CanvasContext,
-  layout: Layout,
-  props: DrawTickProps,
-  x: number
-) {
+function drawTick(ctx: CanvasContext, layout: Layout, tick: Tick, x: number) {
   const {
     xAxis: { top, left, width, height },
   } = layout
 
   const {
-    xAxisAt,
+    xAxisAlign,
     xAxisFont,
     xAxisLineColor,
     xAxisTextColor,
@@ -33,7 +28,7 @@ function drawTick(
     renderXTick,
     xMin,
     xMax,
-  } = props
+  } = tick
 
   const canvasX = getCanvasX(width, left, xMax, xMin, x)
 
@@ -43,7 +38,7 @@ function drawTick(
   ctx.textAlign = "center"
   ctx.textBaseline = "middle"
 
-  if (xAxisAt === "top") {
+  if (xAxisAlign == "top") {
     ctx.beginPath()
     ctx.moveTo(canvasX, top + height)
     ctx.lineTo(canvasX, top + height - xTickLength)
@@ -54,7 +49,7 @@ function drawTick(
       canvasX,
       top + height - xTickLength - TICK_TEXT_PADDING
     )
-  } else if (xAxisAt === "bottom") {
+  } else if (xAxisAlign == "bottom") {
     ctx.beginPath()
     ctx.moveTo(canvasX, top)
     ctx.lineTo(canvasX, top + xTickLength)
@@ -64,23 +59,17 @@ function drawTick(
   }
 }
 
-interface DrawLineProps {
+interface Line {
   xLineColor: string
   xMax: number
   xMin: number
 }
 
-function drawLine(
-  ctx: CanvasContext,
-  layout: Layout,
-  props: DrawLineProps,
-  x: number
-) {
+function drawLine(ctx: CanvasContext, layout: Layout, line: Line, x: number) {
   const {
     graph: { left, top, width, height },
   } = layout
-
-  const { xLineColor, xMax, xMin } = props
+  const { xLineColor, xMax, xMin } = line
 
   const canvasX = getCanvasX(width, left, xMax, xMin, x)
 
@@ -92,46 +81,32 @@ function drawLine(
   ctx.stroke()
 }
 
-interface DrawProps {
-  xAxisAt: XAxisAt
-  xAxisLineColor: string
-  xTicks: number[]
-  xTickInterval: number
-  showXLine: boolean
-  xMin: number
-  xMax: number
-  xAxisFont: string
-  xAxisTextColor: string
-  xTickLength: number
-  renderXTick: (x: number) => string
-  xLineColor: string
-}
-
-export function draw(ctx: CanvasContext, layout: Layout, props: DrawProps) {
+// TODO: optimize
+export function draw(ctx: CanvasContext, layout: Layout, xAxis: XAxis) {
   const {
     xAxis: { top, left, width, height },
   } = layout
 
   const {
-    xAxisAt,
+    xAxisAlign,
     xAxisLineColor,
     xTicks,
     xTickInterval,
     showXLine,
     xMin,
     xMax,
-  } = props
+  } = xAxis
 
   // style x axis line
   ctx.lineWidth = 1
   ctx.strokeStyle = xAxisLineColor
 
-  if (xAxisAt === "top") {
+  if (xAxisAlign == "top") {
     ctx.beginPath()
     ctx.moveTo(left, top + height)
     ctx.lineTo(left + width, top + height)
     ctx.stroke()
-  } else if (xAxisAt === "bottom") {
+  } else if (xAxisAlign == "bottom") {
     ctx.beginPath()
     ctx.moveTo(left, top)
     ctx.lineTo(left + width, top)
@@ -146,23 +121,23 @@ export function draw(ctx: CanvasContext, layout: Layout, props: DrawProps) {
         continue
       }
 
-      drawTick(ctx, layout, props, x)
+      drawTick(ctx, layout, xAxis, x)
 
       if (showXLine) {
-        drawLine(ctx, layout, props, x)
+        drawLine(ctx, layout, xAxis, x)
       }
     }
   }
 
-  for (let x of xTicks) {
+  for (const x of xTicks) {
     if (x < xMin || x > xMax) {
       continue
     }
 
-    drawTick(ctx, layout, props, x)
+    drawTick(ctx, layout, xAxis, x)
 
     if (showXLine) {
-      drawLine(ctx, layout, props, x)
+      drawLine(ctx, layout, xAxis, x)
     }
   }
 }

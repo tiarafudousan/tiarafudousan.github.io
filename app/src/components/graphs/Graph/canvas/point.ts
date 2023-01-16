@@ -1,13 +1,5 @@
-import { CanvasContext, Layout, Point } from "./types"
+import { CanvasContext, Layout, Point, PointGraph as Graph } from "./types"
 import { getCanvasX, getCanvasY } from "./math"
-
-export interface Graph {
-  data: Point[]
-  color: string
-  radius: number
-  ambientColor: string
-  ambientRadius: number
-}
 
 const DEFAULT_PROPS = {
   color: "black",
@@ -39,7 +31,7 @@ export function drawPoint(
   const { xMin, xMax, yMin, yMax } = props
   const { x, y } = point
 
-  if (x === undefined || y === undefined) {
+  if (x == undefined || y == undefined) {
     return
   }
 

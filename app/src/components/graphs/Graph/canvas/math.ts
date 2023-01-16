@@ -1,5 +1,9 @@
 import { Box } from "./types"
 
+export function bound(x: number, a: number, b: number): number {
+  return Math.min(b, Math.max(a, x))
+}
+
 export function stepBelow(x: number, step: number): number {
   return x - (x % step)
 }
@@ -59,7 +63,12 @@ export function isInside(
 }
 
 // TODO: lerp
-export function linear(dy: number, dx: number, x: number, y0: number): number {
+export function lerp(p0: number, p1: number, t: number): number {
+  // 0 <= t <= 1
+  return p0 * (1 - t) + p1 * t
+}
+
+export function lin(dy: number, dx: number, x: number, y0: number): number {
   return (dy / dx) * x + y0
 }
 
@@ -71,8 +80,7 @@ export function getCanvasX(
   x: number
 ): number {
   const dx = xMax - xMin
-
-  return linear(width, dx, x, left - (width * xMin) / dx)
+  return lin(width, dx, x, left - (width * xMin) / dx)
 }
 
 export function getCanvasY(
@@ -83,8 +91,7 @@ export function getCanvasY(
   y: number
 ): number {
   const dy = yMax - yMin
-
-  return linear(-height, dy, y, top + (height * yMax) / dy)
+  return lin(-height, dy, y, top + (height * yMax) / dy)
 }
 
 export function getX(
@@ -95,8 +102,7 @@ export function getX(
   canvasX: number
 ): number {
   const dx = xMax - xMin
-
-  return linear(dx, width, canvasX, xMin - (dx / width) * left)
+  return lin(dx, width, canvasX, xMin - (dx / width) * left)
 }
 
 export function getY(
@@ -107,6 +113,5 @@ export function getY(
   canvasY: number
 ): number {
   const dy = yMax - yMin
-
-  return linear(-dy, height, canvasY, yMax + (dy / height) * top)
+  return lin(-dy, height, canvasY, yMax + (dy / height) * top)
 }

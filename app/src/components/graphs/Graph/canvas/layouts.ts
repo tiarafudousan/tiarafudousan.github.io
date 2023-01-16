@@ -1,36 +1,43 @@
-import { XAxisAt, YAxisAt, Layout } from "./types"
+import { XAxisAlign, YAxisAlign, Layout } from "./types"
 
 interface Params {
   padding: number
   width: number
   height: number
-  xAxisAt: XAxisAt
+  xAxisAlign: XAxisAlign
   xAxisHeight: number
-  yAxisAt: YAxisAt
+  yAxisAlign: YAxisAlign
   yAxisWidth: number
 }
 
 export function getLayout(params: Params): Layout {
-  const { padding, width, height, xAxisAt, xAxisHeight, yAxisAt, yAxisWidth } =
-    params
+  const {
+    padding,
+    width,
+    height,
+    xAxisAlign,
+    xAxisHeight,
+    yAxisAlign,
+    yAxisWidth,
+  } = params
 
   const xAxis = {
-    top: xAxisAt == "top" ? padding : height - padding - xAxisHeight,
-    left: yAxisAt == "left" ? padding + yAxisWidth : padding,
+    top: xAxisAlign == "top" ? padding : height - padding - xAxisHeight,
+    left: yAxisAlign == "left" ? padding + yAxisWidth : padding,
     width: width - 2 * padding - yAxisWidth,
     height: xAxisHeight,
   }
 
   const yAxis = {
-    top: xAxisAt == "top" ? padding + xAxisHeight : padding,
-    left: yAxisAt == "left" ? padding : width - padding - yAxisWidth,
+    top: xAxisAlign == "top" ? padding + xAxisHeight : padding,
+    left: yAxisAlign == "left" ? padding : width - padding - yAxisWidth,
     width: yAxisWidth,
     height: height - 2 * padding - xAxisHeight,
   }
 
   const graph = {
-    top: xAxisAt == "top" ? padding + xAxisHeight : padding,
-    left: yAxisAt == "left" ? padding + yAxisWidth : padding,
+    top: xAxisAlign == "top" ? padding + xAxisHeight : padding,
+    left: yAxisAlign == "left" ? padding + yAxisWidth : padding,
     width: width - 2 * padding - yAxisWidth,
     height: height - 2 * padding - xAxisHeight,
   }

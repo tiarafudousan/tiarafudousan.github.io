@@ -8,6 +8,21 @@ import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
 import Range from "./components/Range"
 
+const DATA: { date: Date; t: number; score: number }[][] = []
+for (let i = 0; i < 3; i++) {
+  DATA.push([])
+  for (let j = 0; j < 150; j++) {
+    const t = Math.floor(new Date().getTime() / 1000) + j * 100
+    const date = new Date(t * 1000)
+    const score = (DATA[i][j - 1]?.score || 0) + 100
+    DATA[i].push({
+      date,
+      t,
+      score,
+    })
+  }
+}
+
 // Heat map
 function renderX(x: number): string {
   return `${x} %`
@@ -110,6 +125,7 @@ function App() {
         const cash =
           values.loan > 0 && values.years > 0 ? (price * i) / 10 : price
 
+        // TODO: ccr - 30%
         // TODO: fix sim - when loan = 0 or years = 0
         // TODO: simulate when loan > property price
         const res = simulate({

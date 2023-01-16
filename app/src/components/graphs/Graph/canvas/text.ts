@@ -8,25 +8,14 @@ export interface Text {
   font: string
 }
 
-const DEFAULT_PROPS = {
-  left: 0,
-  top: 0,
-  text: "",
-  color: "black",
-  font: "12px Arial",
-}
-
-function withDefaultProps(props: Partial<Text>): Text {
-  return {
-    ...DEFAULT_PROPS,
-    ...props,
-  }
-}
-
-export function draw(ctx: CanvasContext, props: Partial<Text>) {
-  const _props = withDefaultProps(props)
-
-  const { left, top, color, font, text } = _props
+export function draw(ctx: CanvasContext, params: Partial<Text>) {
+  const {
+    left = 0,
+    top = 0,
+    color = "black",
+    font = "12px Arial",
+    text = "",
+  } = params
 
   ctx.textBaseline = "top"
   ctx.textAlign = "left"

@@ -1,10 +1,10 @@
-import { CanvasContext, Layout, YAxisAt } from "./types"
+import { CanvasContext, Layout, YAxisAlign, YAxis } from "./types"
 import { getCanvasY, stepBelow } from "./math"
 
 const TICK_TEXT_PADDING = 5
 
-interface DrawTickProps {
-  yAxisAt: YAxisAt
+interface Tick {
+  yAxisAlign: YAxisAlign
   yAxisLineColor: string
   yAxisFont: string
   yAxisTextColor: string
@@ -14,18 +14,13 @@ interface DrawTickProps {
   renderYTick: (y: number) => string
 }
 
-function drawTick(
-  ctx: CanvasContext,
-  layout: Layout,
-  props: DrawTickProps,
-  y: number
-) {
+function drawTick(ctx: CanvasContext, layout: Layout, tick: Tick, y: number) {
   const {
     yAxis: { top, left, height, width },
   } = layout
 
   const {
-    yAxisAt,
+    yAxisAlign,
     yAxisLineColor,
     yAxisFont,
     yAxisTextColor,
@@ -33,17 +28,17 @@ function drawTick(
     yMin,
     yTickLength,
     renderYTick,
-  } = props
+  } = tick
 
   const canvasY = getCanvasY(height, top, yMax, yMin, y)
 
   ctx.strokeStyle = yAxisLineColor
   ctx.font = yAxisFont
   ctx.fillStyle = yAxisTextColor
-  ctx.textAlign = yAxisAt === "left" ? "right" : "left"
+  ctx.textAlign = yAxisAlign == "left" ? "right" : "left"
   ctx.textBaseline = "middle"
 
-  if (yAxisAt === "left") {
+  if (yAxisAlign == "left") {
     ctx.beginPath()
     ctx.moveTo(left + width, canvasY)
     ctx.lineTo(left + width - yTickLength, canvasY)
@@ -54,7 +49,7 @@ function drawTick(
       left + width - yTickLength - TICK_TEXT_PADDING,
       canvasY
     )
-  } else if (yAxisAt === "right") {
+  } else if (yAxisAlign == "right") {
     ctx.beginPath()
     ctx.moveTo(left, canvasY)
     ctx.lineTo(left + yTickLength, canvasY)
@@ -68,23 +63,17 @@ function drawTick(
   }
 }
 
-interface DrawLineProps {
+interface Line {
   yLineColor: string
   yMax: number
   yMin: number
 }
 
-function drawLine(
-  ctx: CanvasContext,
-  layout: Layout,
-  props: DrawLineProps,
-  y: number
-) {
+function drawLine(ctx: CanvasContext, layout: Layout, line: Line, y: number) {
   const {
     graph: { top, left, height, width },
   } = layout
-
-  const { yLineColor, yMax, yMin } = props
+  const { yLineColor, yMax, yMin } = line
 
   const canvasY = getCanvasY(height, top, yMax, yMin, y)
 
@@ -96,46 +85,32 @@ function drawLine(
   ctx.stroke()
 }
 
-interface DrawProps {
-  showYLine: boolean
-  yAxisAt: YAxisAt
-  yAxisLineColor: string
-  yTicks: number[]
-  yTickInterval: number
-  yAxisFont: string
-  yAxisTextColor: string
-  yMin: number
-  yMax: number
-  yTickLength: number
-  renderYTick: (y: number) => string
-  yLineColor: string
-}
-
-export function draw(ctx: CanvasContext, layout: Layout, props: DrawProps) {
+// TODO: optimize
+export function draw(ctx: CanvasContext, layout: Layout, yAxis: YAxis) {
   const {
     yAxis: { top, left, height, width },
   } = layout
 
   const {
     showYLine,
-    yAxisAt,
+    yAxisAlign,
     yAxisLineColor,
     yTicks,
     yTickInterval,
     yMin,
     yMax,
-  } = props
+  } = yAxis
 
   // style y axis line
   ctx.lineWidth = 1
   ctx.strokeStyle = yAxisLineColor
 
-  if (yAxisAt === "left") {
+  if (yAxisAlign == "left") {
     ctx.beginPath()
     ctx.moveTo(left + width, top)
     ctx.lineTo(left + width, top + height)
     ctx.stroke()
-  } else if (yAxisAt === "right") {
+  } else if (yAxisAlign == "right") {
     ctx.beginPath()
     ctx.moveTo(left, top)
     ctx.lineTo(left, top + height)
@@ -150,10 +125,10 @@ export function draw(ctx: CanvasContext, layout: Layout, props: DrawProps) {
         continue
       }
 
-      drawTick(ctx, layout, props, y)
+      drawTick(ctx, layout, yAxis, y)
 
       if (showYLine) {
-        drawLine(ctx, layout, props, y)
+        drawLine(ctx, layout, yAxis, y)
       }
     }
   }
@@ -163,10 +138,10 @@ export function draw(ctx: CanvasContext, layout: Layout, props: DrawProps) {
       continue
     }
 
-    drawTick(ctx, layout, props, y)
+    drawTick(ctx, layout, yAxis, y)
 
     if (showYLine) {
-      drawLine(ctx, layout, props, y)
+      drawLine(ctx, layout, yAxis, y)
     }
   }
 }

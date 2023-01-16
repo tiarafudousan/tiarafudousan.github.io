@@ -1,17 +1,5 @@
-import { CanvasContext, Layout } from "./types"
+import { CanvasContext, Layout, BarGraph as Graph } from "./types"
 import { getCanvasX, getCanvasY } from "./math"
-
-interface Bar {
-  x: number
-  y: number
-}
-
-export interface Graph {
-  data: Bar[]
-  step: number
-  getBarColor: (bar: Bar) => string
-  barWidth: number
-}
 
 const DEFAULT_PROPS = {
   data: [],
@@ -34,6 +22,7 @@ interface Props {
   yMax: number
 }
 
+// TODO: optimize
 export function draw(
   ctx: CanvasContext,
   layout: Layout,

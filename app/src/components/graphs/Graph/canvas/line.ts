@@ -1,11 +1,5 @@
-import { CanvasContext, Layout, Point } from "./types"
+import { CanvasContext, Layout, Point, LineGraph as Graph } from "./types"
 import { getCanvasX, getCanvasY } from "./math"
-
-export interface Graph {
-  data: Point[]
-  step: number
-  lineColor: string
-}
 
 const DEFAULT_PROPS = {
   lineColor: "",
