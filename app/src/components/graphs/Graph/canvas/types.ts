@@ -1,5 +1,11 @@
 export type CanvasContext = CanvasRenderingContext2D
 
+export interface Context {
+  axes: CanvasRenderingContext2D | null | undefined
+  graph: CanvasRenderingContext2D | null | undefined
+  ui: CanvasRenderingContext2D | null | undefined
+}
+
 export interface Point {
   x: number
   y: number
@@ -21,6 +27,36 @@ export interface Layout {
 export type XAxisAlign = "top" | "bottom"
 export type YAxisAlign = "left" | "right"
 export type TextAlign = "left" | "right"
+
+export interface XAxis {
+  xAxisAlign: XAxisAlign
+  xAxisLineColor: string
+  xTicks: number[]
+  xTickInterval: number
+  showXLine: boolean
+  xMin: number
+  xMax: number
+  xAxisFont: string
+  xAxisTextColor: string
+  xTickLength: number
+  renderXTick?: (x: number) => string
+  xLineColor: string
+}
+
+export interface YAxis {
+  showYLine: boolean
+  yAxisAlign: YAxisAlign
+  yAxisLineColor: string
+  yTicks: number[]
+  yTickInterval: number
+  yAxisFont: string
+  yAxisTextColor: string
+  yMin: number
+  yMax: number
+  yTickLength: number
+  renderYTick?: (y: number) => string
+  yLineColor: string
+}
 
 export interface Crosshair {
   canvasX: number
@@ -59,36 +95,6 @@ export interface YLabel {
   lineColor: string
 }
 
-export interface XAxis {
-  xAxisAlign: XAxisAlign
-  xAxisLineColor: string
-  xTicks: number[]
-  xTickInterval: number
-  showXLine: boolean
-  xMin: number
-  xMax: number
-  xAxisFont: string
-  xAxisTextColor: string
-  xTickLength: number
-  renderXTick: (x: number) => string
-  xLineColor: string
-}
-
-export interface YAxis {
-  showYLine: boolean
-  yAxisAlign: YAxisAlign
-  yAxisLineColor: string
-  yTicks: number[]
-  yTickInterval: number
-  yAxisFont: string
-  yAxisTextColor: string
-  yMin: number
-  yMax: number
-  yTickLength: number
-  renderYTick: (y: number) => string
-  yLineColor: string
-}
-
 // Bar graph
 export interface Bar {
   x: number
@@ -121,4 +127,4 @@ export interface PointGraph {
   ambientRadius: number
 }
 
-export type Graph = BarGraph | LineGraph | PointGraph
+export type GraphType = BarGraph | LineGraph | PointGraph

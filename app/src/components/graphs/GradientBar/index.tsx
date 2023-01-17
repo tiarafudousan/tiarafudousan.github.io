@@ -26,7 +26,9 @@ const GradientBar: React.FC<Props> = ({
 
   useEffect(() => {
     ctx.current.axes = refs.current.axes?.getContext("2d")
-    ctx.current.graph = refs.current.graph?.getContext("2d")
+    ctx.current.graph = refs.current.graph?.getContext("2d", {
+      willReadFrequently: true,
+    })
 
     if (ctx.current) {
       draw(ctx.current, { width, height, zMin, zMax, render })

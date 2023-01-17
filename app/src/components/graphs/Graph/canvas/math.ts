@@ -1,13 +1,5 @@
 import { Box } from "./types"
 
-export function bound(x: number, a: number, b: number): number {
-  return Math.min(b, Math.max(a, x))
-}
-
-export function stepBelow(x: number, step: number): number {
-  return x - (x % step)
-}
-
 export function findNearestIndex(arr: number[], x: number): number {
   let low = 0
   let high = arr.length - 1
@@ -62,7 +54,14 @@ export function isInside(
   return true
 }
 
-// TODO: lerp
+export function bound(x: number, a: number, b: number): number {
+  return Math.min(b, Math.max(a, x))
+}
+
+export function stepBelow(x: number, step: number): number {
+  return x - (x % step)
+}
+
 export function lerp(p0: number, p1: number, t: number): number {
   // 0 <= t <= 1
   return p0 * (1 - t) + p1 * t

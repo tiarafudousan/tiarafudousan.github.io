@@ -7,21 +7,7 @@ import Form from "./components/Form"
 import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
 import Range from "./components/Range"
-
-const DATA: { date: Date; t: number; score: number }[][] = []
-for (let i = 0; i < 3; i++) {
-  DATA.push([])
-  for (let j = 0; j < 150; j++) {
-    const t = Math.floor(new Date().getTime() / 1000) + j * 100
-    const date = new Date(t * 1000)
-    const score = (DATA[i][j - 1]?.score || 0) + 100
-    DATA[i].push({
-      date,
-      t,
-      score,
-    })
-  }
-}
+import TestGraph from "./components/graphs/Graph/TestGraph"
 
 // Heat map
 function renderX(x: number): string {
@@ -182,6 +168,8 @@ function App() {
       ref={ref}
       className="flex flex-col items-center py-10 mx-auto max-w-[800px]"
     >
+      <TestGraph />
+
       <Form onSubmit={onSubmit} onReset={onReset} />
 
       {res != null ? (

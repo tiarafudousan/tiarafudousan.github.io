@@ -9,7 +9,7 @@ interface Tick {
   xAxisLineColor: string
   xAxisTextColor: string
   xTickLength: number
-  renderXTick: (x: number) => string
+  renderXTick?: (x: number) => string
   xMin: number
   xMax: number
 }
@@ -44,18 +44,26 @@ function drawTick(ctx: CanvasContext, layout: Layout, tick: Tick, x: number) {
     ctx.lineTo(canvasX, top + height - xTickLength)
     ctx.stroke()
 
-    ctx.fillText(
-      renderXTick(x),
-      canvasX,
-      top + height - xTickLength - TICK_TEXT_PADDING
-    )
+    if (renderXTick) {
+      ctx.fillText(
+        renderXTick(x),
+        canvasX,
+        top + height - xTickLength - TICK_TEXT_PADDING
+      )
+    }
   } else if (xAxisAlign == "bottom") {
     ctx.beginPath()
     ctx.moveTo(canvasX, top)
     ctx.lineTo(canvasX, top + xTickLength)
     ctx.stroke()
 
-    ctx.fillText(renderXTick(x), canvasX, top + xTickLength + TICK_TEXT_PADDING)
+    if (renderXTick) {
+      ctx.fillText(
+        renderXTick(x),
+        canvasX,
+        top + xTickLength + TICK_TEXT_PADDING
+      )
+    }
   }
 }
 
@@ -81,7 +89,6 @@ function drawLine(ctx: CanvasContext, layout: Layout, line: Line, x: number) {
   ctx.stroke()
 }
 
-// TODO: optimize
 export function draw(ctx: CanvasContext, layout: Layout, xAxis: XAxis) {
   const {
     xAxis: { top, left, width, height },
@@ -130,7 +137,7 @@ export function draw(ctx: CanvasContext, layout: Layout, xAxis: XAxis) {
   }
 
   for (const x of xTicks) {
-    if (x < xMin || x > xMax) {
+    if (x < xMin || xMax < x) {
       continue
     }
 

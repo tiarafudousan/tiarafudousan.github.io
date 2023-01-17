@@ -11,7 +11,7 @@ interface Tick {
   yMax: number
   yMin: number
   yTickLength: number
-  renderYTick: (y: number) => string
+  renderYTick?: (y: number) => string
 }
 
 function drawTick(ctx: CanvasContext, layout: Layout, tick: Tick, y: number) {
@@ -44,22 +44,26 @@ function drawTick(ctx: CanvasContext, layout: Layout, tick: Tick, y: number) {
     ctx.lineTo(left + width - yTickLength, canvasY)
     ctx.stroke()
 
-    ctx.fillText(
-      renderYTick(y),
-      left + width - yTickLength - TICK_TEXT_PADDING,
-      canvasY
-    )
+    if (renderYTick) {
+      ctx.fillText(
+        renderYTick(y),
+        left + width - yTickLength - TICK_TEXT_PADDING,
+        canvasY
+      )
+    }
   } else if (yAxisAlign == "right") {
     ctx.beginPath()
     ctx.moveTo(left, canvasY)
     ctx.lineTo(left + yTickLength, canvasY)
     ctx.stroke()
 
-    ctx.fillText(
-      renderYTick(y),
-      left + yTickLength + TICK_TEXT_PADDING,
-      canvasY
-    )
+    if (renderYTick) {
+      ctx.fillText(
+        renderYTick(y),
+        left + yTickLength + TICK_TEXT_PADDING,
+        canvasY
+      )
+    }
   }
 }
 
@@ -85,7 +89,6 @@ function drawLine(ctx: CanvasContext, layout: Layout, line: Line, y: number) {
   ctx.stroke()
 }
 
-// TODO: optimize
 export function draw(ctx: CanvasContext, layout: Layout, yAxis: YAxis) {
   const {
     yAxis: { top, left, height, width },
@@ -134,7 +137,7 @@ export function draw(ctx: CanvasContext, layout: Layout, yAxis: YAxis) {
   }
 
   for (const y of yTicks) {
-    if (y < yMin || y > yMax) {
+    if (y < yMin || yMax < y) {
       continue
     }
 
