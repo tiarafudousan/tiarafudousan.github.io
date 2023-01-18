@@ -9,8 +9,8 @@ import {
   YAxisAlign,
   XLabel,
   YLabel,
-  GraphType,
   Crosshair,
+  Graph as GraphType,
 } from "./canvas/types"
 
 interface Refs {

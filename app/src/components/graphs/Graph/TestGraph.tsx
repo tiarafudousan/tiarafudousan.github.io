@@ -53,6 +53,10 @@ const TestGraph: React.FC<Props> = ({}) => {
           step: 1,
           data: DATA[1],
         },
+        {
+          type: "point",
+          data: DATA[2],
+        },
       ]}
     />
   )

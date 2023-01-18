@@ -11,6 +11,13 @@ export interface Point {
   y: number
 }
 
+export interface Range {
+  xMin: number
+  xMax: number
+  yMin: number
+  yMax: number
+}
+
 export interface Box {
   top: number
   left: number
@@ -95,31 +102,25 @@ export interface YLabel {
   lineColor: string
 }
 
-// Bar graph
 export interface Bar {
   x: number
   y: number
 }
 
 export interface BarGraph {
-  type: "bar"
   data: Bar[]
   step: number
   getBarColor: (bar: Bar) => string
   barWidth: number
 }
 
-// Line graph
 export interface LineGraph {
-  type: "line"
   data: Point[]
   step: number
   lineColor: string
 }
 
-// Point graph
 export interface PointGraph {
-  type: "point"
   data: Point[]
   color: string
   radius: number
@@ -127,4 +128,16 @@ export interface PointGraph {
   ambientRadius: number
 }
 
-export type GraphType = BarGraph | LineGraph | PointGraph
+interface BarGraphType extends Partial<BarGraph> {
+  type: "bar"
+}
+
+interface LineGraphType extends Partial<LineGraph> {
+  type: "line"
+}
+
+interface PointGraphType extends Partial<PointGraph> {
+  type: "point"
+}
+
+export type Graph = BarGraphType | LineGraphType | PointGraphType

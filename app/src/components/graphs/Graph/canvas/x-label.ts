@@ -47,7 +47,6 @@ function getLineEnd(graph: Box, params: { xAxisAlign: XAxisAlign }): number {
   return 0
 }
 
-// TODO: optimize
 export function draw(
   ctx: CanvasContext,
   layout: Layout,
@@ -75,38 +74,36 @@ export function draw(
   const { graph } = layout
   const { xMin, xMax } = params
 
-  if (x == undefined) {
-    return
-  }
+  if (x != undefined && xMin <= x && x <= xMax) {
+    const canvasX = getCanvasX(graph.width, graph.left, xMax, xMin, x)
+    const left = canvasX - Math.round(width / 2)
+    const top = getTop(graph, height, params)
 
-  const canvasX = getCanvasX(graph.width, graph.left, xMax, xMin, x)
-  const left = canvasX - Math.round(width / 2)
-  const top = getTop(graph, height, params)
+    // label box
+    ctx.fillStyle = backgroundColor
+    ctx.fillRect(left, top, width, height)
 
-  // label box
-  ctx.fillStyle = backgroundColor
-  ctx.fillRect(left, top, width, height)
+    // text
+    ctx.font = font
+    ctx.fillStyle = color
+    ctx.textAlign = "center"
+    ctx.textBaseline = "middle"
 
-  // text
-  ctx.font = font
-  ctx.fillStyle = color
-  ctx.textAlign = "center"
-  ctx.textBaseline = "middle"
+    if (render) {
+      ctx.fillText(render(x), left + width / 2, top + textPadding)
+    }
 
-  if (render) {
-    ctx.fillText(render(x), left + width / 2, top + textPadding)
-  }
+    if (drawLine) {
+      ctx.lineWidth = lineWidth
+      ctx.strokeStyle = lineColor
 
-  if (drawLine) {
-    ctx.lineWidth = lineWidth
-    ctx.strokeStyle = lineColor
+      const lineStart = getLineStart(graph, params)
+      const lineEnd = getLineEnd(graph, params)
 
-    const lineStart = getLineStart(graph, params)
-    const lineEnd = getLineEnd(graph, params)
-
-    ctx.beginPath()
-    ctx.moveTo(left + width / 2, lineStart)
-    ctx.lineTo(left + width / 2, lineEnd)
-    ctx.stroke()
+      ctx.beginPath()
+      ctx.moveTo(left + width / 2, lineStart)
+      ctx.lineTo(left + width / 2, lineEnd)
+      ctx.stroke()
+    }
   }
 }

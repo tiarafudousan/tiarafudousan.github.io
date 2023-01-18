@@ -1,7 +1,6 @@
 import { CanvasContext, Layout, Crosshair } from "./types"
 import { isInside } from "./math"
 
-// TODO: optimize
 export function draw(
   ctx: CanvasContext,
   layout: Layout,

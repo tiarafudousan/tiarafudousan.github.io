@@ -124,27 +124,23 @@ export function draw(ctx: CanvasContext, layout: Layout, yAxis: YAxis) {
     const y0 = stepBelow(yMin, yTickInterval)
 
     for (let y = y0; y <= yMax; y += yTickInterval) {
-      if (y < yMin) {
-        continue
-      }
+      if (yMin <= y && y <= yMax) {
+        drawTick(ctx, layout, yAxis, y)
 
-      drawTick(ctx, layout, yAxis, y)
-
-      if (showYLine) {
-        drawLine(ctx, layout, yAxis, y)
+        if (showYLine) {
+          drawLine(ctx, layout, yAxis, y)
+        }
       }
     }
   }
 
   for (const y of yTicks) {
-    if (y < yMin || yMax < y) {
-      continue
-    }
+    if (yMin <= y && y <= yMax) {
+      drawTick(ctx, layout, yAxis, y)
 
-    drawTick(ctx, layout, yAxis, y)
-
-    if (showYLine) {
-      drawLine(ctx, layout, yAxis, y)
+      if (showYLine) {
+        drawLine(ctx, layout, yAxis, y)
+      }
     }
   }
 }

@@ -84,7 +84,6 @@ function getLineEnd(graph: Box, params: { yAxisAlign: YAxisAlign }): number {
   return 0
 }
 
-// TODO: optimize
 export function draw(
   ctx: CanvasContext,
   layout: Layout,
@@ -113,43 +112,41 @@ export function draw(
   const { graph } = layout
   const { yMin, yMax } = params
 
-  if (y == undefined) {
-    return
-  }
+  if (y != undefined && yMin <= y && y <= yMax) {
+    const canvasY = getCanvasY(graph.height, graph.top, yMax, yMin, y)
+    const top = canvasY - Math.round(height / 2)
+    const left = getLeft(graph, width, params)
 
-  const canvasY = getCanvasY(graph.height, graph.top, yMax, yMin, y)
-  const top = canvasY - Math.round(height / 2)
-  const left = getLeft(graph, width, params)
+    ctx.fillStyle = backgroundColor
 
-  ctx.fillStyle = backgroundColor
+    // label box
+    ctx.fillRect(left, top, width, height)
 
-  // label box
-  ctx.fillRect(left, top, width, height)
+    // text
+    ctx.font = font
+    ctx.fillStyle = color
+    ctx.textAlign = getTextAlign(params.yAxisAlign)
+    ctx.textBaseline = "middle"
 
-  // text
-  ctx.font = font
-  ctx.fillStyle = color
-  ctx.textAlign = getTextAlign(params.yAxisAlign)
-  ctx.textBaseline = "middle"
+    if (render) {
+      ctx.fillText(
+        render(y),
+        getTextLeft(left, { textPadding, width }, params.yAxisAlign),
+        top + textPadding
+      )
+    }
 
-  if (render) {
-    ctx.fillText(
-      render(y),
-      getTextLeft(left, { textPadding, width }, params.yAxisAlign),
-      top + textPadding
-    )
-  }
+    if (drawLine) {
+      ctx.lineWidth = lineWidth
+      ctx.strokeStyle = lineColor
 
-  if (drawLine) {
-    ctx.lineWidth = lineWidth
-    ctx.strokeStyle = lineColor
+      const lineStart = getLineStart(graph, params)
+      const lineEnd = getLineEnd(graph, params)
 
-    const lineStart = getLineStart(graph, params)
-    const lineEnd = getLineEnd(graph, params)
-
-    ctx.beginPath()
-    ctx.moveTo(lineStart, top + height / 2)
-    ctx.lineTo(lineEnd, top + height / 2)
-    ctx.stroke()
+      ctx.beginPath()
+      ctx.moveTo(lineStart, top + height / 2)
+      ctx.lineTo(lineEnd, top + height / 2)
+      ctx.stroke()
+    }
   }
 }

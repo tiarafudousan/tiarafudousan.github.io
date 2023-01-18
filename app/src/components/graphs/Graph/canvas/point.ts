@@ -1,78 +1,46 @@
-// import { CanvasContext, Layout, Point, PointGraph as Graph } from "./types"
-// import { getCanvasX, getCanvasY } from "./math"
+import { CanvasContext, Layout, PointGraph, Range } from "./types"
+import { getCanvasX, getCanvasY } from "./math"
 
-// const DEFAULT_PROPS = {
-//   color: "black",
-//   radius: 2,
-//   ambientColor: "rgba(80, 80, 80, 0.3)",
-//   ambientRadius: 0,
-//   data: [],
-// }
+export function draw(
+  ctx: CanvasContext,
+  layout: Layout,
+  graph: Partial<PointGraph>,
+  range: Range
+) {
+  const {
+    graph: { top, left, width, height },
+  } = layout
 
-// function withDefaultProps(props: Partial<Graph>): Graph {
-//   return {
-//     ...DEFAULT_PROPS,
-//     ...props,
-//   }
-// }
+  const {
+    data = [],
+    color = "",
+    radius = 1,
+    ambientColor = "",
+    ambientRadius = 0,
+  } = graph
 
-// export function drawPoint(
-//   ctx: CanvasContext,
-//   layout: Layout,
-//   graph: Graph,
-//   point: Point,
-//   props: Props
-// ) {
-//   const {
-//     graph: { top, left, width, height },
-//   } = layout
+  const { xMin, xMax, yMin, yMax } = range
 
-//   const { color, radius, ambientColor, ambientRadius } = graph
-//   const { xMin, xMax, yMin, yMax } = props
-//   const { x, y } = point
+  for (const point of data) {
+    const { x, y } = point
 
-//   if (x == undefined || y == undefined) {
-//     return
-//   }
+    if (xMin <= x && x <= xMax) {
+      const canvasX = getCanvasX(width, left, xMax, xMin, x)
+      const canvasY = getCanvasY(height, top, yMax, yMin, y)
 
-//   const canvasX = getCanvasX(width, left, xMax, xMin, x)
-//   const canvasY = getCanvasY(height, top, yMax, yMin, y)
+      if (ambientRadius > 0) {
+        ctx.beginPath()
+        ctx.arc(canvasX, canvasY, ambientRadius, 0, 2 * Math.PI, false)
+        ctx.fillStyle = ambientColor
+        ctx.fill()
+      }
 
-//   if (ambientRadius > 0) {
-//     ctx.beginPath()
-//     ctx.arc(canvasX, canvasY, ambientRadius, 0, 2 * Math.PI, false)
-//     ctx.fillStyle = ambientColor
-//     ctx.fill()
-//   }
-
-//   if (radius > 0) {
-//     ctx.beginPath()
-//     ctx.arc(canvasX, canvasY, radius, 0, 2 * Math.PI, false)
-//     ctx.fillStyle = color
-//     ctx.fill()
-//   }
-// }
-
-// interface Props {
-//   xMin: number
-//   xMax: number
-//   yMin: number
-//   yMax: number
-// }
-
-// export function draw(
-//   ctx: CanvasContext,
-//   layout: Layout,
-//   graph: Partial<Graph>,
-//   props: Props
-// ) {
-//   const _graph = withDefaultProps(graph)
-
-//   const { data } = _graph
-
-//   for (const point of data) {
-//     drawPoint(ctx, layout, _graph, point, props)
-//   }
-// }
-
-export function foo() {}
+      if (radius > 0) {
+        ctx.beginPath()
+        ctx.arc(canvasX, canvasY, radius, 0, 2 * Math.PI, false)
+        ctx.fillStyle = color
+        ctx.fill()
+      }
+    }
+  }
+}

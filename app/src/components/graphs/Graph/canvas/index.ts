@@ -8,12 +8,14 @@ import {
   Crosshair,
   XLabel,
   YLabel,
-  GraphType,
+  Graph as GraphType,
 } from "./types"
 
 import * as xAxis from "../canvas/x-axis"
 import * as yAxis from "../canvas/y-axis"
 import * as line from "../canvas/line"
+import * as point from "../canvas/point"
+// import * as bar from "../canvas/bar"
 // import * as crosshair from "../canvas/crosshair"
 
 export interface Params {
@@ -70,11 +72,12 @@ function _drawGraph(
   params: Params
 ) {
   switch (graph.type) {
+    case "bar":
     case "line":
       line.draw(ctx, layout, graph, params)
       return
-    case "bar":
     case "point":
+      point.draw(ctx, layout, graph, params)
       return
 
     default:
