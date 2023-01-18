@@ -26,6 +26,12 @@ const Y_MAX = DATA[0][149].y
 const X_MIN = DATA[0][0].x
 const X_MAX = DATA[0][149].x
 
+const X_LABEL_WIDTH = 80
+const X_LABEL_HEIGHT = 20
+
+const Y_LABEL_WIDTH = 50
+const Y_LABEL_HEIGHT = 20
+
 interface Props {}
 
 const TestGraph: React.FC<Props> = ({}) => {
@@ -50,6 +56,9 @@ const TestGraph: React.FC<Props> = ({}) => {
   function onMouseOut() {
     setMouse(null)
   }
+
+  // TODO: nearest data on mouse
+  // TODO: zoom, drag
 
   return (
     <Graph
@@ -95,6 +104,66 @@ const TestGraph: React.FC<Props> = ({}) => {
         xLineColor: "green",
         xLineWidth: 4,
       }}
+      texts={[
+        {
+          text: `x: ${mouse?.x || 0}`,
+          color: "black",
+          font: "16px Arial",
+          left: 10,
+          top: 10,
+        },
+        {
+          text: `y: ${mouse?.y || 0}`,
+          color: "black",
+          font: "16px Arial",
+          left: 10,
+          top: 10 + 15,
+        },
+      ]}
+      xLabels={[
+        {
+          x: (X_MIN + X_MAX) / 2,
+          width: X_LABEL_WIDTH,
+          height: X_LABEL_HEIGHT,
+          render: (x: number) => x.toString(),
+          color: "white",
+          backgroundColor: "black",
+          drawLine: true,
+          lineColor: "green",
+        },
+        {
+          x: X_MIN,
+          width: X_LABEL_WIDTH,
+          height: X_LABEL_HEIGHT,
+          render: (x: number) => x.toString(),
+          color: "white",
+          backgroundColor: "black",
+          drawLine: true,
+          lineColor: "green",
+        },
+      ]}
+      yLabels={[
+        {
+          y: (Y_MIN + Y_MAX) / 2,
+          width: Y_LABEL_WIDTH,
+          height: Y_LABEL_HEIGHT,
+          render: (y: number) => y.toString(),
+          color: "white",
+          backgroundColor: "black",
+          drawLine: true,
+          lineColor: "orange",
+        },
+        {
+          y: Y_MIN,
+          width: Y_LABEL_WIDTH,
+          height: Y_LABEL_HEIGHT,
+          render: (y: number) => y.toString(),
+          color: "white",
+          backgroundColor: "black",
+          drawLine: true,
+          lineColor: "orange",
+        },
+      ]}
       onMouseMove={onMouseMove}
       onMouseOut={onMouseOut}
     />

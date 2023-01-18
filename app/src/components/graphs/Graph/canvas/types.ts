@@ -88,7 +88,7 @@ export interface XLabel {
   color: string
   font: string
   textPadding: number
-  render?: (x?: number) => string
+  render?: (x: number) => string
   drawLine: boolean
   lineWidth: number
   lineColor: string
@@ -102,7 +102,7 @@ export interface YLabel {
   color: string
   font: string
   textPadding: number
-  render?: (y?: number) => string
+  render?: (y: number) => string
   drawLine: boolean
   lineWidth: number
   lineColor: string
