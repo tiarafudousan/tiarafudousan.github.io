@@ -16,6 +16,12 @@ import {
   Graph as GraphType,
 } from "./canvas/types"
 
+const STYLE: React.CSSProperties = {
+  position: "absolute",
+  left: 0,
+  top: 0,
+}
+
 export interface Props {
   width: number
   height: number
@@ -33,7 +39,12 @@ export interface Props {
   crosshair?: Partial<Crosshair>
   onMouseMove?: (
     e: React.MouseEvent<HTMLCanvasElement, MouseEvent>,
-    mouse: Point,
+    mouse: Point | null,
+    layout: Layout
+  ) => void
+  onMouseOut?: (
+    e: React.MouseEvent<HTMLCanvasElement, MouseEvent>,
+    mouse: Point | null,
     layout: Layout
   ) => void
 }
@@ -103,22 +114,55 @@ function withDefaultParams(props: Partial<Props>): GraphParams {
   }
 }
 
+function getMouse(
+  ctx: Context,
+  e: React.MouseEvent<HTMLCanvasElement, MouseEvent>
+): Point | null {
+  if (!ctx.ui) {
+    return null
+  }
+
+  const rect = ctx.ui.canvas.getBoundingClientRect()
+
+  return {
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top,
+  }
+}
+
 interface Refs {
   axes: HTMLCanvasElement | null
   graph: HTMLCanvasElement | null
   ui: HTMLCanvasElement | null
   // animation frame
-  //   animation: number | null
-  //   // NOTE: store props and layout as ref for animate to draw with latest prop
-  //   props: null
-  //   layout: null
+  animation: number | null
+  // NOTE: store params and layout as ref for animate to draw with latest params
+  params: GraphParams
+  layout: Layout
 }
 
 const Graph: React.FC<Partial<Props>> = (props) => {
   const params = withDefaultParams(props)
-  const { width, height, backgroundColor = "" } = params
+  const {
+    width,
+    height,
+    backgroundColor = "",
+    onMouseMove,
+    onMouseOut,
+  } = params
+  const layout = getLayout(params)
 
-  const refs = useRef<Refs>({ axes: null, graph: null, ui: null })
+  const refs = useRef<Refs>({
+    axes: null,
+    graph: null,
+    ui: null,
+    animation: null,
+    params,
+    layout,
+  })
+  refs.current.params = params
+  refs.current.layout = layout
+
   const ctx = useRef<Context>({ axes: null, graph: null, ui: null })
 
   useEffect(() => {
@@ -127,12 +171,40 @@ const Graph: React.FC<Partial<Props>> = (props) => {
     ctx.current.ui = refs.current.ui?.getContext("2d")
 
     if (ctx.current) {
-      const layout = getLayout(params)
-      draw(ctx.current, layout, params)
+      if (params.animate) {
+        _animate()
+      } else {
+        draw(ctx.current, layout, params)
+      }
+    }
+
+    return () => {
+      if (refs.current.animation) {
+        window.cancelAnimationFrame(refs.current.animation)
+      }
     }
   }, [])
 
-  function onMouseMove(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {}
+  function _animate() {
+    refs.current.animation = window.requestAnimationFrame(_animate)
+    if (refs.current) {
+      draw(ctx.current, refs.current.layout, refs.current.params)
+    }
+  }
+
+  function _onMouseMove(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
+    if (!onMouseMove) {
+      return
+    }
+    onMouseMove(e, getMouse(ctx.current, e), getLayout(params))
+  }
+
+  function _onMouseOut(e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
+    if (!onMouseOut) {
+      return
+    }
+    onMouseOut(e, getMouse(ctx.current, e), getLayout(params))
+  }
 
   return (
     <div
@@ -148,7 +220,7 @@ const Graph: React.FC<Partial<Props>> = (props) => {
         ref={(ref) => {
           refs.current.axes = ref
         }}
-        style={{ position: "absolute", top: 0, left: 0 }}
+        style={STYLE}
         width={width}
         height={height}
       ></canvas>
@@ -156,7 +228,7 @@ const Graph: React.FC<Partial<Props>> = (props) => {
         ref={(ref) => {
           refs.current.graph = ref
         }}
-        style={{ position: "absolute", top: 0, left: 0 }}
+        style={STYLE}
         width={width}
         height={height}
       ></canvas>
@@ -164,14 +236,11 @@ const Graph: React.FC<Partial<Props>> = (props) => {
         ref={(ref) => {
           refs.current.ui = ref
         }}
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-        }}
+        style={STYLE}
         width={width}
         height={height}
-        onMouseMove={onMouseMove}
+        onMouseMove={_onMouseMove}
+        onMouseOut={_onMouseOut}
       ></canvas>
     </div>
   )

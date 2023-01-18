@@ -64,8 +64,8 @@ export interface YAxis {
 }
 
 export interface Crosshair {
-  canvasX: number
-  canvasY: number
+  // canvas x, y
+  point: Point | null
   xLineColor: string
   xLineWidth: number
   yLineColor: string

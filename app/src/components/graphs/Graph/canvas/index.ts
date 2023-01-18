@@ -19,7 +19,7 @@ import * as yAxis from "../canvas/y-axis"
 import * as bar from "../canvas/bar"
 import * as line from "../canvas/line"
 import * as point from "../canvas/point"
-// import * as crosshair from "../canvas/crosshair"
+import * as crosshair from "../canvas/crosshair"
 
 export interface Params {
   width: number
@@ -84,9 +84,11 @@ export function draw(ctx: Context, layout: Layout, params: Params) {
     }
   }
 
-  // if (params.crosshair) {
-  //   crosshair.draw(ctx.ui, layout, params.crosshair)
-  // }
+  if (ctx.ui) {
+    if (params.crosshair) {
+      crosshair.draw(ctx.ui, layout, params.crosshair)
+    }
+  }
 
   // for (const frame of params.frames) {
   //   text.draw(ctx.ui, frame)

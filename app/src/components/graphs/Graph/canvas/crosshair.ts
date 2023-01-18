@@ -11,15 +11,18 @@ export function draw(
   } = layout
 
   const {
-    canvasX = 0,
-    canvasY = 0,
+    point,
     xLineColor = "",
     xLineWidth = 0.5,
     yLineColor = "",
     yLineWidth = 0.5,
   } = crosshair
 
-  if (!isInside({ top, left, width, height }, { x: canvasX, y: canvasY })) {
+  if (!point) {
+    return
+  }
+
+  if (!isInside({ top, left, width, height }, { x: point.x, y: point.y })) {
     return
   }
 
@@ -28,8 +31,8 @@ export function draw(
   ctx.lineWidth = xLineWidth
 
   ctx.beginPath()
-  ctx.moveTo(canvasX, top)
-  ctx.lineTo(canvasX, top + height)
+  ctx.moveTo(point.x, top)
+  ctx.lineTo(point.x, top + height)
   ctx.stroke()
 
   // y line
@@ -37,7 +40,7 @@ export function draw(
   ctx.lineWidth = yLineWidth
 
   ctx.beginPath()
-  ctx.moveTo(left, canvasY)
-  ctx.lineTo(left + width, canvasY)
+  ctx.moveTo(left, point.y)
+  ctx.lineTo(left + width, point.y)
   ctx.stroke()
 }
