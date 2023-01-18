@@ -1,13 +1,17 @@
-import { XAxisAlign, YAxisAlign, Box, Layout } from "./types"
+import { XAxisAlign, YAxisAlign, Layout } from "./types"
 
 interface Params {
   padding: number
   width: number
   height: number
-  xAxisAlign: XAxisAlign
-  xAxisHeight: number
-  yAxisAlign: YAxisAlign
-  yAxisWidth: number
+  xAxis: {
+    xAxisAlign: XAxisAlign
+    xAxisHeight: number
+  }
+  yAxis: {
+    yAxisAlign: YAxisAlign
+    yAxisWidth: number
+  }
 }
 
 export function getLayout(params: Params): Layout {
@@ -15,10 +19,8 @@ export function getLayout(params: Params): Layout {
     padding,
     width,
     height,
-    xAxisAlign,
-    xAxisHeight,
-    yAxisAlign,
-    yAxisWidth,
+    xAxis: { xAxisAlign, xAxisHeight },
+    yAxis: { yAxisAlign, yAxisWidth },
   } = params
 
   return {

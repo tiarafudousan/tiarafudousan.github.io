@@ -1,23 +1,19 @@
-import { CanvasContext, Layout, XAxisAlign, XAxis } from "./types"
+import { CanvasContext, Layout, Range, XAxis } from "./types"
 import { getCanvasX, stepBelow } from "./math"
 
 const TICK_TEXT_PADDING = 10
 
-interface Tick {
-  xAxisAlign: XAxisAlign
-  xAxisFont: string
-  xAxisLineColor: string
-  xAxisTextColor: string
-  xTickLength: number
-  renderXTick?: (x: number) => string
-  xMin: number
-  xMax: number
-}
-
-function drawTick(ctx: CanvasContext, layout: Layout, tick: Tick, x: number) {
+function drawTick(
+  ctx: CanvasContext,
+  layout: Layout,
+  range: Range,
+  xAxis: XAxis,
+  x: number
+) {
   const {
     xAxis: { top, left, width, height },
   } = layout
+  const { xMin, xMax } = range
 
   const {
     xAxisAlign,
@@ -26,9 +22,7 @@ function drawTick(ctx: CanvasContext, layout: Layout, tick: Tick, x: number) {
     xAxisTextColor,
     xTickLength,
     renderXTick,
-    xMin,
-    xMax,
-  } = tick
+  } = xAxis
 
   const canvasX = getCanvasX(width, left, xMax, xMin, x)
 
@@ -67,17 +61,18 @@ function drawTick(ctx: CanvasContext, layout: Layout, tick: Tick, x: number) {
   }
 }
 
-interface Line {
-  xLineColor: string
-  xMax: number
-  xMin: number
-}
-
-function drawLine(ctx: CanvasContext, layout: Layout, line: Line, x: number) {
+function drawLine(
+  ctx: CanvasContext,
+  layout: Layout,
+  range: Range,
+  xAxis: XAxis,
+  x: number
+) {
   const {
     graph: { left, top, width, height },
   } = layout
-  const { xLineColor, xMax, xMin } = line
+  const { xMin, xMax } = range
+  const { xLineColor } = xAxis
 
   const canvasX = getCanvasX(width, left, xMax, xMin, x)
 
@@ -89,20 +84,18 @@ function drawLine(ctx: CanvasContext, layout: Layout, line: Line, x: number) {
   ctx.stroke()
 }
 
-export function draw(ctx: CanvasContext, layout: Layout, xAxis: XAxis) {
+export function draw(
+  ctx: CanvasContext,
+  layout: Layout,
+  range: Range,
+  xAxis: XAxis
+) {
   const {
     xAxis: { top, left, width, height },
   } = layout
+  const { xMin, xMax } = range
 
-  const {
-    xAxisAlign,
-    xAxisLineColor,
-    xTicks,
-    xTickInterval,
-    showXLine,
-    xMin,
-    xMax,
-  } = xAxis
+  const { xAxisAlign, xAxisLineColor, xTicks, xTickInterval, showXLine } = xAxis
 
   // style x axis line
   ctx.lineWidth = 1
@@ -125,10 +118,10 @@ export function draw(ctx: CanvasContext, layout: Layout, xAxis: XAxis) {
 
     for (let x = x0; x <= xMax; x += xTickInterval) {
       if (xMin <= x && x <= xMax) {
-        drawTick(ctx, layout, xAxis, x)
+        drawTick(ctx, layout, range, xAxis, x)
 
         if (showXLine) {
-          drawLine(ctx, layout, xAxis, x)
+          drawLine(ctx, layout, range, xAxis, x)
         }
       }
     }
@@ -136,10 +129,10 @@ export function draw(ctx: CanvasContext, layout: Layout, xAxis: XAxis) {
 
   for (const x of xTicks) {
     if (xMin <= x && x <= xMax) {
-      drawTick(ctx, layout, xAxis, x)
+      drawTick(ctx, layout, range, xAxis, x)
 
       if (showXLine) {
-        drawLine(ctx, layout, xAxis, x)
+        drawLine(ctx, layout, range, xAxis, x)
       }
     }
   }

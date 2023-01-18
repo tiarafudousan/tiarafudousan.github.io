@@ -37,32 +37,30 @@ export type TextAlign = "left" | "right"
 
 export interface XAxis {
   xAxisAlign: XAxisAlign
+  xAxisHeight: number
   xAxisLineColor: string
-  xTicks: number[]
-  xTickInterval: number
-  showXLine: boolean
-  xMin: number
-  xMax: number
   xAxisFont: string
   xAxisTextColor: string
+  showXLine: boolean
+  xLineColor: string
+  xTicks: number[]
+  xTickInterval: number
   xTickLength: number
   renderXTick?: (x: number) => string
-  xLineColor: string
 }
 
 export interface YAxis {
-  showYLine: boolean
   yAxisAlign: YAxisAlign
+  yAxisWidth: number
   yAxisLineColor: string
-  yTicks: number[]
-  yTickInterval: number
   yAxisFont: string
   yAxisTextColor: string
-  yMin: number
-  yMax: number
+  showYLine: boolean
+  yLineColor: string
+  yTicks: number[]
+  yTickInterval: number
   yTickLength: number
   renderYTick?: (y: number) => string
-  yLineColor: string
 }
 
 export interface Crosshair {

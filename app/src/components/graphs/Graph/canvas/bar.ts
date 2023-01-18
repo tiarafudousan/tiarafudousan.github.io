@@ -4,8 +4,8 @@ import { getCanvasX, getCanvasY } from "./math"
 export function draw(
   ctx: CanvasContext,
   layout: Layout,
-  graph: Partial<BarGraph>,
-  range: Range
+  range: Range,
+  graph: Partial<BarGraph>
 ) {
   const {
     graph: { top, left, width, height },

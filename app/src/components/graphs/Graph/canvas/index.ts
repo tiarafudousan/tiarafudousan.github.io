@@ -1,10 +1,13 @@
 import {
   CanvasContext,
   Context,
+  XAxis,
+  YAxis,
   XAxisAlign,
   YAxisAlign,
   Point,
   Layout,
+  Range,
   Crosshair,
   XLabel,
   YLabel,
@@ -13,9 +16,9 @@ import {
 
 import * as xAxis from "../canvas/x-axis"
 import * as yAxis from "../canvas/y-axis"
+import * as bar from "../canvas/bar"
 import * as line from "../canvas/line"
 import * as point from "../canvas/point"
-// import * as bar from "../canvas/bar"
 // import * as crosshair from "../canvas/crosshair"
 
 export interface Params {
@@ -24,34 +27,10 @@ export interface Params {
   padding: number
   backgroundColor: string
   animate?: boolean
-  xMin: number
-  xMax: number
-  yMin: number
-  yMax: number
+  range: Range
   // x axis
-  xAxisAlign: XAxisAlign
-  xAxisHeight: number
-  xAxisLineColor: string
-  xTicks: number[]
-  xTickInterval: number
-  xTickLength: number
-  renderXTick: (x: number) => string
-  xAxisFont: string
-  xAxisTextColor: string
-  showXLine: boolean
-  xLineColor: string
-  // y axis
-  yAxisAlign: YAxisAlign
-  yAxisWidth: number
-  yAxisLineColor: string
-  yTicks: number[]
-  yTickInterval: number
-  yTickLength: number
-  renderYTick: (y: number) => string
-  yAxisFont: string
-  yAxisTextColor: string
-  showYLine: boolean
-  yLineColor: string
+  xAxis: XAxis
+  yAxis: YAxis
   // graphs
   graphs: GraphType[]
   frames: Partial<Text>[]
@@ -68,25 +47,26 @@ export interface Params {
 function _drawGraph(
   ctx: CanvasContext,
   layout: Layout,
-  graph: GraphType,
-  params: Params
+  range: Range,
+  graph: GraphType
 ) {
   switch (graph.type) {
     case "bar":
+      bar.draw(ctx, layout, range, graph)
+      return
     case "line":
-      line.draw(ctx, layout, graph, params)
+      line.draw(ctx, layout, range, graph)
       return
     case "point":
-      point.draw(ctx, layout, graph, params)
+      point.draw(ctx, layout, range, graph)
       return
-
     default:
       return
   }
 }
 
 export function draw(ctx: Context, layout: Layout, params: Params) {
-  const { width, height } = params
+  const { width, height, range } = params
 
   ctx.axes?.clearRect(0, 0, width, height)
   ctx.graph?.clearRect(0, 0, width, height)
@@ -94,13 +74,13 @@ export function draw(ctx: Context, layout: Layout, params: Params) {
 
   if (ctx.axes) {
     // TODO: optional xAxis and yAxis
-    xAxis.draw(ctx.axes, layout, params)
-    yAxis.draw(ctx.axes, layout, params)
+    xAxis.draw(ctx.axes, layout, range, params.xAxis)
+    yAxis.draw(ctx.axes, layout, range, params.yAxis)
   }
 
   if (ctx.graph) {
     for (const graph of params.graphs) {
-      _drawGraph(ctx.graph, layout, graph, params)
+      _drawGraph(ctx.graph, layout, range, graph)
     }
   }
 

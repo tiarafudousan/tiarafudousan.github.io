@@ -28,18 +28,26 @@ const X_MAX = DATA[0][149].x
 interface Props {}
 
 const TestGraph: React.FC<Props> = ({}) => {
+  const range = {
+    xMin: X_MIN,
+    xMax: X_MAX,
+    yMin: Y_MIN,
+    yMax: Y_MAX,
+  }
   return (
     <Graph
       width={600}
       height={400}
       backgroundColor="beige"
-      xMin={X_MIN}
-      xMax={X_MAX}
-      yMin={Y_MIN}
-      yMax={Y_MAX}
-      xTickInterval={24 * 3600}
-      renderXTick={(x) => new Date(x * 1000).toISOString().slice(0, 10)}
-      yTickInterval={1000}
+      range={range}
+      xAxis={{
+        xTickInterval: 24 * 3600,
+        renderXTick: (x: number) =>
+          new Date(x * 1000).toISOString().slice(0, 10),
+      }}
+      yAxis={{
+        yTickInterval: 1000,
+      }}
       graphs={[
         {
           type: "line",
@@ -55,6 +63,10 @@ const TestGraph: React.FC<Props> = ({}) => {
         },
         {
           type: "point",
+          data: DATA[2],
+        },
+        {
+          type: "bar",
           data: DATA[2],
         },
       ]}

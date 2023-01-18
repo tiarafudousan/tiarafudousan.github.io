@@ -1,34 +1,28 @@
-import { CanvasContext, Layout, YAxisAlign, YAxis } from "./types"
+import { CanvasContext, Layout, Range, YAxis } from "./types"
 import { getCanvasY, stepBelow } from "./math"
 
 const TICK_TEXT_PADDING = 5
 
-interface Tick {
-  yAxisAlign: YAxisAlign
-  yAxisLineColor: string
-  yAxisFont: string
-  yAxisTextColor: string
-  yMax: number
-  yMin: number
-  yTickLength: number
-  renderYTick?: (y: number) => string
-}
-
-function drawTick(ctx: CanvasContext, layout: Layout, tick: Tick, y: number) {
+function drawTick(
+  ctx: CanvasContext,
+  layout: Layout,
+  range: Range,
+  yAxis: YAxis,
+  y: number
+) {
   const {
     yAxis: { top, left, height, width },
   } = layout
+  const { yMin, yMax } = range
 
   const {
     yAxisAlign,
     yAxisLineColor,
     yAxisFont,
     yAxisTextColor,
-    yMax,
-    yMin,
     yTickLength,
     renderYTick,
-  } = tick
+  } = yAxis
 
   const canvasY = getCanvasY(height, top, yMax, yMin, y)
 
@@ -67,17 +61,18 @@ function drawTick(ctx: CanvasContext, layout: Layout, tick: Tick, y: number) {
   }
 }
 
-interface Line {
-  yLineColor: string
-  yMax: number
-  yMin: number
-}
-
-function drawLine(ctx: CanvasContext, layout: Layout, line: Line, y: number) {
+function drawLine(
+  ctx: CanvasContext,
+  layout: Layout,
+  range: Range,
+  yAxis: YAxis,
+  y: number
+) {
   const {
     graph: { top, left, height, width },
   } = layout
-  const { yLineColor, yMax, yMin } = line
+  const { yMin, yMax } = range
+  const { yLineColor } = yAxis
 
   const canvasY = getCanvasY(height, top, yMax, yMin, y)
 
@@ -89,20 +84,18 @@ function drawLine(ctx: CanvasContext, layout: Layout, line: Line, y: number) {
   ctx.stroke()
 }
 
-export function draw(ctx: CanvasContext, layout: Layout, yAxis: YAxis) {
+export function draw(
+  ctx: CanvasContext,
+  layout: Layout,
+  range: Range,
+  yAxis: YAxis
+) {
   const {
     yAxis: { top, left, height, width },
   } = layout
+  const { yMin, yMax } = range
 
-  const {
-    showYLine,
-    yAxisAlign,
-    yAxisLineColor,
-    yTicks,
-    yTickInterval,
-    yMin,
-    yMax,
-  } = yAxis
+  const { showYLine, yAxisAlign, yAxisLineColor, yTicks, yTickInterval } = yAxis
 
   // style y axis line
   ctx.lineWidth = 1
@@ -125,10 +118,10 @@ export function draw(ctx: CanvasContext, layout: Layout, yAxis: YAxis) {
 
     for (let y = y0; y <= yMax; y += yTickInterval) {
       if (yMin <= y && y <= yMax) {
-        drawTick(ctx, layout, yAxis, y)
+        drawTick(ctx, layout, range, yAxis, y)
 
         if (showYLine) {
-          drawLine(ctx, layout, yAxis, y)
+          drawLine(ctx, layout, range, yAxis, y)
         }
       }
     }
@@ -136,10 +129,10 @@ export function draw(ctx: CanvasContext, layout: Layout, yAxis: YAxis) {
 
   for (const y of yTicks) {
     if (yMin <= y && y <= yMax) {
-      drawTick(ctx, layout, yAxis, y)
+      drawTick(ctx, layout, range, yAxis, y)
 
       if (showYLine) {
-        drawLine(ctx, layout, yAxis, y)
+        drawLine(ctx, layout, range, yAxis, y)
       }
     }
   }

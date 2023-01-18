@@ -4,12 +4,13 @@ import { getCanvasX, getCanvasY } from "./math"
 export function draw(
   ctx: CanvasContext,
   layout: Layout,
-  graph: Partial<PointGraph>,
-  range: Range
+  range: Range,
+  graph: Partial<PointGraph>
 ) {
   const {
     graph: { top, left, width, height },
   } = layout
+  const { xMin, xMax, yMin, yMax } = range
 
   const {
     data = [],
@@ -18,8 +19,6 @@ export function draw(
     ambientColor = "",
     ambientRadius = 0,
   } = graph
-
-  const { xMin, xMax, yMin, yMax } = range
 
   for (const point of data) {
     const { x, y } = point

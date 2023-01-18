@@ -4,15 +4,15 @@ import { getCanvasX, getCanvasY } from "./math"
 export function draw(
   ctx: CanvasContext,
   layout: Layout,
-  graph: Partial<LineGraph>,
-  range: Range
+  range: Range,
+  graph: Partial<LineGraph>
 ) {
   const {
     graph: { top, left, width, height },
   } = layout
+  const { xMin, xMax, yMin, yMax } = range
 
   const { data = [], step = 0, lineColor = "" } = graph
-  const { xMin, xMax, yMin, yMax } = range
 
   ctx.strokeStyle = lineColor
   ctx.lineWidth = 1

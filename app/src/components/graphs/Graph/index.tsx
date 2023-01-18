@@ -5,6 +5,9 @@ import {
   Context,
   Point,
   Layout,
+  Range,
+  XAxis,
+  YAxis,
   XAxisAlign,
   YAxisAlign,
   XLabel,
@@ -13,51 +16,15 @@ import {
   Graph as GraphType,
 } from "./canvas/types"
 
-interface Refs {
-  axes: HTMLCanvasElement | null
-  graph: HTMLCanvasElement | null
-  ui: HTMLCanvasElement | null
-  // animation frame
-  //   animation: number | null
-  //   // NOTE: store props and layout as ref for animate to draw with latest prop
-  //   props: null
-  //   layout: null
-}
-
 export interface Props {
   width: number
   height: number
   padding: number
   backgroundColor: string
   animate?: boolean
-  xMin: number
-  xMax: number
-  yMin: number
-  yMax: number
-  // x axis
-  xAxisAlign: XAxisAlign
-  xAxisHeight: number
-  xAxisLineColor: string
-  xTicks: number[]
-  xTickInterval: number
-  xTickLength: number
-  renderXTick: (x: number) => string
-  xAxisFont: string
-  xAxisTextColor: string
-  showXLine: boolean
-  xLineColor: string
-  // y axis
-  yAxisAlign: YAxisAlign
-  yAxisWidth: number
-  yAxisLineColor: string
-  yTicks: number[]
-  yTickInterval: number
-  yTickLength: number
-  renderYTick: (y: number) => string
-  yAxisFont: string
-  yAxisTextColor: string
-  showYLine: boolean
-  yLineColor: string
+  range: Range
+  xAxis: Partial<XAxis>
+  yAxis: Partial<YAxis>
   // graphs
   graphs: GraphType[]
   frames: Partial<Text>[]
@@ -71,40 +38,49 @@ export interface Props {
   ) => void
 }
 
-const DEFAULT_PROPS: Props = {
+interface GraphParams extends Props {
+  xAxis: XAxis
+  yAxis: YAxis
+}
+
+const DEFAULT_PARAMS: GraphParams = {
   width: 500,
   height: 300,
   padding: 10,
   backgroundColor: "",
   animate: false,
-  xMin: 0,
-  xMax: 0,
-  yMin: 0,
-  yMax: 0,
-  // x axis
-  xAxisAlign: "bottom" as XAxisAlign,
-  xAxisHeight: 30,
-  xAxisLineColor: "black",
-  xTicks: [],
-  xTickInterval: 0,
-  xTickLength: 10,
-  renderXTick: (x: number) => x.toString(),
-  xAxisFont: "",
-  xAxisTextColor: "black",
-  showXLine: true,
-  xLineColor: "lightgrey",
-  // y axis
-  yAxisAlign: "left" as YAxisAlign,
-  yAxisWidth: 50,
-  yAxisLineColor: "black",
-  yTicks: [],
-  yTickInterval: 0,
-  yTickLength: 10,
-  renderYTick: (y: number) => y.toString(),
-  yAxisFont: "",
-  yAxisTextColor: "black",
-  showYLine: true,
-  yLineColor: "lightgrey",
+  range: {
+    xMin: 0,
+    xMax: 0,
+    yMin: 0,
+    yMax: 0,
+  },
+  xAxis: {
+    xAxisAlign: "bottom" as XAxisAlign,
+    xAxisHeight: 30,
+    xAxisLineColor: "black",
+    xTicks: [],
+    xTickInterval: 0,
+    xTickLength: 10,
+    renderXTick: (x: number) => x.toString(),
+    xAxisFont: "",
+    xAxisTextColor: "black",
+    showXLine: true,
+    xLineColor: "lightgrey",
+  },
+  yAxis: {
+    yAxisAlign: "left" as YAxisAlign,
+    yAxisWidth: 50,
+    yAxisLineColor: "black",
+    yTicks: [],
+    yTickInterval: 0,
+    yTickLength: 10,
+    renderYTick: (y: number) => y.toString(),
+    yAxisFont: "",
+    yAxisTextColor: "black",
+    showYLine: true,
+    yLineColor: "lightgrey",
+  },
   // graphs
   graphs: [],
   frames: [],
@@ -112,16 +88,35 @@ const DEFAULT_PROPS: Props = {
   yLabels: [],
 }
 
-function withDefaultProps(props: Partial<Props>): Props {
+function withDefaultParams(props: Partial<Props>): GraphParams {
   return {
-    ...DEFAULT_PROPS,
+    ...DEFAULT_PARAMS,
     ...props,
+    xAxis: {
+      ...DEFAULT_PARAMS.xAxis,
+      ...props?.xAxis,
+    },
+    yAxis: {
+      ...DEFAULT_PARAMS.yAxis,
+      ...props?.yAxis,
+    },
   }
 }
 
+interface Refs {
+  axes: HTMLCanvasElement | null
+  graph: HTMLCanvasElement | null
+  ui: HTMLCanvasElement | null
+  // animation frame
+  //   animation: number | null
+  //   // NOTE: store props and layout as ref for animate to draw with latest prop
+  //   props: null
+  //   layout: null
+}
+
 const Graph: React.FC<Partial<Props>> = (props) => {
-  const _props = withDefaultProps(props)
-  const { width, height, backgroundColor = "" } = _props
+  const params = withDefaultParams(props)
+  const { width, height, backgroundColor = "" } = params
 
   const refs = useRef<Refs>({ axes: null, graph: null, ui: null })
   const ctx = useRef<Context>({ axes: null, graph: null, ui: null })
@@ -132,8 +127,8 @@ const Graph: React.FC<Partial<Props>> = (props) => {
     ctx.current.ui = refs.current.ui?.getContext("2d")
 
     if (ctx.current) {
-      const layout = getLayout(_props)
-      draw(ctx.current, layout, _props)
+      const layout = getLayout(params)
+      draw(ctx.current, layout, params)
     }
   }, [])
 
