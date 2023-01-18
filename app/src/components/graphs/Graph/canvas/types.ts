@@ -72,6 +72,14 @@ export interface Crosshair {
   yLineWidth: number
 }
 
+export interface Text {
+  left: number
+  top: number
+  text: number | string
+  color: string
+  font: string
+}
+
 export interface XLabel {
   x?: number
   width: number

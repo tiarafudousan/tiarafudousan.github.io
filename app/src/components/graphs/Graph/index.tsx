@@ -10,9 +10,10 @@ import {
   YAxis,
   XAxisAlign,
   YAxisAlign,
+  Crosshair,
+  Text,
   XLabel,
   YLabel,
-  Crosshair,
   Graph as GraphType,
 } from "./canvas/types"
 
@@ -33,7 +34,7 @@ export interface Props {
   yAxis: Partial<YAxis>
   // graphs
   graphs: GraphType[]
-  frames: Partial<Text>[]
+  texts: Partial<Text>[]
   xLabels: Partial<XLabel>[]
   yLabels: Partial<YLabel>[]
   crosshair?: Partial<Crosshair>
@@ -94,7 +95,7 @@ const DEFAULT_PARAMS: GraphParams = {
   },
   // graphs
   graphs: [],
-  frames: [],
+  texts: [],
   xLabels: [],
   yLabels: [],
 }

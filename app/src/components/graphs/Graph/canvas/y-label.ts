@@ -1,6 +1,7 @@
 import {
   CanvasContext,
   Layout,
+  Range,
   Box,
   YLabel,
   YAxisAlign,
@@ -11,9 +12,9 @@ import { getCanvasY } from "./math"
 function getLeft(
   graph: Box,
   labelWidth: number,
-  params: { yAxisAlign: YAxisAlign; yTickLength: number }
+  yAxis: { yAxisAlign: YAxisAlign; yTickLength: number }
 ): number {
-  const { yAxisAlign, yTickLength } = params
+  const { yAxisAlign, yTickLength } = yAxis
 
   if (yAxisAlign == "left") {
     return graph.left - labelWidth - yTickLength
@@ -57,9 +58,9 @@ function getTextLeft(
 
 function getLineStart(
   graph: Box,
-  params: { yAxisAlign: YAxisAlign; yTickLength: number }
+  yAxis: { yAxisAlign: YAxisAlign; yTickLength: number }
 ): number {
-  const { yAxisAlign, yTickLength } = params
+  const { yAxisAlign, yTickLength } = yAxis
 
   if (yAxisAlign == "left") {
     return graph.left - yTickLength
@@ -71,8 +72,8 @@ function getLineStart(
   return 0
 }
 
-function getLineEnd(graph: Box, params: { yAxisAlign: YAxisAlign }): number {
-  const { yAxisAlign } = params
+function getLineEnd(graph: Box, yAxis: { yAxisAlign: YAxisAlign }): number {
+  const { yAxisAlign } = yAxis
 
   if (yAxisAlign == "left") {
     return graph.left + graph.width
@@ -87,14 +88,15 @@ function getLineEnd(graph: Box, params: { yAxisAlign: YAxisAlign }): number {
 export function draw(
   ctx: CanvasContext,
   layout: Layout,
+  range: Range,
   label: Partial<YLabel>,
-  params: {
+  yAxis: {
     yAxisAlign: YAxisAlign
     yTickLength: number
-    yMin: number
-    yMax: number
   }
 ) {
+  const { graph } = layout
+  const { yMin, yMax } = range
   const {
     y,
     width = 50,
@@ -109,13 +111,10 @@ export function draw(
     lineColor = "black",
   } = label
 
-  const { graph } = layout
-  const { yMin, yMax } = params
-
   if (y != undefined && yMin <= y && y <= yMax) {
     const canvasY = getCanvasY(graph.height, graph.top, yMax, yMin, y)
     const top = canvasY - Math.round(height / 2)
-    const left = getLeft(graph, width, params)
+    const left = getLeft(graph, width, yAxis)
 
     ctx.fillStyle = backgroundColor
 
@@ -125,13 +124,13 @@ export function draw(
     // text
     ctx.font = font
     ctx.fillStyle = color
-    ctx.textAlign = getTextAlign(params.yAxisAlign)
+    ctx.textAlign = getTextAlign(yAxis.yAxisAlign)
     ctx.textBaseline = "middle"
 
     if (render) {
       ctx.fillText(
         render(y),
-        getTextLeft(left, { textPadding, width }, params.yAxisAlign),
+        getTextLeft(left, { textPadding, width }, yAxis.yAxisAlign),
         top + textPadding
       )
     }
@@ -140,8 +139,8 @@ export function draw(
       ctx.lineWidth = lineWidth
       ctx.strokeStyle = lineColor
 
-      const lineStart = getLineStart(graph, params)
-      const lineEnd = getLineEnd(graph, params)
+      const lineStart = getLineStart(graph, yAxis)
+      const lineEnd = getLineEnd(graph, yAxis)
 
       ctx.beginPath()
       ctx.moveTo(lineStart, top + height / 2)

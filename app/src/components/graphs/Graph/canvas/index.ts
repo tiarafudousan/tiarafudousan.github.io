@@ -3,12 +3,11 @@ import {
   Context,
   XAxis,
   YAxis,
-  XAxisAlign,
-  YAxisAlign,
   Point,
   Layout,
   Range,
   Crosshair,
+  Text,
   XLabel,
   YLabel,
   Graph as GraphType,
@@ -20,6 +19,9 @@ import * as bar from "../canvas/bar"
 import * as line from "../canvas/line"
 import * as point from "../canvas/point"
 import * as crosshair from "../canvas/crosshair"
+import * as text from "../canvas/text"
+import * as xLabel from "../canvas/x-label"
+import * as yLabel from "../canvas/y-label"
 
 export interface Params {
   width: number
@@ -33,7 +35,7 @@ export interface Params {
   yAxis: YAxis
   // graphs
   graphs: GraphType[]
-  frames: Partial<Text>[]
+  texts: Partial<Text>[]
   xLabels: Partial<XLabel>[]
   yLabels: Partial<YLabel>[]
   crosshair?: Partial<Crosshair>
@@ -88,17 +90,17 @@ export function draw(ctx: Context, layout: Layout, params: Params) {
     if (params.crosshair) {
       crosshair.draw(ctx.ui, layout, params.crosshair)
     }
+
+    for (const txt of params.texts) {
+      text.draw(ctx.ui, txt)
+    }
+
+    for (const label of params.xLabels) {
+      xLabel.draw(ctx.ui, layout, range, label, params.xAxis)
+    }
+
+    for (const label of params.yLabels) {
+      yLabel.draw(ctx.ui, layout, range, label, params.yAxis)
+    }
   }
-
-  // for (const frame of params.frames) {
-  //   text.draw(ctx.ui, frame)
-  // }
-
-  // for (const label of params.xLabels) {
-  //   xLabel.draw(ctx.ui, layout, label, params)
-  // }
-
-  // for (const label of params.yLabels) {
-  //   yLabel.draw(ctx.ui, layout, label, params)
-  // }
 }

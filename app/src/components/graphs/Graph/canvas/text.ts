@@ -1,12 +1,4 @@
-import { CanvasContext } from "./types"
-
-export interface Text {
-  left: number
-  top: number
-  text: number | string
-  color: string
-  font: string
-}
+import { CanvasContext, Text } from "./types"
 
 export function draw(ctx: CanvasContext, params: Partial<Text>) {
   const {
