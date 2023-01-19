@@ -127,7 +127,9 @@ export function draw(
     }
   }
 
-  for (const x of xTicks) {
+  const len = xTicks.length
+  for (let i = 0; i < len; i++) {
+    const x = xTicks[i]
     if (xMin <= x && x <= xMax) {
       drawTick(ctx, layout, range, xAxis, x)
 

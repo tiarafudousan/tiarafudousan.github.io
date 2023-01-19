@@ -20,8 +20,9 @@ export function draw(
     ambientRadius = 0,
   } = graph
 
-  for (const point of data) {
-    const { x, y } = point
+  const len = data.length
+  for (let i = 0; i < len; i++) {
+    const { x, y } = data[i]
 
     if (xMin <= x && x <= xMax) {
       const canvasX = getCanvasX(width, left, xMax, xMin, x)

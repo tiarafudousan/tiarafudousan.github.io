@@ -81,8 +81,9 @@ export function draw(ctx: Context, layout: Layout, params: Params) {
   }
 
   if (ctx.graph) {
-    for (const graph of params.graphs) {
-      _drawGraph(ctx.graph, layout, range, graph)
+    const len = params.graphs.length
+    for (let i = 0; i < len; i++) {
+      _drawGraph(ctx.graph, layout, range, params.graphs[i])
     }
   }
 
@@ -91,16 +92,25 @@ export function draw(ctx: Context, layout: Layout, params: Params) {
       crosshair.draw(ctx.ui, layout, params.crosshair)
     }
 
-    for (const txt of params.texts) {
-      text.draw(ctx.ui, txt)
+    // cache array length
+    let len = 0
+
+    const { texts } = params
+    len = texts.length
+    for (let i = 0; i < len; i++) {
+      text.draw(ctx.ui, texts[i])
     }
 
-    for (const label of params.xLabels) {
-      xLabel.draw(ctx.ui, layout, range, label, params.xAxis)
+    const { xLabels } = params
+    len = xLabels.length
+    for (let i = 0; i < len; i++) {
+      xLabel.draw(ctx.ui, layout, range, xLabels[i], params.xAxis)
     }
 
-    for (const label of params.yLabels) {
-      yLabel.draw(ctx.ui, layout, range, label, params.yAxis)
+    const { yLabels } = params
+    len = yLabels.length
+    for (let i = 0; i < len; i++) {
+      yLabel.draw(ctx.ui, layout, range, yLabels[i], params.yAxis)
     }
   }
 }
