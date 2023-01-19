@@ -3,7 +3,6 @@ import {
   Context,
   XAxis,
   YAxis,
-  Point,
   Layout,
   Range,
   Crosshair,
@@ -39,11 +38,6 @@ export interface Params {
   xLabels: Partial<XLabel>[]
   yLabels: Partial<YLabel>[]
   crosshair?: Partial<Crosshair>
-  onMouseMove?: (
-    e: React.MouseEvent<HTMLCanvasElement, MouseEvent>,
-    mouse: Point,
-    layout: Layout
-  ) => void
 }
 
 function _drawGraph(
@@ -75,7 +69,6 @@ export function draw(ctx: Context, layout: Layout, params: Params) {
   ctx.ui?.clearRect(0, 0, width, height)
 
   if (ctx.axes) {
-    // TODO: optional xAxis and yAxis
     xAxis.draw(ctx.axes, layout, range, params.xAxis)
     yAxis.draw(ctx.axes, layout, range, params.yAxis)
   }

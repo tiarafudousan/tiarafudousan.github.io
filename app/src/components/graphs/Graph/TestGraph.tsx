@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import Graph from "./index"
-import { Point } from "./canvas/types"
+import { Point, Layout } from "./canvas/types"
+import * as math from "./canvas/math"
 
 const t0 = Math.floor(new Date().getTime() / 1000)
 
@@ -21,6 +22,8 @@ for (let i = 0; i < 3; i++) {
   }
 }
 
+const XS = DATA[0].map(({ x }) => x)
+
 const Y_MIN = DATA[0][0].y
 const Y_MAX = DATA[0][149].y
 const X_MIN = DATA[0][0].x
@@ -31,6 +34,9 @@ const X_LABEL_HEIGHT = 20
 
 const Y_LABEL_WIDTH = 50
 const Y_LABEL_HEIGHT = 20
+
+const WIDTH = 600
+const HEIGHT = 400
 
 interface Props {}
 
@@ -44,12 +50,19 @@ const TestGraph: React.FC<Props> = ({}) => {
     yMax: Y_MAX,
   }
 
-  function onMouseMove(e: any, point: Point | null) {
+  function onMouseMove(e: any, point: Point | null, layout: Layout) {
     if (point) {
       setMouse({
         x: point.x,
         y: point.y,
       })
+
+      //   const { graph } = layout
+
+      //   const x = math.getX(graph.width, graph.left, X_MAX, X_MIN, point.x)
+      //   const i = math.findNearestIndex(XS, x)
+
+      //   console.log(x, i, DATA[0][i])
     }
   }
 
@@ -57,13 +70,12 @@ const TestGraph: React.FC<Props> = ({}) => {
     setMouse(null)
   }
 
-  // TODO: nearest data on mouse
   // TODO: zoom, drag
 
   return (
     <Graph
-      width={600}
-      height={400}
+      width={WIDTH}
+      height={HEIGHT}
       backgroundColor="beige"
       animate={true}
       range={range}

@@ -9,10 +9,10 @@ export function findNearestIndex(arr: number[], x: number): number {
   }
 
   if (arr[low] > arr[high]) {
-    throw new Error("Data must be sorted in ascending order")
+    throw new Error("data not sorted")
   }
 
-  // binary search
+  // Binary search
   while (low < high) {
     let mid = ((low + high) / 2) >> 0
 
@@ -23,16 +23,11 @@ export function findNearestIndex(arr: number[], x: number): number {
     }
   }
 
-  // TODO: what?
-  if (arr[low - 1] !== undefined) {
-    const midX = (arr[low] + arr[low - 1]) / 2
-
-    if (x < midX) {
-      return low - 1
-    } else {
-      return low
-    }
-  }
+  // Find closest index to x
+  // if (arr[low - 1] != undefined) {
+  //   const midX = (arr[low - 1] + arr[low]) / 2
+  //   return x < midX ? low - 1 : low
+  // }
 
   return low
 }
