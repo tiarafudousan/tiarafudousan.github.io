@@ -124,6 +124,7 @@ export interface LineGraph {
   data: Point[]
   step: number
   lineColor: string
+  lineWidth: number
 }
 
 export interface PointGraph {

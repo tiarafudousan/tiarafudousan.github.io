@@ -28,6 +28,7 @@ export interface Props {
   height: number
   padding: number
   backgroundColor: string
+  borderRadius?: number
   animate?: boolean
   range: Range
   xAxis: Partial<XAxis>
@@ -60,6 +61,7 @@ const DEFAULT_PARAMS: GraphParams = {
   height: 300,
   padding: 10,
   backgroundColor: "",
+  borderRadius: 0,
   animate: false,
   range: {
     xMin: 0,
@@ -148,6 +150,7 @@ const Graph: React.FC<Partial<Props>> = (props) => {
     width,
     height,
     backgroundColor = "",
+    borderRadius = 0,
     onMouseMove,
     onMouseOut,
   } = params
@@ -215,6 +218,7 @@ const Graph: React.FC<Partial<Props>> = (props) => {
         width,
         height,
         backgroundColor,
+        borderRadius,
       }}
     >
       <canvas

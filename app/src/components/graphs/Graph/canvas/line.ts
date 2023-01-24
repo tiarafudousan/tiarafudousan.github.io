@@ -12,10 +12,10 @@ export function draw(
   } = layout
   const { xMin, xMax, yMin, yMax } = range
 
-  const { data = [], step = 0, lineColor = "" } = graph
+  const { data = [], step = 0, lineColor = "", lineWidth = 1 } = graph
 
   ctx.strokeStyle = lineColor
-  ctx.lineWidth = 1
+  ctx.lineWidth = lineWidth
 
   if (step > 0) {
     ctx.beginPath()
