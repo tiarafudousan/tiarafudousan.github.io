@@ -134,15 +134,15 @@ export interface PointGraph {
   ambientRadius: number
 }
 
-interface BarGraphType extends Partial<BarGraph> {
+export interface BarGraphType extends Partial<BarGraph> {
   type: "bar"
 }
 
-interface LineGraphType extends Partial<LineGraph> {
+export interface LineGraphType extends Partial<LineGraph> {
   type: "line"
 }
 
-interface PointGraphType extends Partial<PointGraph> {
+export interface PointGraphType extends Partial<PointGraph> {
   type: "point"
 }
 
