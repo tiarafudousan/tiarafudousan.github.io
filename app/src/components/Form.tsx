@@ -4,7 +4,7 @@ import Input from "./Input"
 
 const INPUTS: Inputs<string> = {
   property_price: "2000",
-  yearly_income: "100",
+  yearly_income: "200",
   vacancy_rate: "15",
   running_cost_rate: "20",
   cash: "0",

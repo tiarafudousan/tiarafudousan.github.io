@@ -23,7 +23,10 @@ function renderZ(z: number): string {
 }
 
 const PRICE_DELTA = 0.05
-const MIN_YIELD = 2
+const TARGET_ROI = 2
+const MAX_ROI = 20
+const TARGET_CCR = 30
+const MAX_CCR = 100
 
 const X_MIN = 0
 const X_MAX = 100
@@ -45,12 +48,19 @@ const MIN_GRAPH_WIDTH = 350
 const MAX_GRAPH_WIDTH = 600
 
 interface HeatMapData {
-  ys: number[]
-  zs: number[][]
   yMin: number
   yMax: number
-  zMin: number
-  zMax: number
+  ys: number[]
+  roi: {
+    zMin: number
+    zMax: number
+    zs: number[][]
+  }
+  ccr: {
+    zMin: number
+    zMax: number
+    zs: number[][]
+  }
 }
 
 function Yen(value: number): string {
@@ -61,11 +71,19 @@ function Percent(value: number): string {
   return (value * 100).toFixed(2)
 }
 
+type ZType = "roi" | "ccr"
+
+const DEFAULT_Z = {
+  roi: TARGET_ROI,
+  ccr: TARGET_CCR,
+}
+
 function App() {
   const ref = useRef(null)
   const [canvasSize, setCanvasSize] = useState(0)
 
-  const [minYield, setMinYield] = useState(MIN_YIELD)
+  const [zType, setDataType] = useState<ZType>("roi")
+  const [minZ, setMinZ] = useState(DEFAULT_Z)
   const [res, setSimData] = useState<SimData | null>(null)
   const [data, setHeatMapData] = useState<HeatMapData | null>(null)
 
@@ -98,20 +116,20 @@ function App() {
       lerp(yMin, yMax, 1),
     ]
 
-    let zMin = 0
-    let zMax = 0
+    let zMin = { roi: 0, ccr: 0 }
+    let zMax = { roi: 0, ccr: 0 }
 
     // i, j = column i, row j
-    const zs: number[][] = []
+    const zs = { roi: [] as number[][], ccr: [] as number[][] }
     for (let i = 0; i <= 10; i++) {
-      zs.push([])
+      zs.roi.push([])
+      zs.ccr.push([])
 
       for (let j = 0; j <= 10; j++) {
         const price = values.property_price * (1 - j * PRICE_DELTA)
         const cash =
           values.loan > 0 && values.years > 0 ? (price * i) / 10 : price
 
-        // TODO: ccr - 30%
         // TODO: fix sim - when loan = 0 or years = 0
         // TODO: simulate when loan > property price
         const res = simulate({
@@ -121,46 +139,68 @@ function App() {
           loan: price - cash,
         })
 
-        const z = res.yield_after_repayment * 100
-        // const z = res.ccr * 100
-        zMax = Math.max(zMax, z)
-        zMin = Math.min(zMin, z)
+        const roi = res.yield_after_repayment * 100
+        const ccr = res.ccr * 100
 
-        // TODO: ccr
-        zs[i].push(z)
+        zMax.roi = Math.max(zMax.roi, roi)
+        zMax.ccr = Math.max(zMax.ccr, ccr)
+        zMin.roi = Math.min(zMin.roi, roi)
+        zMax.ccr = Math.max(zMax.ccr, ccr)
+
+        zs.roi[i].push(roi)
+        zs.ccr[i].push(ccr)
       }
     }
 
-    zMax = minYield
+    zMax.roi = minZ.roi
+    zMax.ccr = minZ.ccr
 
     setHeatMapData((state) => ({
       ...state,
-      ys,
-      zs,
       yMax,
       yMin,
-      zMin,
-      zMax,
+      ys,
+      roi: {
+        zMin: zMin.roi,
+        zMax: zMax.roi,
+        zs: zs.roi,
+      },
+      ccr: {
+        zMin: zMin.ccr,
+        zMax: zMax.ccr,
+        zs: zs.ccr,
+      },
     }))
   }
 
   function onReset() {
     setHeatMapData(null)
     setSimData(null)
-    setMinYield(MIN_YIELD)
+    setMinZ(DEFAULT_Z)
   }
 
-  function onChangeMinYield(value: number) {
-    setMinYield(value)
+  function onChangeMinZ(value: number) {
+    setMinZ((state) => ({
+      ...state,
+      [zType]: value,
+    }))
+
     setHeatMapData((state) => {
       if (state) {
         return {
           ...state,
-          zMax: value,
+          [zType]: {
+            ...state[zType],
+            zMax: value,
+          },
         }
       }
       return null
     })
+  }
+
+  function onChangeDataType(e: React.ChangeEvent<HTMLSelectElement>) {
+    setDataType(e.target.value as ZType)
   }
 
   return (
@@ -168,7 +208,9 @@ function App() {
       ref={ref}
       className="flex flex-col items-center py-10 mx-auto max-w-[800px]"
     >
+      {/*}
       <TestGraph />
+  */}
 
       <Form onSubmit={onSubmit} onReset={onReset} />
 
@@ -218,33 +260,41 @@ function App() {
 
       {data != null ? (
         <div className="mt-8 flex flex-col items-center mx-auto">
-          <div className="text-xl font-semibold">返済後利回り</div>
+          <select
+            className="bg-gray-200 border border-gray-300 text-gray-900 text-lg rounded-md border border-gray-100 focus:outline-none focus:ring focus:ring-blue-200 p-2"
+            value={zType}
+            onChange={onChangeDataType}
+          >
+            <option value="roi">返済後利回り</option>
+            <option value="ccr">CCR</option>
+          </select>
+
           <GradientBar
             width={canvasSize}
             height={60}
-            zMin={data.zMin}
-            zMax={data.zMax}
+            zMin={data[zType].zMin}
+            zMax={data[zType].zMax}
             render={(z) => `${z.toFixed(2)} %`}
           />
           <Range
-            label="返済後利回り"
+            label={zType == "roi" ? "返済後利回り" : "CCR"}
             min={0}
-            max={20}
-            value={minYield}
-            onChange={onChangeMinYield}
+            max={zType == "roi" ? MAX_ROI : MAX_CCR}
+            value={minZ[zType]}
+            onChange={onChangeMinZ}
           />
           <HeatMap
             width={canvasSize}
             height={canvasSize}
             xs={XS}
             ys={data.ys}
-            zs={data.zs}
+            zs={data[zType].zs}
             xMin={X_MIN}
             xMax={X_MAX}
             yMin={data.yMin}
             yMax={data.yMax}
-            zMin={data.zMin}
-            zMax={data.zMax}
+            zMin={data[zType].zMin}
+            zMax={data[zType].zMax}
             renderX={renderX}
             renderY={renderY}
             renderZ={renderZ}
