@@ -7,7 +7,6 @@ import Form from "./components/Form"
 import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
 import Range from "./components/Range"
-import TestGraph from "./components/graphs/Graph/TestGraph"
 
 // Heat map
 function renderX(x: number): string {
