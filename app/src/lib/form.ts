@@ -128,7 +128,7 @@ export function validate(
     }
 
     if (!errors.property_price && !errors.cash && !errors.purchase_cost) {
-        const loan = calculateLoan(inputs)
+        const loan = calcLoan(inputs)
         if (loan != null) {
             values.loan = loan
             if (values.loan < 0) {
@@ -145,7 +145,7 @@ export function validate(
     return [Object.keys(errors).length > 0 ? errors : null, values]
 }
 
-export function calculateLoan(args: {
+export function calcLoan(args: {
     property_price: string
     purchase_cost: string
     cash: string

@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Inputs, Errors, calculateLoan, validate } from "../lib/form"
+import { Inputs, Errors, calcLoan, validate } from "../lib/form"
 import Input from "./Input"
 
 const INPUTS: Inputs<string> = {
@@ -30,7 +30,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
                 [name]: value,
             }
 
-            const loan = calculateLoan(newInputs)
+            const loan = calcLoan(newInputs)
 
             return {
                 ...newInputs,

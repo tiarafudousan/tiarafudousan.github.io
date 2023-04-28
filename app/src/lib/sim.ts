@@ -28,23 +28,23 @@ function calc_yearly_profit(
     return yearly_income - monthly_debt_payment * 12 - yearly_expense
 }
 
-function calc_gross_yield(property_price: number, yearly_income: number) {
-    return yearly_income / property_price
+function calc_gross_yield(total_investment: number, yearly_income: number) {
+    return yearly_income / total_investment
 }
 
 function calc_real_yield(
-    property_price: number,
+    total_investment: number,
     yearly_income: number,
     yearly_expense: number
 ) {
-    return (yearly_income - yearly_expense) / property_price
+    return (yearly_income - yearly_expense) / total_investment
 }
 
 function calc_yield_after_repayment(
-    property_price: number,
+    total_investment: number,
     yearly_profit: number
 ) {
-    return yearly_profit / property_price
+    return yearly_profit / total_investment
 }
 
 function calc_ccr(yearly_profit: number, cash: number) {
@@ -55,6 +55,7 @@ function calc_ccr(yearly_profit: number, cash: number) {
 }
 
 export interface SimData {
+    total_investment: number
     total_payment: number
     monthly_debt_payment: number
     yearly_expense: number
@@ -67,7 +68,7 @@ export interface SimData {
 }
 
 export function simulate(inputs: Inputs<number>): SimData {
-    const property_price = Math.floor(inputs.property_price)
+    // const property_price = Math.floor(inputs.property_price)
     const yearly_income = Math.floor(inputs.yearly_income)
     const vacancy_rate = inputs.vacancy_rate / 100
     const running_cost_rate = inputs.running_cost_rate / 100
@@ -76,6 +77,9 @@ export function simulate(inputs: Inputs<number>): SimData {
     const loan = Math.floor(inputs.loan)
     const n = inputs.years * 12
     const interest_rate = inputs.interest_rate / (100 * 12)
+
+    // property_price + cost - cash = loan
+    const total_investment = cash + loan
 
     const monthly_debt_payment =
         n > 0 ? calc_monthly_debt_payment(loan, interest_rate, n) : 0
@@ -93,19 +97,20 @@ export function simulate(inputs: Inputs<number>): SimData {
         monthly_debt_payment,
         yearly_expense
     )
-    const gross_yield = calc_gross_yield(property_price, yearly_income)
+    const gross_yield = calc_gross_yield(total_investment, yearly_income)
     const real_yield = calc_real_yield(
-        property_price,
+        total_investment,
         yearly_income,
         yearly_expense
     )
     const yield_after_repayment = calc_yield_after_repayment(
-        property_price,
+        total_investment,
         yearly_profit
     )
     const ccr = calc_ccr(yearly_profit, cash)
 
     return {
+        total_investment,
         total_payment: n * monthly_debt_payment,
         monthly_debt_payment,
         yearly_expense,
