@@ -50,7 +50,8 @@ export function draw(ctx: Context, params: Params) {
         lerp(zMin, zMax, 1),
     ]
 
-    for (const z of zs) {
+    for (let i = 0; i < zs.length; i++) {
+        const z = zs[i]
         const t = lin(1, dz, z - zMin, 0)
         const canvasX = lerp(graphX0, graphX1, t)
         const canvasY = graphY1 + GRAPH_LABEL_PADDING_TOP
@@ -59,7 +60,8 @@ export function draw(ctx: Context, params: Params) {
 
     // Draw graph
     const gradient = ctx.graph.createLinearGradient(0, 0, graphWidth, 0)
-    for (const grad of GRADIENTS) {
+    for (let i = 0; i < GRADIENTS.length; i++) {
+        const grad = GRADIENTS[i]
         gradient.addColorStop(grad.value, grad.color)
     }
 

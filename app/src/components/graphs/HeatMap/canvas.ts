@@ -72,7 +72,8 @@ export function draw(ctx: Context, params: Params) {
 
     // Get gradient data
     const gradient = ctx.graph.createLinearGradient(0, 0, 0, G)
-    for (const grad of GRADIENTS) {
+    for (let i = 0; i < GRADIENTS.length; i++) {
+        const grad = GRADIENTS[i]
         gradient.addColorStop(grad.value, grad.color)
     }
     ctx.graph.fillStyle = gradient
@@ -88,7 +89,8 @@ export function draw(ctx: Context, params: Params) {
     ctx.axes.textAlign = "center"
     ctx.axes.textBaseline = "middle"
 
-    for (const x of xs) {
+    for (let i = 0; i < xs.length; i++) {
+        const x = xs[i]
         const t = lin(1, dx, x - xMin, 0)
         const canvasX = lerp(graphX0 + boxWidth / 2, graphX1 - boxWidth / 2, t)
         const canvasY = graphY1 + GRAPH_X_LABEL_PADDING_TOP
@@ -99,7 +101,8 @@ export function draw(ctx: Context, params: Params) {
     ctx.axes.textAlign = "right"
     ctx.axes.textBaseline = "middle"
 
-    for (const y of ys) {
+    for (let i = 0; i < ys.length; i++) {
+        const y = ys[i]
         const t = lin(1, dy, y - yMin, 0)
         const canvasX = GRAPH_PADDING_LEFT - GRAPH_Y_LABEL_PADDING_RIGHT
         const canvasY = lerp(
