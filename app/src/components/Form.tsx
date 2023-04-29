@@ -11,7 +11,7 @@ const INPUTS: Inputs<string> = {
     purchase_cost: "0",
     loan: "2000",
     years: "10",
-    interest_rate: "3",
+    interest_rate: "2",
 }
 
 interface Props {
