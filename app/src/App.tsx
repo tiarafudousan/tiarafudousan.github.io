@@ -21,7 +21,7 @@ function renderZ(z: number): string {
     return z.toFixed(2)
 }
 
-const PRICE_DELTA = 0.05
+const TOTAL_INVESTMENT_DELTA = 0.05
 const TARGET_ROI = 2
 const MAX_ROI = 20
 const TARGET_CCR = 30
@@ -98,8 +98,9 @@ function App() {
         const res = simulate(values)
         setSimData(res)
 
-        const yMax = values.property_price
-        const yMin = values.property_price * (1 - 10 * PRICE_DELTA)
+        const total_investment = res.total_investment
+        const yMax = total_investment
+        const yMin = total_investment * (1 - 10 * TOTAL_INVESTMENT_DELTA)
 
         const ys = [
             lerp(yMin, yMax, 0),
@@ -125,19 +126,14 @@ function App() {
             zs.ccr.push([])
 
             for (let j = 0; j <= 10; j++) {
-                const price = values.property_price * (1 - j * PRICE_DELTA)
-                const cash =
-                    values.loan > 0 && values.years > 0
-                        ? (price * i) / 10
-                        : price
+                const total =
+                    total_investment * (1 - j * TOTAL_INVESTMENT_DELTA)
+                const cash = (total * i) / 10
 
-                // TODO: fix sim - when loan = 0 or years = 0
-                // TODO: simulate when loan > property price
                 const res = simulate({
                     ...values,
-                    property_price: price,
                     cash,
-                    loan: price - cash,
+                    loan: total - cash,
                 })
 
                 const roi = res.yield_after_repayment * 100
@@ -223,6 +219,12 @@ function App() {
                     <table className="w-full">
                         <tbody>
                             <tr>
+                                <td>総投資額</td>
+                                <td style={{ textAlign: "right" }}>
+                                    {Yen(res.total_investment)} 円
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>返済総額</td>
                                 <td style={{ textAlign: "right" }}>
                                     {Yen(res.total_payment)} 円
@@ -304,7 +306,7 @@ function App() {
                         renderY={renderY}
                         renderZ={renderZ}
                     />
-                    <div className="text-sm">X = 自己資金比率 Y = 物件価格</div>
+                    <div className="text-sm">X = 自己資金比率 Y = 総投資額</div>
                 </div>
             ) : null}
         </div>
