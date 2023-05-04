@@ -2,7 +2,7 @@ export interface Inputs<a> {
     property_price: a
     yearly_income: a
     vacancy_rate: a
-    running_cost_rate: a
+    operating_cost_rate: a
     cash: a
     purchase_cost: a
     loan: a
@@ -14,7 +14,7 @@ export interface Errors {
     property_price?: string
     yearly_income?: string
     vacancy_rate?: string
-    running_cost_rate?: string
+    operating_cost_rate?: string
     cash?: string
     purchase_cost?: string
     years?: string
@@ -48,7 +48,7 @@ export function validate(
         property_price: 0,
         yearly_income: 0,
         vacancy_rate: 0,
-        running_cost_rate: 0,
+        operating_cost_rate: 0,
         cash: 0,
         purchase_cost: 0,
         loan: 0,
@@ -83,15 +83,15 @@ export function validate(
     }
     {
         const [error, value] = validateNum(
-            inputs.running_cost_rate,
+            inputs.operating_cost_rate,
             false,
             0,
             100
         )
         if (error) {
-            errors.running_cost_rate = error
+            errors.operating_cost_rate = error
         } else {
-            values.running_cost_rate = value
+            values.operating_cost_rate = value
         }
     }
     {

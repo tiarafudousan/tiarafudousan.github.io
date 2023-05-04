@@ -6,7 +6,7 @@ const INPUTS: Inputs<string> = {
     property_price: "2000",
     yearly_income: "200",
     vacancy_rate: "15",
-    running_cost_rate: "20",
+    operating_cost_rate: "20",
     cash: "0",
     purchase_cost: "0",
     loan: "2000",
@@ -94,10 +94,10 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
             <Input
                 label="諸経費率"
                 unit="%"
-                name="running_cost_rate"
-                value={inputs.running_cost_rate}
+                name="operating_cost_rate"
+                value={inputs.operating_cost_rate}
                 onChange={onChange}
-                error={errors?.running_cost_rate}
+                error={errors?.operating_cost_rate}
             />
 
             <h1 className="text-xl font-bold">資金計画</h1>

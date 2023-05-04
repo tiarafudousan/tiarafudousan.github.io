@@ -8,9 +8,9 @@ function calc_monthly_debt_payment(p: number, r: number, n: number) {
 function calc_yearly_expense(
     yearly_income: number,
     vacancy_rate: number,
-    running_cost_rate: number
+    operating_cost_rate: number
 ) {
-    return yearly_income * (vacancy_rate + running_cost_rate)
+    return yearly_income * (vacancy_rate + operating_cost_rate)
 }
 
 function calc_yearly_payment(
@@ -71,7 +71,7 @@ export function simulate(inputs: Inputs<number>): SimData {
     // const property_price = Math.floor(inputs.property_price)
     const yearly_income = Math.floor(inputs.yearly_income)
     const vacancy_rate = inputs.vacancy_rate / 100
-    const running_cost_rate = inputs.running_cost_rate / 100
+    const operating_cost_rate = inputs.operating_cost_rate / 100
 
     const cash = Math.floor(inputs.cash)
     const loan = Math.floor(inputs.loan)
@@ -86,7 +86,7 @@ export function simulate(inputs: Inputs<number>): SimData {
     const yearly_expense = calc_yearly_expense(
         yearly_income,
         vacancy_rate,
-        running_cost_rate
+        operating_cost_rate
     )
     const yearly_payment = calc_yearly_payment(
         monthly_debt_payment,
