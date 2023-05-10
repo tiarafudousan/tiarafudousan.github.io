@@ -32,7 +32,7 @@ function calc_gross_yield(total_investment: number, yearly_income: number) {
     return yearly_income / total_investment
 }
 
-function calc_real_yield(
+function calc_noi(
     total_investment: number,
     yearly_income: number,
     yearly_expense: number
@@ -58,11 +58,15 @@ export interface SimData {
     total_investment: number
     total_payment: number
     monthly_debt_payment: number
+    monthly_repayment_ratio: number
+    // monthly income before debt payment
+    monthly_income: number
     yearly_expense: number
     yearly_payment: number
     yearly_profit: number
     gross_yield: number
-    real_yield: number
+    // net operating income (excludes loan and taxes)
+    noi: number
     yield_after_repayment: number
     ccr: number
 }
@@ -88,6 +92,9 @@ export function simulate(inputs: Inputs<number>): SimData {
         vacancy_rate,
         operating_cost_rate
     )
+    const monthly_income = (yearly_income - yearly_expense) / 12
+    const monthly_repayment_ratio =
+        monthly_income > 0 ? monthly_debt_payment / monthly_income : 1
     const yearly_payment = calc_yearly_payment(
         monthly_debt_payment,
         yearly_expense
@@ -98,11 +105,7 @@ export function simulate(inputs: Inputs<number>): SimData {
         yearly_expense
     )
     const gross_yield = calc_gross_yield(total_investment, yearly_income)
-    const real_yield = calc_real_yield(
-        total_investment,
-        yearly_income,
-        yearly_expense
-    )
+    const noi = calc_noi(total_investment, yearly_income, yearly_expense)
     const yield_after_repayment = calc_yield_after_repayment(
         total_investment,
         yearly_profit
@@ -113,11 +116,13 @@ export function simulate(inputs: Inputs<number>): SimData {
         total_investment,
         total_payment: n * monthly_debt_payment,
         monthly_debt_payment,
+        monthly_repayment_ratio,
+        monthly_income,
         yearly_expense,
         yearly_payment,
         yearly_profit,
         gross_yield,
-        real_yield,
+        noi,
         yield_after_repayment,
         ccr,
     }

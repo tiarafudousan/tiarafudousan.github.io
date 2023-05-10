@@ -237,6 +237,18 @@ function App() {
                                 </td>
                             </tr>
                             <tr>
+                                <td>収入（月）</td>
+                                <td style={{ textAlign: "right" }}>
+                                    {Yen(res.monthly_income)} 円
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>返済比率（月）</td>
+                                <td style={{ textAlign: "right" }}>
+                                    {Percent(res.monthly_repayment_ratio)} %
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>空室 + 諸経費 （年）</td>
                                 <td style={{ textAlign: "right" }}>
                                     {Yen(res.yearly_expense)} 円
