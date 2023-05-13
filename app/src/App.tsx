@@ -261,6 +261,12 @@ function App() {
                                 </td>
                             </tr>
                             <tr>
+                                <td>表面利回り</td>
+                                <td style={{ textAlign: "right" }}>
+                                    {Percent(res.yield)} %
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>返済後利回り</td>
                                 <td style={{ textAlign: "right" }}>
                                     {Percent(res.yield_after_repayment)} %

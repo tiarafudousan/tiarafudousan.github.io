@@ -67,6 +67,8 @@ export interface SimData {
     gross_yield: number
     // net operating income (excludes loan and taxes)
     noi: number
+    // 表面利回り
+    yield: number
     yield_after_repayment: number
     ccr: number
 }
@@ -123,6 +125,7 @@ export function simulate(inputs: Inputs<number>): SimData {
         yearly_profit,
         gross_yield,
         noi,
+        yield: yearly_income / total_investment,
         yield_after_repayment,
         ccr,
     }
