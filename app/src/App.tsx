@@ -98,9 +98,9 @@ function App() {
         const res = simulate(values)
         setSimData(res)
 
-        const total_investment = res.total_investment
-        const yMax = total_investment
-        const yMin = total_investment * (1 - 10 * TOTAL_INVESTMENT_DELTA)
+        const total_cash_in = res.total_cash_in
+        const yMax = total_cash_in
+        const yMin = total_cash_in * (1 - 10 * TOTAL_INVESTMENT_DELTA)
 
         const ys = [
             lerp(yMin, yMax, 0),
@@ -126,8 +126,7 @@ function App() {
             zs.ccr.push([])
 
             for (let j = 0; j <= 10; j++) {
-                const total =
-                    total_investment * (1 - j * TOTAL_INVESTMENT_DELTA)
+                const total = total_cash_in * (1 - j * TOTAL_INVESTMENT_DELTA)
                 const cash = (total * i) / 10
 
                 const res = simulate({
@@ -136,7 +135,7 @@ function App() {
                     loan: total - cash,
                 })
 
-                const roi = res.yield_after_repayment * 100
+                const roi = res.real_yield * 100
                 const ccr = res.ccr * 100
 
                 zMax.roi = Math.max(zMax.roi, roi)
@@ -221,13 +220,13 @@ function App() {
                             <tr>
                                 <td>総投資額</td>
                                 <td style={{ textAlign: "right" }}>
-                                    {Yen(res.total_investment)} 円
+                                    {Yen(res.total_cash_in)} 円
                                 </td>
                             </tr>
                             <tr>
                                 <td>返済総額</td>
                                 <td style={{ textAlign: "right" }}>
-                                    {Yen(res.total_payment)} 円
+                                    {Yen(res.total_debt_payment)} 円
                                 </td>
                             </tr>
                             <tr>
@@ -239,11 +238,11 @@ function App() {
                             <tr>
                                 <td>収入（月）</td>
                                 <td style={{ textAlign: "right" }}>
-                                    {Yen(res.monthly_income)} 円
+                                    {Yen(res.monthly_cash_in)} 円
                                 </td>
                             </tr>
                             <tr>
-                                <td>返済比率（月）</td>
+                                <td>返済比率</td>
                                 <td style={{ textAlign: "right" }}>
                                     {Percent(res.monthly_repayment_ratio)} %
                                 </td>
@@ -257,19 +256,19 @@ function App() {
                             <tr>
                                 <td>手取り（年）</td>
                                 <td style={{ textAlign: "right" }}>
-                                    {Yen(res.yearly_profit)} 円
+                                    {Yen(res.yearly_cash_flow)} 円
                                 </td>
                             </tr>
                             <tr>
                                 <td>表面利回り</td>
                                 <td style={{ textAlign: "right" }}>
-                                    {Percent(res.yield)} %
+                                    {Percent(res.gross_yield)} %
                                 </td>
                             </tr>
                             <tr>
                                 <td>返済後利回り</td>
                                 <td style={{ textAlign: "right" }}>
-                                    {Percent(res.yield_after_repayment)} %
+                                    {Percent(res.real_yield)} %
                                 </td>
                             </tr>
                             <tr>

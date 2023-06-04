@@ -5,77 +5,28 @@ function calc_monthly_debt_payment(p: number, r: number, n: number) {
     return (p * r * (1 + r) ** n) / ((1 + r) ** n - 1)
 }
 
-function calc_yearly_expense(
-    yearly_income: number,
-    vacancy_rate: number,
-    operating_cost_rate: number
-) {
-    return yearly_income * (vacancy_rate + operating_cost_rate)
-}
-
-function calc_yearly_payment(
-    monthly_debt_payment: number,
-    yearly_expense: number
-) {
-    return monthly_debt_payment * 12 + yearly_expense
-}
-
-function calc_yearly_profit(
-    yearly_income: number,
-    monthly_debt_payment: number,
-    yearly_expense: number
-) {
-    return yearly_income - monthly_debt_payment * 12 - yearly_expense
-}
-
-function calc_gross_yield(total_investment: number, yearly_income: number) {
-    return yearly_income / total_investment
-}
-
-function calc_noi(
-    total_investment: number,
-    yearly_income: number,
-    yearly_expense: number
-) {
-    return (yearly_income - yearly_expense) / total_investment
-}
-
-function calc_yield_after_repayment(
-    total_investment: number,
-    yearly_profit: number
-) {
-    return yearly_profit / total_investment
-}
-
-function calc_ccr(yearly_profit: number, cash: number) {
-    if (cash == 0) {
-        return 1
-    }
-    return yearly_profit / cash
-}
-
 export interface SimData {
-    total_investment: number
-    total_payment: number
+    total_cash_in: number
+    total_debt_payment: number
     monthly_debt_payment: number
     monthly_repayment_ratio: number
-    // monthly income before debt payment
-    monthly_income: number
+    // Monthly cash in before debt payment
+    monthly_cash_in: number
     yearly_expense: number
-    yearly_payment: number
-    yearly_profit: number
-    gross_yield: number
-    // net operating income (excludes loan and taxes)
-    noi: number
+    yearly_cash_out: number
+    yearly_cash_flow: number
     // 表面利回り
-    yield: number
-    yield_after_repayment: number
+    gross_yield: number
+    // 実質利回り
+    real_yield: number
     ccr: number
+    // Net operating income (excludes loan and taxes)
+    noi: number
 }
 
 export function simulate(inputs: Inputs<number>): SimData {
-    // const property_price = Math.floor(inputs.property_price)
-    const yearly_income = Math.floor(inputs.yearly_income)
+    // Yearly rent at 100% occupancy
+    const yearly_rent = Math.floor(inputs.yearly_rent)
     const vacancy_rate = inputs.vacancy_rate / 100
     const operating_cost_rate = inputs.operating_cost_rate / 100
 
@@ -84,49 +35,43 @@ export function simulate(inputs: Inputs<number>): SimData {
     const n = inputs.years * 12
     const interest_rate = inputs.interest_rate / (100 * 12)
 
-    // property_price + cost - cash = loan
-    const total_investment = cash + loan
+    // Cash in
+    const yearly_cash_in = yearly_rent * (1 - vacancy_rate)
+    const monthly_cash_in = yearly_cash_in / 12
 
+    // property_price + cost = cash +  loan
+    const total_cash_in = cash + loan
+
+    // Loan
     const monthly_debt_payment =
         n > 0 ? calc_monthly_debt_payment(loan, interest_rate, n) : 0
-    const yearly_expense = calc_yearly_expense(
-        yearly_income,
-        vacancy_rate,
-        operating_cost_rate
-    )
-    const monthly_income = (yearly_income - yearly_expense) / 12
     const monthly_repayment_ratio =
-        monthly_income > 0 ? monthly_debt_payment / monthly_income : 1
-    const yearly_payment = calc_yearly_payment(
-        monthly_debt_payment,
-        yearly_expense
-    )
-    const yearly_profit = calc_yearly_profit(
-        yearly_income,
-        monthly_debt_payment,
-        yearly_expense
-    )
-    const gross_yield = calc_gross_yield(total_investment, yearly_income)
-    const noi = calc_noi(total_investment, yearly_income, yearly_expense)
-    const yield_after_repayment = calc_yield_after_repayment(
-        total_investment,
-        yearly_profit
-    )
-    const ccr = calc_ccr(yearly_profit, cash)
+        monthly_cash_in > 0 ? monthly_debt_payment / monthly_cash_in : 1
+    const total_debt_payment = n * monthly_debt_payment
+
+    // Cash flow
+    const yearly_expense = yearly_rent * operating_cost_rate
+    const yearly_cash_out = monthly_debt_payment * 12 + yearly_expense
+    const yearly_cash_flow = yearly_cash_in - yearly_cash_out
+
+    // Yield
+    const gross_yield = yearly_rent / total_cash_in
+    const real_yield = yearly_cash_flow / total_cash_in
+    const ccr = cash > 0 ? yearly_cash_flow / cash : 1
+    const noi = (yearly_cash_in - yearly_expense) / total_cash_in
 
     return {
-        total_investment,
-        total_payment: n * monthly_debt_payment,
+        total_cash_in,
+        total_debt_payment,
         monthly_debt_payment,
         monthly_repayment_ratio,
-        monthly_income,
+        monthly_cash_in,
         yearly_expense,
-        yearly_payment,
-        yearly_profit,
+        yearly_cash_out,
+        yearly_cash_flow,
         gross_yield,
-        noi,
-        yield: yearly_income / total_investment,
-        yield_after_repayment,
+        real_yield,
         ccr,
+        noi,
     }
 }
