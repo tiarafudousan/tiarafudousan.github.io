@@ -1,5 +1,75 @@
 import { Inputs } from "./form"
 
+// 構造
+// 鉄筋コンクリート
+export const RC = "RC"
+// 鉄骨鉄筋コンクリート
+export const SRC = "SRC"
+// 重量鉄骨
+export const HGS = "HGS"
+// 鉄骨
+export const S = "S"
+// 軽量鉄骨 3mm超4mm未満
+export const LGS = "LGS"
+// 木造
+export const WOOD = "WOOD"
+
+export type BuildingType = "RC" | "SRC" | "HGS" | "S" | "LGS" | "WOOD"
+
+// 再調達価格
+export const REPLACEMENT_COSTS: { [key: string]: [number, number] } = {
+    RC: [16, 20],
+    SRC: [16, 20],
+    S: [13, 18],
+    HGS: [13, 18],
+    LGS: [12, 17],
+    WOOD: [10, 16],
+}
+
+// 法定耐用年数
+export const LEGAL_DURATIONS: { [key: string]: number } = {
+    RC: 47,
+    SRC: 47,
+    S: 34,
+    HGS: 34,
+    LGS: 19,
+    WOOD: 22,
+}
+
+//  建物の積算価格
+function estimate_building_price(args: {
+    type: BuildingType
+    age: number
+    area: number
+}): [number, number] {
+    /*
+    ■築年数が法定耐用年数内の物件の場合
+    再調達価格 x 建物面積 x (法定耐用年数 - 築年数) ÷ 法定耐用年数
+
+    ■築年数が法定耐用年数を超過した物件の場合
+    0
+    */
+    const building_type = args.type
+    const age = args.age
+    const area = args.area
+
+    const legal_duration = LEGAL_DURATIONS[building_type]
+    const cost = REPLACEMENT_COSTS[building_type]
+
+    if (age < legal_duration) {
+        return [
+            Math.floor(
+                (cost[0] * area * (legal_duration - age)) / legal_duration
+            ),
+            Math.floor(
+                (cost[1] * area * (legal_duration - age)) / legal_duration
+            ),
+        ]
+    }
+
+    return [0, 0]
+}
+
 // 毎月返済額の計算 - 元利均等返済
 function calc_monthly_debt_payment(p: number, r: number, n: number) {
     return (p * r * (1 + r) ** n) / ((1 + r) ** n - 1)
