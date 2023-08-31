@@ -96,7 +96,7 @@ export interface SimData {
 
 export function simulate(inputs: Inputs<number>): SimData {
     // Yearly rent at 100% occupancy
-    const yearly_rent = Math.floor(inputs.yearly_rent)
+    const gpi = Math.floor(inputs.gpi)
     const vacancy_rate = inputs.vacancy_rate / 100
     const operating_cost_rate = inputs.operating_cost_rate / 100
 
@@ -106,7 +106,7 @@ export function simulate(inputs: Inputs<number>): SimData {
     const interest_rate = inputs.interest_rate / (100 * 12)
 
     // Cash in
-    const yearly_cash_in = yearly_rent * (1 - vacancy_rate)
+    const yearly_cash_in = gpi * (1 - vacancy_rate)
     const monthly_cash_in = yearly_cash_in / 12
 
     // property_price + cost = cash +  loan
@@ -120,12 +120,12 @@ export function simulate(inputs: Inputs<number>): SimData {
     const total_debt_payment = n * monthly_debt_payment
 
     // Cash flow
-    const yearly_expense = yearly_rent * operating_cost_rate
+    const yearly_expense = gpi * operating_cost_rate
     const yearly_cash_out = monthly_debt_payment * 12 + yearly_expense
     const yearly_cash_flow = yearly_cash_in - yearly_cash_out
 
     // Yield
-    const gross_yield = yearly_rent / total_cash_in
+    const gross_yield = gpi / total_cash_in
     const real_yield = yearly_cash_flow / total_cash_in
     const ccr = cash > 0 ? yearly_cash_flow / cash : 1
     const noi = (yearly_cash_in - yearly_expense) / total_cash_in

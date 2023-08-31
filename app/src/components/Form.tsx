@@ -4,7 +4,7 @@ import Input from "./Input"
 
 const INPUTS: Inputs<string> = {
     property_price: "2000",
-    yearly_rent: "200",
+    gpi: "200",
     vacancy_rate: "15",
     operating_cost_rate: "20",
     cash: "0",
@@ -78,10 +78,10 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
             <Input
                 label="満室年収"
                 unit="万円"
-                name="yearly_rent"
-                value={inputs.yearly_rent}
+                name="gpi"
+                value={inputs.gpi}
                 onChange={onChange}
-                error={errors?.property_price}
+                error={errors?.gpi}
             />
             <Input
                 label="空室率"

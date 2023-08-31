@@ -1,6 +1,6 @@
 export interface Inputs<a> {
     property_price: a
-    yearly_rent: a
+    gpi: a
     vacancy_rate: a
     operating_cost_rate: a
     cash: a
@@ -12,7 +12,7 @@ export interface Inputs<a> {
 
 export interface Errors {
     property_price?: string
-    yearly_rent?: string
+    gpi?: string
     vacancy_rate?: string
     operating_cost_rate?: string
     cash?: string
@@ -46,7 +46,7 @@ export function validate(
 ): [errors: Errors | null, values: Inputs<number>] {
     const values: Inputs<number> = {
         property_price: 0,
-        yearly_rent: 0,
+        gpi: 0,
         vacancy_rate: 0,
         operating_cost_rate: 0,
         cash: 0,
@@ -66,11 +66,11 @@ export function validate(
         }
     }
     {
-        const [error, value] = validateNum(inputs.yearly_rent)
+        const [error, value] = validateNum(inputs.gpi)
         if (error) {
-            errors.yearly_rent = error
+            errors.gpi = error
         } else {
-            values.yearly_rent = value
+            values.gpi = value
         }
     }
     {
