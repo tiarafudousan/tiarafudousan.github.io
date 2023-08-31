@@ -1,6 +1,7 @@
 export interface Inputs<a> {
     property_price: a
     gpi: a
+    delta_gpi: a
     vacancy_rate: a
     operating_cost_rate: a
     cash: a
@@ -13,6 +14,7 @@ export interface Inputs<a> {
 export interface Errors {
     property_price?: string
     gpi?: string
+    delta_gpi?: string
     vacancy_rate?: string
     operating_cost_rate?: string
     cash?: string
@@ -47,6 +49,7 @@ export function validate(
     const values: Inputs<number> = {
         property_price: 0,
         gpi: 0,
+        delta_gpi: 0,
         vacancy_rate: 0,
         operating_cost_rate: 0,
         cash: 0,
@@ -71,6 +74,14 @@ export function validate(
             errors.gpi = error
         } else {
             values.gpi = value
+        }
+    }
+    {
+        const [error, value] = validateNum(inputs.delta_gpi, false, -100, 100)
+        if (error) {
+            errors.delta_gpi = error
+        } else {
+            values.delta_gpi = value
         }
     }
     {

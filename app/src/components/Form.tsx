@@ -5,6 +5,7 @@ import Input from "./Input"
 const INPUTS: Inputs<string> = {
     property_price: "2000",
     gpi: "200",
+    delta_gpi: "0",
     vacancy_rate: "15",
     operating_cost_rate: "20",
     cash: "0",
@@ -82,6 +83,14 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
                 value={inputs.gpi}
                 onChange={onChange}
                 error={errors?.gpi}
+            />
+            <Input
+                label="家賃変動率"
+                unit="%"
+                name="delta_gpi"
+                value={inputs.delta_gpi}
+                onChange={onChange}
+                error={errors?.delta_gpi}
             />
             <Input
                 label="空室率"
