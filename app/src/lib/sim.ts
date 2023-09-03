@@ -74,7 +74,6 @@ export interface SimData {
   monthly_repayment_ratio: number
   // Monthly cash in before debt payment
   monthly_cash_in: number
-  yearly_expense: number
   yearly_cash_out: number
   yearly_cash_flow: number
   // 表面利回り
@@ -83,11 +82,13 @@ export interface SimData {
   real_yield: number
   gpi: number
   egi: number
+  opex: number
   ccr: number
   // Net operating income (excludes loan and taxes)
   noi: number
 }
 
+// TODO: detailed opex
 export function simulate(inputs: Inputs<number>): SimData {
   const gpi = Math.floor(inputs.gpi)
   const vacancy_rate = inputs.vacancy_rate / 100
@@ -119,15 +120,15 @@ export function simulate(inputs: Inputs<number>): SimData {
   const total_debt_payment = n * monthly_debt_payment
 
   // Cash flow
-  const yearly_expense = gpi * opex_rate
-  const yearly_cash_out = monthly_debt_payment * 12 + yearly_expense
+  const opex = gpi * opex_rate
+  const yearly_cash_out = monthly_debt_payment * 12 + opex
   const yearly_cash_flow = egi - yearly_cash_out
 
   // Yield
   const gross_yield = gpi / total_cash_in
   const real_yield = yearly_cash_flow / total_cash_in
   const ccr = cash > 0 ? yearly_cash_flow / cash : 1
-  const noi = (egi - yearly_expense) / total_cash_in
+  const noi = (egi - opex) / total_cash_in
 
   // TODO: delta gpi
 
@@ -137,13 +138,13 @@ export function simulate(inputs: Inputs<number>): SimData {
     monthly_debt_payment,
     monthly_repayment_ratio,
     monthly_cash_in,
-    yearly_expense,
     yearly_cash_out,
     yearly_cash_flow,
     gross_yield,
     real_yield,
     gpi,
     egi,
+    opex,
     ccr,
     noi,
     // TODO: atcf, fcr, ccr

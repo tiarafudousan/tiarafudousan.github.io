@@ -234,6 +234,10 @@ function App() {
                 <td style={{ textAlign: "right" }}>{Yen(res.egi)} 円</td>
               </tr>
               <tr>
+                <td>OPEX</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.opex)} 円</td>
+              </tr>
+              <tr>
                 <td>返済総額</td>
                 <td style={{ textAlign: "right" }}>
                   {Yen(res.total_debt_payment)} 円
