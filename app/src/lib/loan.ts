@@ -63,7 +63,21 @@ export function calc_fixed_rate_loan_monthly_payment(
   return (p * r * (1 + r) ** n) / ((1 + r) ** n - 1)
 }
 
-export function sim_fixed_rate_loan(p: number, r: number, n: number) {
+export interface FixedRateLoan {
+  principals: number[]
+  interests: number[]
+  debt_repayments: number[]
+  monthly_payment: number
+  total_payment: number
+  interest: number
+  payment_to_loan_ratio: number
+}
+
+export function sim_fixed_rate_loan(
+  p: number,
+  r: number,
+  n: number,
+): FixedRateLoan {
   const principals = []
   const interests = []
   // principal + interest

@@ -91,8 +91,6 @@ export interface SimData {
   btcf: number
 }
 
-const YEARS = 30
-
 // TODO: detailed opex
 export function simulate(inputs: Inputs<number>): SimData {
   const gpi = Math.floor(inputs.gpi)
