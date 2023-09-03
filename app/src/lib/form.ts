@@ -3,7 +3,7 @@ export interface Inputs<a> {
   gpi: a
   delta_gpi: a
   vacancy_rate: a
-  operating_cost_rate: a
+  opex_rate: a
   cash: a
   purchase_cost: a
   principal: a
@@ -16,7 +16,7 @@ export interface Errors {
   gpi?: string
   delta_gpi?: string
   vacancy_rate?: string
-  operating_cost_rate?: string
+  opex_rate?: string
   cash?: string
   purchase_cost?: string
   years?: string
@@ -51,7 +51,7 @@ export function validate(
     gpi: 0,
     delta_gpi: 0,
     vacancy_rate: 0,
-    operating_cost_rate: 0,
+    opex_rate: 0,
     cash: 0,
     purchase_cost: 0,
     principal: 0,
@@ -93,16 +93,11 @@ export function validate(
     }
   }
   {
-    const [error, value] = validateNum(
-      inputs.operating_cost_rate,
-      false,
-      0,
-      100,
-    )
+    const [error, value] = validateNum(inputs.opex_rate, false, 0, 100)
     if (error) {
-      errors.operating_cost_rate = error
+      errors.opex_rate = error
     } else {
-      values.operating_cost_rate = value
+      values.opex_rate = value
     }
   }
   {

@@ -91,7 +91,7 @@ export interface SimData {
 export function simulate(inputs: Inputs<number>): SimData {
   const gpi = Math.floor(inputs.gpi)
   const vacancy_rate = inputs.vacancy_rate / 100
-  const operating_cost_rate = inputs.operating_cost_rate / 100
+  const opex_rate = inputs.opex_rate / 100
 
   const cash = Math.floor(inputs.cash)
   const principal = Math.floor(inputs.principal)
@@ -119,7 +119,7 @@ export function simulate(inputs: Inputs<number>): SimData {
   const total_debt_payment = n * monthly_debt_payment
 
   // Cash flow
-  const yearly_expense = gpi * operating_cost_rate
+  const yearly_expense = gpi * opex_rate
   const yearly_cash_out = monthly_debt_payment * 12 + yearly_expense
   const yearly_cash_flow = egi - yearly_cash_out
 
