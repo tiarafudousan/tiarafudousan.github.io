@@ -99,6 +99,8 @@ function App() {
     const res = simulate(values)
     setSimData(res)
 
+    return
+
     const total_cash_in = res.total_cash_in
     const yMax = total_cash_in
     const yMin = total_cash_in * (1 - 10 * TOTAL_INVESTMENT_DELTA)
@@ -220,6 +222,12 @@ function App() {
                 </td>
               </tr>
               <tr>
+                <td>返済総額</td>
+                <td style={{ textAlign: "right" }}>
+                  {Yen(res.total_debt_payment)} 円
+                </td>
+              </tr>
+              <tr>
                 <td>表面利回り</td>
                 <td style={{ textAlign: "right" }}>
                   {Percent(res.gross_yield)} %
@@ -238,10 +246,24 @@ function App() {
                 <td style={{ textAlign: "right" }}>{Yen(res.opex)} 円</td>
               </tr>
               <tr>
-                <td>返済総額</td>
-                <td style={{ textAlign: "right" }}>
-                  {Yen(res.total_debt_payment)} 円
-                </td>
+                <td>NOI</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.noi)} 円</td>
+              </tr>
+              <tr>
+                <td>CAPEX</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.capex)} 円</td>
+              </tr>
+              <tr>
+                <td>NCF</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.ncf)} 円</td>
+              </tr>
+              <tr>
+                <td>ADS</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.ads)} 円</td>
+              </tr>
+              <tr>
+                <td>BTCF</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.btcf)} 円</td>
               </tr>
               <tr>
                 <td>返済額（月）</td>
