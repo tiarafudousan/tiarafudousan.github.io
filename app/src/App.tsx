@@ -4,6 +4,7 @@ import { Inputs } from "./lib/form"
 import { simulate, SimData } from "./lib/sim"
 import { lerp, bound } from "./components/graphs/lib"
 import Form from "./components/Form"
+import LineGraph from "./components/graphs/LineGraph"
 import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
 import Range from "./components/Range"
@@ -199,6 +200,7 @@ function App() {
     setDataType(e.target.value as ZType)
   }
 
+  // TODO: mobile
   return (
     <div
       ref={ref}
@@ -218,14 +220,20 @@ function App() {
                 </td>
               </tr>
               <tr>
+                <td>EGI</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.egi)} 円</td>
+              </tr>
+              <tr>
+                <td>表面利回り</td>
+                <td style={{ textAlign: "right" }}>
+                  {Percent(res.gross_yield)} %
+                </td>
+              </tr>
+              <tr>
                 <td>返済総額</td>
                 <td style={{ textAlign: "right" }}>
                   {Yen(res.total_debt_payment)} 円
                 </td>
-              </tr>
-              <tr>
-                <td>EGI</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.egi)} 円</td>
               </tr>
               <tr>
                 <td>返済額（月）</td>
@@ -249,12 +257,6 @@ function App() {
                 <td>手取り（年）</td>
                 <td style={{ textAlign: "right" }}>
                   {Yen(res.yearly_cash_flow)} 円
-                </td>
-              </tr>
-              <tr>
-                <td>表面利回り</td>
-                <td style={{ textAlign: "right" }}>
-                  {Percent(res.gross_yield)} %
                 </td>
               </tr>
               <tr>
