@@ -68,9 +68,8 @@ export interface FixedRateLoan {
   interests: number[]
   debt_repayments: number[]
   monthly_payment: number
-  total_payment: number
+  total: number
   interest: number
-  payment_to_loan_ratio: number
 }
 
 export function sim_fixed_rate_loan(
@@ -102,8 +101,7 @@ export function sim_fixed_rate_loan(
     interests: agg(interests),
     debt_repayments: agg(debt_repayments),
     monthly_payment: x,
-    total_payment: x * n,
+    total: x * n,
     interest: x * n - p,
-    payment_to_loan_ratio: (x * n) / p,
   }
 }
