@@ -6,7 +6,7 @@ export interface Inputs<a> {
   operating_cost_rate: a
   cash: a
   purchase_cost: a
-  loan: a
+  principal: a
   years: a
   interest_rate: a
 }
@@ -54,7 +54,7 @@ export function validate(
     operating_cost_rate: 0,
     cash: 0,
     purchase_cost: 0,
-    loan: 0,
+    principal: 0,
     years: 0,
     interest_rate: 0,
   }
@@ -139,24 +139,24 @@ export function validate(
   }
 
   if (!errors.property_price && !errors.cash && !errors.purchase_cost) {
-    const loan = calcLoan(inputs)
-    if (loan != null) {
-      values.loan = loan
-      if (values.loan < 0) {
+    const principal = calcPrincipal(inputs)
+    if (principal != null) {
+      values.principal = principal
+      if (values.principal < 0) {
         errors.cash = "自己資金 > 物件価格 + 購入時諸費用"
       }
     }
   }
 
-  // if loan > 0 then years > 0
-  if (values.loan > 0 && values.years == 0) {
+  // if principal > 0 then years > 0
+  if (values.principal > 0 && values.years == 0) {
     errors.years = "借入金額 > 0, 0より大きい数字を入力してください"
   }
 
   return [Object.keys(errors).length > 0 ? errors : null, values]
 }
 
-export function calcLoan(args: {
+export function calcPrincipal(args: {
   property_price: string
   purchase_cost: string
   cash: string
@@ -165,7 +165,7 @@ export function calcLoan(args: {
   const purchase_cost = parseInt(args.purchase_cost)
   const cash = parseInt(args.cash)
 
-  const loan = property_price + purchase_cost - cash
+  const principal = property_price + purchase_cost - cash
 
-  return isNaN(loan) ? null : loan
+  return isNaN(principal) ? null : principal
 }

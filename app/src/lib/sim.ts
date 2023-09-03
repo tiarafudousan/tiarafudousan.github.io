@@ -1,4 +1,5 @@
 import { Inputs } from "./form"
+import * as loan_lib from "./loan"
 
 // 構造
 // 鉄筋コンクリート
@@ -66,11 +67,6 @@ function estimate_building_price(args: {
   return [0, 0]
 }
 
-// 毎月返済額の計算 - 元利均等返済
-function calc_monthly_debt_payment(p: number, r: number, n: number) {
-  return (p * r * (1 + r) ** n) / ((1 + r) ** n - 1)
-}
-
 export interface SimData {
   total_cash_in: number
   total_debt_payment: number
@@ -98,7 +94,7 @@ export function simulate(inputs: Inputs<number>): SimData {
   const operating_cost_rate = inputs.operating_cost_rate / 100
 
   const cash = Math.floor(inputs.cash)
-  const loan = Math.floor(inputs.loan)
+  const principal = Math.floor(inputs.principal)
   const n = inputs.years * 12
   const interest_rate = inputs.interest_rate / (100 * 12)
 
@@ -106,12 +102,18 @@ export function simulate(inputs: Inputs<number>): SimData {
   const egi = gpi * (1 - vacancy_rate)
   const monthly_cash_in = egi / 12
 
-  // property_price + cost = cash +  loan
-  const total_cash_in = cash + loan
+  // property_price + cost = cash +  principal
+  const total_cash_in = cash + principal
 
   // Loan
   const monthly_debt_payment =
-    n > 0 ? calc_monthly_debt_payment(loan, interest_rate, n) : 0
+    n > 0
+      ? loan_lib.calc_fixed_rate_loan_monthly_payment(
+          principal,
+          interest_rate,
+          n,
+        )
+      : 0
   const monthly_repayment_ratio =
     monthly_cash_in > 0 ? monthly_debt_payment / monthly_cash_in : 1
   const total_debt_payment = n * monthly_debt_payment

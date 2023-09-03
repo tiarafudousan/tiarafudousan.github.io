@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Inputs, Errors, calcLoan, validate } from "../lib/form"
+import { Inputs, Errors, calcPrincipal, validate } from "../lib/form"
 import Input from "./Input"
 
 const INPUTS: Inputs<string> = {
@@ -10,7 +10,7 @@ const INPUTS: Inputs<string> = {
   operating_cost_rate: "20",
   cash: "0",
   purchase_cost: "0",
-  loan: "2000",
+  principal: "2000",
   years: "10",
   interest_rate: "2",
 }
@@ -31,11 +31,11 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         [name]: value,
       }
 
-      const loan = calcLoan(newInputs)
+      const principal = calcPrincipal(newInputs)
 
       return {
         ...newInputs,
-        loan: loan != null ? loan.toString() : "",
+        principal: principal != null ? principal.toString() : "",
       }
     })
   }
@@ -129,8 +129,8 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
       <Input
         label="借入金額"
         unit="万円"
-        name="loan"
-        value={inputs.loan}
+        name="principal"
+        value={inputs.principal}
         error=""
         disabled={true}
       />

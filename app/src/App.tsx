@@ -132,7 +132,7 @@ function App() {
         const res = simulate({
           ...values,
           cash,
-          loan: total - cash,
+          principal: total - cash,
         })
 
         const roi = res.real_yield * 100
