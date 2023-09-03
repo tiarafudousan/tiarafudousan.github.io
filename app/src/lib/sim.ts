@@ -1,5 +1,4 @@
 import { Inputs } from "./form"
-import { padd, chunk, sum, pipe } from "./utils"
 import * as loan_lib from "./loan"
 
 // 構造
@@ -131,25 +130,6 @@ export function simulate(inputs: Inputs<number>): SimData {
   const yearly_cash_flow = egi - yearly_cash_out
 
   const loan_sim = loan_lib.sim_fixed_rate_loan(principal, interest_rate, n)
-  // const principals = padd(loan_sim.principals, YEARS * 12, 0)
-  const principals = pipe(
-    loan_sim.principals,
-    (xs: number[]) => padd(xs, YEARS * 12, 0),
-    (xs: number[]) => chunk(xs, 12),
-    (xs: number[][]) => xs.map(sum),
-  )
-  const debt_repayments = pipe(
-    loan_sim.debt_repayments,
-    (xs: number[]) => padd(xs, YEARS * 12, 0),
-    (xs: number[]) => chunk(xs, 12),
-    (xs: number[][]) => xs.map(sum),
-  )
-  const interests = pipe(
-    loan_sim.interests,
-    (xs: number[]) => padd(xs, YEARS * 12, 0),
-    (xs: number[]) => chunk(xs, 12),
-    (xs: number[][]) => xs.map(sum),
-  )
 
   const gross_yield = gpi / total_cash_in
   const real_yield = yearly_cash_flow / total_cash_in
@@ -159,7 +139,7 @@ export function simulate(inputs: Inputs<number>): SimData {
   const capex = 0
   const ncf = noi - capex
   // TODO: get ads of a particula year
-  const ads = debt_repayments[0]
+  const ads = loan_sim.debt_repayments[0]
   const btcf = ncf - ads
 
   // TODO: delta gpi

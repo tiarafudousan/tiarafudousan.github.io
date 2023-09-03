@@ -1,3 +1,16 @@
+import { padd, chunk, sum, pipe } from "./utils"
+
+const YEARS = 30
+
+function agg(xs: number[]): number[] {
+  return pipe(
+    xs,
+    (xs: number[]) => padd(xs, YEARS * 12, 0),
+    (xs: number[]) => chunk(xs, 12),
+    (xs: number[][]) => xs.map(sum),
+  )
+}
+
 // 元金均等返済 - fixed principal
 export function calc_fix_principal_loan_total_payment(
   p: number,
@@ -29,9 +42,9 @@ export function sim_fixed_principal_loan(p: number, r: number, n: number) {
   }
 
   return {
-    principals: principals,
-    interests: interests,
-    debt_repayments: debt_repayments,
+    principals: agg(principals),
+    interests: agg(interests),
+    debt_repayments: agg(debt_repayments),
     total_payment: total_payment,
     interest: total_payment - p,
     payment_to_loan_ratio: total_payment / p,
@@ -71,9 +84,9 @@ export function sim_fixed_rate_loan(p: number, r: number, n: number) {
   }
 
   return {
-    principals: principals,
-    interests: interests,
-    debt_repayments: debt_repayments,
+    principals: agg(principals),
+    interests: agg(interests),
+    debt_repayments: agg(debt_repayments),
     monthly_payment: x,
     total_payment: x * n,
     interest: x * n - p,
