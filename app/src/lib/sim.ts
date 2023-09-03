@@ -81,6 +81,7 @@ export interface SimData {
   gross_yield: number
   // 実質利回り
   real_yield: number
+  gpi: number
   egi: number
   ccr: number
   // Net operating income (excludes loan and taxes)
@@ -88,7 +89,6 @@ export interface SimData {
 }
 
 export function simulate(inputs: Inputs<number>): SimData {
-  // Yearly rent at 100% occupancy
   const gpi = Math.floor(inputs.gpi)
   const vacancy_rate = inputs.vacancy_rate / 100
   const operating_cost_rate = inputs.operating_cost_rate / 100
@@ -142,8 +142,10 @@ export function simulate(inputs: Inputs<number>): SimData {
     yearly_cash_flow,
     gross_yield,
     real_yield,
+    gpi,
     egi,
     ccr,
     noi,
+    // TODO: atcf, fcr, ccr
   }
 }

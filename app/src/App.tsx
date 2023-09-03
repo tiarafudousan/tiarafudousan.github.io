@@ -220,14 +220,18 @@ function App() {
                 </td>
               </tr>
               <tr>
-                <td>EGI</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.egi)} 円</td>
-              </tr>
-              <tr>
                 <td>表面利回り</td>
                 <td style={{ textAlign: "right" }}>
                   {Percent(res.gross_yield)} %
                 </td>
+              </tr>
+              <tr>
+                <td>GPI</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.gpi)} 円</td>
+              </tr>
+              <tr>
+                <td>EGI</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.egi)} 円</td>
               </tr>
               <tr>
                 <td>返済総額</td>
