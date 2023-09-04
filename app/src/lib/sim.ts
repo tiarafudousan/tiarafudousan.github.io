@@ -89,6 +89,11 @@ export interface SimData {
   ncf: number
   ads: number
   btcf: number
+  building_depreciation: number
+  equipment_depreciation: number
+  taxable_income: number
+  tax: number
+  atcf: number
 }
 
 // TODO: detailed opex
@@ -96,9 +101,10 @@ export function simulate(inputs: Inputs<number>): SimData {
   const gpi = Math.floor(inputs.gpi)
   const vacancy_rate = inputs.vacancy_rate / 100
   const opex_rate = inputs.opex_rate / 100
+  const tax_rate = inputs.tax_rate / 100
 
   const cash = Math.floor(inputs.cash)
-  const principal = Math.floor(inputs.principal)
+  const p = Math.floor(inputs.principal)
   const n = inputs.years * 12
   const interest_rate = inputs.interest_rate / (100 * 12)
 
@@ -107,16 +113,12 @@ export function simulate(inputs: Inputs<number>): SimData {
   const monthly_cash_in = egi / 12
 
   // property_price + cost = cash +  principal
-  const total_cash_in = cash + principal
+  const total_cash_in = cash + p
 
   // Loan
   const monthly_debt_payment =
     n > 0
-      ? loan_lib.calc_fixed_rate_loan_monthly_payment(
-          principal,
-          interest_rate,
-          n,
-        )
+      ? loan_lib.calc_fixed_rate_loan_monthly_payment(p, interest_rate, n)
       : 0
   const monthly_repayment_ratio =
     monthly_cash_in > 0 ? monthly_debt_payment / monthly_cash_in : 1
@@ -127,18 +129,30 @@ export function simulate(inputs: Inputs<number>): SimData {
   const yearly_cash_out = monthly_debt_payment * 12 + opex
   const yearly_cash_flow = egi - yearly_cash_out
 
-  const loan_sim = loan_lib.sim_fixed_rate_loan(principal, interest_rate, n)
+  const loan_sim = loan_lib.sim_fixed_rate_loan(p, interest_rate, n)
 
   const gross_yield = gpi / total_cash_in
   const real_yield = yearly_cash_flow / total_cash_in
   const ccr = cash > 0 ? yearly_cash_flow / cash : 1
+  // NOI //
   const noi = egi - opex
   // TODO: capex
   const capex = 0
   const ncf = noi - capex
+  // BTCF //
   // TODO: get ads of a particula year
   const ads = loan_sim.debt_repayments[0]
   const btcf = ncf - ads
+  // ATCF //
+  // TODO: get ads of a particula year
+  const building_depreciation = 0
+  const equipment_depreciation = 0
+  const principal = loan_sim.principals[0]
+  const taxable_income =
+    btcf - (building_depreciation + equipment_depreciation) + principal
+  // TODO: tax
+  const tax = Math.max(taxable_income * tax_rate, 0)
+  const atcf = btcf - tax
 
   // TODO: delta gpi
 
@@ -161,6 +175,11 @@ export function simulate(inputs: Inputs<number>): SimData {
     ncf,
     ads,
     btcf,
+    building_depreciation,
+    equipment_depreciation,
+    taxable_income,
+    tax,
+    atcf,
     // TODO: atcf, fcr, ccr
   }
 }

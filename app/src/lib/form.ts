@@ -9,6 +9,7 @@ export interface Inputs<a> {
   principal: a
   years: a
   interest_rate: a
+  tax_rate: a
 }
 
 export interface Errors {
@@ -21,6 +22,7 @@ export interface Errors {
   purchase_cost?: string
   years?: string
   interest_rate?: string
+  tax_rate?: string
 }
 
 function validateNum(
@@ -57,6 +59,7 @@ export function validate(
     principal: 0,
     years: 0,
     interest_rate: 0,
+    tax_rate: 0,
   }
   const errors: Errors = {}
 
@@ -130,6 +133,14 @@ export function validate(
       errors.interest_rate = error
     } else {
       values.interest_rate = value
+    }
+  }
+  {
+    const [error, value] = validateNum(inputs.tax_rate, false, 0)
+    if (error) {
+      errors.tax_rate = error
+    } else {
+      values.tax_rate = value
     }
   }
 

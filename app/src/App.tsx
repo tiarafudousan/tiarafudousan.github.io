@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from "react"
 import "./App.css"
 import { Inputs } from "./lib/form"
 import { simulate, SimData } from "./lib/sim"
+import { sim_fixed_rate_loan, FixedRateLoan } from "./lib/loan"
 import { lerp, bound } from "./components/graphs/lib"
 import Form from "./components/Form"
-import LineGraph from "./components/graphs/LineGraph"
+import LineGraph, { xy } from "./components/graphs/LineGraph"
 import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
 import Range from "./components/Range"
@@ -78,6 +79,8 @@ const DEFAULT_Z = {
   ccr: TARGET_CCR,
 }
 
+const YEARS = 30
+
 function App() {
   const ref = useRef(null)
   const [canvasSize, setCanvasSize] = useState(0)
@@ -85,6 +88,7 @@ function App() {
   const [zType, setDataType] = useState<ZType>("roi")
   const [minZ, setMinZ] = useState(DEFAULT_Z)
   const [res, setSimData] = useState<SimData | null>(null)
+  const [loanSim, setLoanSim] = useState<FixedRateLoan | null>(null)
   const [data, setHeatMapData] = useState<HeatMapData | null>(null)
 
   useEffect(() => {
@@ -95,11 +99,29 @@ function App() {
     }
   }, [])
 
+  // useEffect(() => {
+  //   const values = {
+  //     principal: 2000,
+  //     years: 10,
+  //     interest_rate: 5,
+  //   }
+  //   const principal = Math.floor(values.principal)
+  //   const n = values.years * 12
+  //   const interest_rate = values.interest_rate / (100 * 12)
+  //   const loan_sim = sim_fixed_rate_loan(principal, interest_rate, n)
+  //   setLoanSim(loan_sim)
+  // }, [])
+
   function onSubmit(values: Inputs<number>) {
     const res = simulate(values)
     setSimData(res)
 
-    return
+    // const principal = Math.floor(values.principal)
+    // const n = values.years * 12
+    // const interest_rate = values.interest_rate / (100 * 12)
+    // const loan_sim = sim_fixed_rate_loan(principal, interest_rate, n)
+    // setLoanSim(loan_sim)
+    // return
 
     const total_cash_in = res.total_cash_in
     const yMax = total_cash_in
@@ -175,6 +197,7 @@ function App() {
   function onReset() {
     setHeatMapData(null)
     setSimData(null)
+    setLoanSim(null)
     setMinZ(DEFAULT_Z)
   }
 
@@ -208,6 +231,20 @@ function App() {
       ref={ref}
       className="flex flex-col items-center py-10 mx-auto max-w-[800px]"
     >
+      {loanSim != null ? (
+        <LineGraph
+          xMin={1}
+          xMax={YEARS}
+          yMin={0}
+          yMax={300}
+          data={[
+            xy(loanSim.principals, 1, 0),
+            xy(loanSim.interests, 1, 0),
+            xy(loanSim.debt_repayments, 1, 0),
+          ]}
+          colors={["blue", "orange", "red"]}
+        />
+      ) : null}
       <Form onSubmit={onSubmit} onReset={onReset} />
 
       {res != null ? (
@@ -250,20 +287,20 @@ function App() {
                 <td style={{ textAlign: "right" }}>{Yen(res.noi)} 円</td>
               </tr>
               <tr>
-                <td>CAPEX</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.capex)} 円</td>
-              </tr>
-              <tr>
-                <td>NCF</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.ncf)} 円</td>
-              </tr>
-              <tr>
                 <td>ADS</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.ads)} 円</td>
               </tr>
               <tr>
                 <td>BTCF</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.btcf)} 円</td>
+              </tr>
+              <tr>
+                <td>税金</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.tax)} 円</td>
+              </tr>
+              <tr>
+                <td>ATCF</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.atcf)} 円</td>
               </tr>
               <tr>
                 <td>返済額（月）</td>

@@ -13,6 +13,7 @@ const INPUTS: Inputs<string> = {
   principal: "2000",
   years: "10",
   interest_rate: "2",
+  tax_rate: "30",
 }
 
 interface Props {
@@ -151,6 +152,17 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         onChange={onChange}
         error={errors?.interest_rate}
       />
+      <h1 className="text-xl font-bold">支出</h1>
+      <Input
+        label="法人税率"
+        unit="%"
+        step={0.01}
+        name="tax_rate"
+        value={inputs.tax_rate}
+        onChange={onChange}
+        error={errors?.tax_rate}
+      />
+
       <div className="flex flex-row justify-center space-x-2 mt-4">
         <button
           className="px-5 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white transition ease-in-out duration-150 focus:outline-none focus:ring-2 focus:ring-green-300"
