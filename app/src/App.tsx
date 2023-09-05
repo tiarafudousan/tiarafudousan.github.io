@@ -116,6 +116,8 @@ function App() {
     const res = simulate(values)
     setSimData(res)
 
+    console.log("SIM", res)
+
     // const principal = Math.floor(values.principal)
     // const n = values.years * 12
     // const interest_rate = values.interest_rate / (100 * 12)
@@ -293,6 +295,12 @@ function App() {
               <tr>
                 <td>BTCF</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.btcf)} 円</td>
+              </tr>
+              <tr>
+                <td>減価償却 (建物)</td>
+                <td style={{ textAlign: "right" }}>
+                  {Yen(res.building_depreciation)} 円
+                </td>
               </tr>
               <tr>
                 <td>税金</td>

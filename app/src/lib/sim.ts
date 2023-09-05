@@ -1,71 +1,7 @@
 import { Inputs } from "./form"
 import * as loan_lib from "./loan"
-
-// 構造
-// 鉄筋コンクリート
-export const RC = "RC"
-// 鉄骨鉄筋コンクリート
-export const SRC = "SRC"
-// 重量鉄骨
-export const HGS = "HGS"
-// 鉄骨
-export const S = "S"
-// 軽量鉄骨 3mm超4mm未満
-export const LGS = "LGS"
-// 木造
-export const WOOD = "WOOD"
-
-export type BuildingType = "RC" | "SRC" | "HGS" | "S" | "LGS" | "WOOD"
-
-// 再調達価格
-export const REPLACEMENT_COSTS: { [key: string]: [number, number] } = {
-  RC: [16, 20],
-  SRC: [16, 20],
-  S: [13, 18],
-  HGS: [13, 18],
-  LGS: [12, 17],
-  WOOD: [10, 16],
-}
-
-// 法定耐用年数
-export const LEGAL_DURATIONS: { [key: string]: number } = {
-  RC: 47,
-  SRC: 47,
-  S: 34,
-  HGS: 34,
-  LGS: 19,
-  WOOD: 22,
-}
-
-//  建物の積算価格
-function estimate_building_price(args: {
-  type: BuildingType
-  age: number
-  area: number
-}): [number, number] {
-  /*
-    ■築年数が法定耐用年数内の物件の場合
-    再調達価格 x 建物面積 x (法定耐用年数 - 築年数) ÷ 法定耐用年数
-
-    ■築年数が法定耐用年数を超過した物件の場合
-    0
-    */
-  const building_type = args.type
-  const age = args.age
-  const area = args.area
-
-  const legal_duration = LEGAL_DURATIONS[building_type]
-  const cost = REPLACEMENT_COSTS[building_type]
-
-  if (age < legal_duration) {
-    return [
-      Math.floor((cost[0] * area * (legal_duration - age)) / legal_duration),
-      Math.floor((cost[1] * area * (legal_duration - age)) / legal_duration),
-    ]
-  }
-
-  return [0, 0]
-}
+import * as building_lib from "./building"
+import * as accounting_lib from "./accounting"
 
 export interface SimData {
   total_cash_in: number
@@ -89,7 +25,9 @@ export interface SimData {
   ncf: number
   ads: number
   btcf: number
+  building_depreciation_period: number
   building_depreciation: number
+  equipment_depreciation_period: number
   equipment_depreciation: number
   taxable_income: number
   tax: number
@@ -98,6 +36,11 @@ export interface SimData {
 
 // TODO: detailed opex
 export function simulate(inputs: Inputs<number>): SimData {
+  const property_price = inputs.property_price
+  // TODO: land price from inputs
+  const land_price = 1500
+  const building_price = 500
+
   const gpi = Math.floor(inputs.gpi)
   const vacancy_rate = inputs.vacancy_rate / 100
   const opex_rate = inputs.opex_rate / 100
@@ -145,7 +88,22 @@ export function simulate(inputs: Inputs<number>): SimData {
   const btcf = ncf - ads
   // ATCF //
   // TODO: get ads of a particula year
-  const building_depreciation = 0
+  const book_values = accounting_lib.calc_book_values({
+    property_price,
+    land_price,
+    building_price,
+    // TODO: expenses
+    expenses: 0,
+  })
+  // TODO: buildling inputs
+  const building_depreciation_period = building_lib.calc_depreciation_period(
+    "WOOD",
+    25,
+  )
+
+  const building_depreciation =
+    book_values.building / building_depreciation_period
+  const equipment_depreciation_period = 0
   const equipment_depreciation = 0
   const principal = loan_sim.principals[0]
   const taxable_income =
@@ -175,7 +133,9 @@ export function simulate(inputs: Inputs<number>): SimData {
     ncf,
     ads,
     btcf,
+    building_depreciation_period,
     building_depreciation,
+    equipment_depreciation_period,
     equipment_depreciation,
     taxable_income,
     tax,

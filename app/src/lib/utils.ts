@@ -1,3 +1,9 @@
+export function assert(b: boolean, msg: string) {
+  if (!b) {
+    throw new Error(msg)
+  }
+}
+
 export function sum(xs: number[]) {
   let y = 0
   for (let i = 0; i < xs.length; i++) {
