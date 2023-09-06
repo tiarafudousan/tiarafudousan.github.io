@@ -9,6 +9,7 @@ import LineGraph, { xy } from "./components/graphs/LineGraph"
 import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
 import Range from "./components/Range"
+import Select from "./components/Select"
 
 // Heat map
 function renderX(x: number): string {
@@ -123,7 +124,7 @@ function App() {
     // const interest_rate = values.interest_rate / (100 * 12)
     // const loan_sim = sim_fixed_rate_loan(principal, interest_rate, n)
     // setLoanSim(loan_sim)
-    // return
+    return
 
     const total_cash_in = res.total_cash_in
     const yMax = total_cash_in
@@ -223,8 +224,8 @@ function App() {
     })
   }
 
-  function onChangeDataType(e: React.ChangeEvent<HTMLSelectElement>) {
-    setDataType(e.target.value as ZType)
+  function onChangeDataType(value: string) {
+    setDataType(value as ZType)
   }
 
   // TODO: mobile
@@ -351,15 +352,14 @@ function App() {
 
       {data != null ? (
         <div className="mt-8 flex flex-col items-center mx-auto">
-          <select
-            className="bg-gray-200 border border-gray-300 text-gray-900 text-lg rounded-md border border-gray-100 focus:outline-none focus:ring focus:ring-blue-200 p-2"
+          <Select
             value={zType}
             onChange={onChangeDataType}
-          >
-            <option value="roi">返済後利回り</option>
-            <option value="ccr">CCR</option>
-          </select>
-
+            options={[
+              { value: "roi", text: "返済後利回り" },
+              { value: "ccr", text: "CCR" },
+            ]}
+          />
           <GradientBar
             width={canvasSize}
             height={60}
