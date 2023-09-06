@@ -304,6 +304,12 @@ function App() {
                 </td>
               </tr>
               <tr>
+                <td>減価償却年数 (建物)</td>
+                <td style={{ textAlign: "right" }}>
+                  {res.building_depreciation_period} 年
+                </td>
+              </tr>
+              <tr>
                 <td>税金</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.tax)} 円</td>
               </tr>
