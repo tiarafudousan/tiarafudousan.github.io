@@ -1,6 +1,7 @@
 import { Inputs } from "./form"
 import * as loan_lib from "./loan"
 import * as building_lib from "./building"
+import { BuildingType } from "./building"
 import * as accounting_lib from "./accounting"
 
 export interface SimData {
@@ -95,12 +96,10 @@ export function simulate(inputs: Inputs<number>): SimData {
     // TODO: expenses
     expenses: 0,
   })
-  // TODO: buildling inputs
   const building_depreciation_period = building_lib.calc_depreciation_period(
-    "WOOD",
-    25,
+    inputs.building_type as BuildingType,
+    inputs.building_age,
   )
-
   const building_depreciation =
     book_values.building / building_depreciation_period
   const equipment_depreciation_period = 0

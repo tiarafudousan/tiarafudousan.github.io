@@ -1,9 +1,12 @@
 import React, { useState } from "react"
 import { Inputs, Errors, calcPrincipal, validate } from "../lib/form"
+import Select from "./Select"
 import Input from "./Input"
 
 const INPUTS: Inputs<string> = {
   property_price: "2000",
+  building_type: "RC",
+  building_age: "0",
   gpi: "200",
   delta_gpi: "0",
   vacancy_rate: "15",
@@ -15,6 +18,25 @@ const INPUTS: Inputs<string> = {
   interest_rate: "2",
   tax_rate: "30",
 }
+
+const BUILDING_OPTIONS = [
+  {
+    value: "RC",
+    text: "RC",
+  },
+  {
+    value: "S",
+    text: "鉄骨",
+  },
+  {
+    value: "LGS",
+    text: "軽量鉄骨",
+  },
+  {
+    value: "WOOD",
+    text: "木造",
+  },
+]
 
 interface Props {
   onSubmit: (values: Inputs<number>) => void
@@ -39,6 +61,13 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         principal: principal != null ? principal.toString() : "",
       }
     })
+  }
+
+  function onChangeSelect(value: string) {
+    setInputs((inputs) => ({
+      ...inputs,
+      building_type: value,
+    }))
   }
 
   function _onSubmit(
@@ -76,6 +105,25 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         value={inputs.property_price}
         onChange={onChange}
         error={errors?.property_price}
+      />
+      <div className="flex flex-col">
+        <div className="flex flex-row items-center py-1">
+          <label className="w-[120px] mr-2">構造</label>
+          <Select
+            value={inputs.building_type}
+            options={BUILDING_OPTIONS}
+            onChange={onChangeSelect}
+          />
+        </div>
+        <div className="text-sm text-red-500 h-[20px]"></div>
+      </div>
+      <Input
+        label="築年数"
+        unit="年"
+        name="building_age"
+        value={inputs.building_age}
+        onChange={onChange}
+        error={errors?.building_age}
       />
       <Input
         label="満室年収"

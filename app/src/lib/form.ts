@@ -1,5 +1,7 @@
 export interface Inputs<a> {
   property_price: a
+  building_type: string
+  building_age: a
   gpi: a
   delta_gpi: a
   vacancy_rate: a
@@ -14,6 +16,8 @@ export interface Inputs<a> {
 
 export interface Errors {
   property_price?: string
+  bulding_type?: string
+  building_age?: string
   gpi?: string
   delta_gpi?: string
   vacancy_rate?: string
@@ -50,6 +54,8 @@ export function validate(
 ): [errors: Errors | null, values: Inputs<number>] {
   const values: Inputs<number> = {
     property_price: 0,
+    building_type: "RC",
+    building_age: 0,
     gpi: 0,
     delta_gpi: 0,
     vacancy_rate: 0,
@@ -69,6 +75,17 @@ export function validate(
       errors.property_price = error
     } else {
       values.property_price = value
+    }
+  }
+
+  values.building_type = inputs.building_type
+
+  {
+    const [error, value] = validateNum(inputs.building_age, true, 0, 100)
+    if (error) {
+      errors.building_age = error
+    } else {
+      values.building_age = value
     }
   }
   {
