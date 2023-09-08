@@ -38,9 +38,8 @@ export interface SimData {
 // TODO: detailed opex
 export function simulate(inputs: Inputs<number>): SimData {
   const property_price = inputs.property_price
-  // TODO: land price from inputs
-  const land_price = 1500
-  const building_price = 500
+  const land_price = inputs.land_price
+  const building_price = property_price - land_price
 
   const gpi = Math.floor(inputs.gpi)
   const vacancy_rate = inputs.vacancy_rate / 100
