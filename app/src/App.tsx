@@ -232,7 +232,7 @@ function App() {
   return (
     <div
       ref={ref}
-      className="flex flex-col items-center py-10 mx-auto max-w-[800px]"
+      className="flex flex-row items-start py-10 mx-auto max-w-[800px]"
     >
       {loanSim != null ? (
         <LineGraph
@@ -251,7 +251,7 @@ function App() {
       <Form onSubmit={onSubmit} onReset={onReset} />
 
       {res != null ? (
-        <div className="mt-8 min-w-[300px]">
+        <div className="ml-8 min-w-[300px]">
           <div className="text-xl font-semibold mb-2">収支試算</div>
           <table className="w-full">
             <tbody>
@@ -316,36 +316,6 @@ function App() {
               <tr>
                 <td>ATCF</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.atcf)} 円</td>
-              </tr>
-              <tr>
-                <td>返済額（月）</td>
-                <td style={{ textAlign: "right" }}>
-                  {Yen(res.monthly_debt_payment)} 円
-                </td>
-              </tr>
-              <tr>
-                <td>収入（月）</td>
-                <td style={{ textAlign: "right" }}>
-                  {Yen(res.monthly_cash_in)} 円
-                </td>
-              </tr>
-              <tr>
-                <td>返済比率</td>
-                <td style={{ textAlign: "right" }}>
-                  {Percent(res.monthly_repayment_ratio)} %
-                </td>
-              </tr>
-              <tr>
-                <td>手取り（年）</td>
-                <td style={{ textAlign: "right" }}>
-                  {Yen(res.yearly_cash_flow)} 円
-                </td>
-              </tr>
-              <tr>
-                <td>返済後利回り</td>
-                <td style={{ textAlign: "right" }}>
-                  {Percent(res.real_yield)} %
-                </td>
               </tr>
               <tr>
                 <td>CCR</td>

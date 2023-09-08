@@ -20,7 +20,6 @@ export interface SimData {
   gpi: number
   egi: number
   opex: number
-  ccr: number
   noi: number
   capex: number
   ncf: number
@@ -33,6 +32,7 @@ export interface SimData {
   taxable_income: number
   tax: number
   atcf: number
+  ccr: number
 }
 
 // TODO: detailed opex
@@ -76,7 +76,6 @@ export function simulate(inputs: Inputs<number>): SimData {
 
   const gross_yield = gpi / total_cash_in
   const real_yield = yearly_cash_flow / total_cash_in
-  const ccr = cash > 0 ? yearly_cash_flow / cash : 1
   // NOI //
   const noi = egi - opex
   // TODO: capex
@@ -110,6 +109,7 @@ export function simulate(inputs: Inputs<number>): SimData {
   const tax = Math.max(taxable_income * tax_rate, 0)
   const atcf = btcf - tax
 
+  const ccr = cash > 0 ? btcf / cash : 1
   // TODO: delta gpi
 
   return {
@@ -125,7 +125,6 @@ export function simulate(inputs: Inputs<number>): SimData {
     gpi,
     egi,
     opex,
-    ccr,
     noi,
     capex,
     ncf,
@@ -138,6 +137,7 @@ export function simulate(inputs: Inputs<number>): SimData {
     taxable_income,
     tax,
     atcf,
+    ccr,
     // TODO: atcf, fcr, ccr
   }
 }

@@ -6,8 +6,8 @@ import Input from "./Input"
 const INPUTS: Inputs<string> = {
   property_price: "2000",
   land_price: "1000",
-  building_type: "RC",
-  building_age: "0",
+  building_type: "WOOD",
+  building_age: "20",
   gpi: "200",
   delta_gpi: "0",
   vacancy_rate: "15",
@@ -15,7 +15,7 @@ const INPUTS: Inputs<string> = {
   cash: "0",
   purchase_cost: "0",
   principal: "2000",
-  years: "10",
+  years: "15",
   interest_rate: "2",
   tax_rate: "30",
 }
