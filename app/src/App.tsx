@@ -284,7 +284,7 @@ function App() {
               <tr>
                 <td>返済比率</td>
                 <td style={{ textAlign: "right" }}>
-                  {Percent(res.ads / res.egi)} %
+                  {Percent(res.egi > 0 ? res.ads / res.egi : 1)} %
                 </td>
               </tr>
               <tr>

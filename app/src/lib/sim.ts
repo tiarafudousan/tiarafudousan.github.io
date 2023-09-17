@@ -32,12 +32,15 @@ export interface SimData {
   taxable_income: number
   tax: number
   atcf: number
+  lb: number
   fcr: number
   ccr: number
   k: number
 }
 
 // TODO: detailed opex
+// TODO: property tax
+// TODO: capex
 export function simulate(inputs: Inputs<number>): SimData {
   const property_price = inputs.property_price
   const land_price = inputs.land_price
@@ -86,6 +89,7 @@ export function simulate(inputs: Inputs<number>): SimData {
   // BTCF //
   // TODO: get ads of a particula year
   const ads = loan_sim.debt_repayments[0]
+  const lb = p
   const btcf = ncf - ads
   // ATCF //
   // TODO: get ads of a particula year
@@ -111,9 +115,10 @@ export function simulate(inputs: Inputs<number>): SimData {
   const tax = Math.max(taxable_income * tax_rate, 0)
   const atcf = btcf - tax
 
+  // TODO: correct equations?
   const fcr = noi / total_cash_in
   const ccr = cash > 0 ? btcf / cash : 1
-  const k = p > 0 ? ads / p : 0
+  const k = lb > 0 ? ads / lb : 0
   // TODO: delta gpi
 
   return {
@@ -141,6 +146,7 @@ export function simulate(inputs: Inputs<number>): SimData {
     taxable_income,
     tax,
     atcf,
+    lb,
     fcr,
     ccr,
     k,
