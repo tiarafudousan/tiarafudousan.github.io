@@ -32,6 +32,7 @@ export interface SimData {
   taxable_income: number
   tax: number
   atcf: number
+  fcr: number
   ccr: number
 }
 
@@ -55,7 +56,7 @@ export function simulate(inputs: Inputs<number>): SimData {
   const egi = gpi * (1 - vacancy_rate)
   const monthly_cash_in = egi / 12
 
-  // property_price + cost = cash +  principal
+  // property_price + cost = cash + principal
   const total_cash_in = cash + p
 
   // Loan
@@ -109,6 +110,7 @@ export function simulate(inputs: Inputs<number>): SimData {
   const tax = Math.max(taxable_income * tax_rate, 0)
   const atcf = btcf - tax
 
+  const fcr = noi / total_cash_in
   const ccr = cash > 0 ? btcf / cash : 1
   // TODO: delta gpi
 
@@ -137,6 +139,7 @@ export function simulate(inputs: Inputs<number>): SimData {
     taxable_income,
     tax,
     atcf,
+    fcr,
     ccr,
     // TODO: atcf, fcr, ccr
   }

@@ -262,15 +262,15 @@ function App() {
                 </td>
               </tr>
               <tr>
-                <td>返済総額</td>
-                <td style={{ textAlign: "right" }}>
-                  {Yen(res.total_debt_payment)} 円
-                </td>
-              </tr>
-              <tr>
                 <td>表面利回り</td>
                 <td style={{ textAlign: "right" }}>
                   {Percent(res.gross_yield)} %
+                </td>
+              </tr>
+              <tr>
+                <td>返済総額</td>
+                <td style={{ textAlign: "right" }}>
+                  {Yen(res.total_debt_payment)} 円
                 </td>
               </tr>
               <tr>
@@ -316,6 +316,10 @@ function App() {
               <tr>
                 <td>ATCF</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.atcf)} 円</td>
+              </tr>
+              <tr>
+                <td>FCR</td>
+                <td style={{ textAlign: "right" }}>{Percent(res.fcr)} %</td>
               </tr>
               <tr>
                 <td>CCR</td>
