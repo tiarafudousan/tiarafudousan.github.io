@@ -274,6 +274,20 @@ function App() {
                 </td>
               </tr>
               <tr>
+                <td>収入 (月)</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.noi / 12)} 円</td>
+              </tr>
+              <tr>
+                <td>返済額 (月)</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.ads / 12)} 円</td>
+              </tr>
+              <tr>
+                <td>返済比率</td>
+                <td style={{ textAlign: "right" }}>
+                  {Percent(res.ads / res.egi)} %
+                </td>
+              </tr>
+              <tr>
                 <td>GPI</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.gpi)} 円</td>
               </tr>
@@ -316,6 +330,10 @@ function App() {
               <tr>
                 <td>ATCF</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.atcf)} 円</td>
+              </tr>
+              <tr>
+                <td>K</td>
+                <td style={{ textAlign: "right" }}>{Percent(res.k)} %</td>
               </tr>
               <tr>
                 <td>FCR</td>

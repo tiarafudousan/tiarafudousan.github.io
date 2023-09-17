@@ -34,6 +34,7 @@ export interface SimData {
   atcf: number
   fcr: number
   ccr: number
+  k: number
 }
 
 // TODO: detailed opex
@@ -112,6 +113,7 @@ export function simulate(inputs: Inputs<number>): SimData {
 
   const fcr = noi / total_cash_in
   const ccr = cash > 0 ? btcf / cash : 1
+  const k = p > 0 ? ads / p : 0
   // TODO: delta gpi
 
   return {
@@ -141,6 +143,6 @@ export function simulate(inputs: Inputs<number>): SimData {
     atcf,
     fcr,
     ccr,
-    // TODO: atcf, fcr, ccr
+    k,
   }
 }
