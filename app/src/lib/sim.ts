@@ -46,7 +46,6 @@ export interface SimData {
   k: number
 }
 
-// TODO: 固定資産税 課税標準額
 // TODO: 諸経費
 // TODO: detailed opex
 // TODO: property tax
@@ -55,11 +54,8 @@ export function simulate(inputs: Inputs<number>): SimData {
   const property_price = inputs.property_price
   const land_price = inputs.land_price
   const building_price = property_price - land_price
-  // TODO:
-  // const property_tax_base_land = inputs.property_tax_base_land
-  // const property_tax_base_building = inputs.property_tax_base_building
-  const property_tax_base_land = property_price / 2
-  const property_tax_base_building = property_price / 2
+  const property_tax_base_land = inputs.property_tax_base_land
+  const property_tax_base_building = inputs.property_tax_base_building
 
   const property_tax_land = tax_lib.calc_property_tax(property_tax_base_land)
   const property_tax_building = tax_lib.calc_property_tax(

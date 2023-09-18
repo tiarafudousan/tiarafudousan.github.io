@@ -12,6 +12,8 @@ const INPUTS: Inputs<string> = {
   delta_gpi: "0",
   vacancy_rate: "15",
   opex_rate: "20",
+  property_tax_base_land: "0",
+  property_tax_base_building: "0",
   cash: "0",
   purchase_cost: "0",
   principal: "2000",
@@ -117,7 +119,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
       />
       <div className="flex flex-col">
         <div className="flex flex-row items-center py-1">
-          <label className="w-[120px] mr-2">構造</label>
+          <label className="w-[200px] mr-2">構造</label>
           <Select
             value={inputs.building_type}
             options={BUILDING_OPTIONS}
@@ -166,7 +168,22 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         onChange={onChange}
         error={errors?.opex_rate}
       />
-
+      <Input
+        label="固定資産税評価額 (土地)"
+        unit="万円"
+        name="property_tax_base_land"
+        value={inputs.property_tax_base_land}
+        onChange={onChange}
+        error={errors?.property_tax_base_land}
+      />
+      <Input
+        label="固定資産税評価額 (建物)"
+        unit="万円"
+        name="property_tax_base_building"
+        value={inputs.property_tax_base_building}
+        onChange={onChange}
+        error={errors?.property_tax_base_building}
+      />
       <h1 className="text-xl font-bold">融資</h1>
       <Input
         label="自己資金"
@@ -219,7 +236,6 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         onChange={onChange}
         error={errors?.tax_rate}
       />
-
       <div className="flex flex-row justify-center space-x-2 mt-4">
         <button
           className="px-5 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white transition ease-in-out duration-150 focus:outline-none focus:ring-2 focus:ring-green-300"

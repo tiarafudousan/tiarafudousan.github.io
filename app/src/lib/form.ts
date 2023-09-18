@@ -3,6 +3,8 @@ export interface Inputs<a> {
   land_price: a
   building_type: string
   building_age: a
+  property_tax_base_land: a
+  property_tax_base_building: a
   gpi: a
   delta_gpi: a
   vacancy_rate: a
@@ -20,6 +22,8 @@ export interface Errors {
   land_price?: string
   bulding_type?: string
   building_age?: string
+  property_tax_base_land?: string
+  property_tax_base_building?: string
   gpi?: string
   delta_gpi?: string
   vacancy_rate?: string
@@ -59,6 +63,8 @@ export function validate(
     land_price: 0,
     building_type: "RC",
     building_age: 0,
+    property_tax_base_land: 0,
+    property_tax_base_building: 0,
     gpi: 0,
     delta_gpi: 0,
     vacancy_rate: 0,
@@ -73,7 +79,7 @@ export function validate(
   const errors: Errors = {}
 
   {
-    const [error, value] = validateNum(inputs.property_price)
+    const [error, value] = validateNum(inputs.property_price, true, 0)
     if (error) {
       errors.property_price = error
     } else {
@@ -81,7 +87,7 @@ export function validate(
     }
   }
   {
-    const [error, value] = validateNum(inputs.land_price)
+    const [error, value] = validateNum(inputs.land_price, true, 0)
     if (error) {
       errors.land_price = error
     } else {
@@ -100,7 +106,27 @@ export function validate(
     }
   }
   {
-    const [error, value] = validateNum(inputs.gpi)
+    const [error, value] = validateNum(inputs.property_tax_base_land, true, 0)
+    if (error) {
+      errors.property_tax_base_land = error
+    } else {
+      values.property_tax_base_land = value
+    }
+  }
+  {
+    const [error, value] = validateNum(
+      inputs.property_tax_base_building,
+      true,
+      0,
+    )
+    if (error) {
+      errors.property_tax_base_building = error
+    } else {
+      values.property_tax_base_building = value
+    }
+  }
+  {
+    const [error, value] = validateNum(inputs.gpi, true, 0)
     if (error) {
       errors.gpi = error
     } else {
@@ -132,7 +158,7 @@ export function validate(
     }
   }
   {
-    const [error, value] = validateNum(inputs.cash)
+    const [error, value] = validateNum(inputs.cash, true, 0)
     if (error) {
       errors.cash = error
     } else {
@@ -140,7 +166,7 @@ export function validate(
     }
   }
   {
-    const [error, value] = validateNum(inputs.purchase_cost)
+    const [error, value] = validateNum(inputs.purchase_cost, true, 0)
     if (error) {
       errors.purchase_cost = error
     } else {
@@ -148,7 +174,7 @@ export function validate(
     }
   }
   {
-    const [error, value] = validateNum(inputs.years)
+    const [error, value] = validateNum(inputs.years, true, 0)
     if (error) {
       errors.years = error
     } else {

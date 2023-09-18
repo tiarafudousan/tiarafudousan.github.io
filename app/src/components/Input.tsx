@@ -37,7 +37,7 @@ const Input: React.FC<Props> = ({
   return (
     <div className="flex flex-col">
       <div className="flex flex-row items-center py-1">
-        <label className="w-[120px] mr-2">{label}</label>
+        <label className="w-[200px] mr-2">{label}</label>
         <input
           className={append(
             "w-[100px] px-2 py-0.5 text-right bg-gray-200 disabled:bg-white disabled:border-white border border-gray-100 focus:outline-none focus:ring focus:ring-blue-200 rounded-sm",
