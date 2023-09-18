@@ -296,6 +296,30 @@ function App() {
                 <td style={{ textAlign: "right" }}>{Yen(res.egi)} 円</td>
               </tr>
               <tr>
+                <td>固定資産税 (土地)</td>
+                <td style={{ textAlign: "right" }}>
+                  {Yen(res.property_tax_land)} 円
+                </td>
+              </tr>
+              <tr>
+                <td>固定資産税 (建物)</td>
+                <td style={{ textAlign: "right" }}>
+                  {Yen(res.property_tax_building)} 円
+                </td>
+              </tr>
+              <tr>
+                <td>都市計画税 (土地)</td>
+                <td style={{ textAlign: "right" }}>
+                  {Yen(res.city_planning_tax_land)} 円
+                </td>
+              </tr>
+              <tr>
+                <td>都市計画税 (建物)</td>
+                <td style={{ textAlign: "right" }}>
+                  {Yen(res.city_planning_tax_building)} 円
+                </td>
+              </tr>
+              <tr>
                 <td>OPEX</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.opex)} 円</td>
               </tr>

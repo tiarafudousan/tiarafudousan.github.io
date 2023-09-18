@@ -3,6 +3,7 @@ import * as loan_lib from "./loan"
 import * as building_lib from "./building"
 import { BuildingType } from "./building"
 import * as accounting_lib from "./accounting"
+import * as tax_lib from "./tax"
 
 export interface SimData {
   total_cash_in: number
@@ -17,6 +18,13 @@ export interface SimData {
   gross_yield: number
   // 実質利回り
   real_yield: number
+  // tax //
+  property_tax_land: number
+  property_tax_building: number
+  city_planning_tax_land: number
+  city_planning_tax_building: number
+  property_tax: number
+  city_planning_tax: number
   gpi: number
   egi: number
   opex: number
@@ -38,6 +46,8 @@ export interface SimData {
   k: number
 }
 
+// TODO: 固定資産税 課税標準額
+// TODO: 諸経費
 // TODO: detailed opex
 // TODO: property tax
 // TODO: capex
@@ -45,6 +55,24 @@ export function simulate(inputs: Inputs<number>): SimData {
   const property_price = inputs.property_price
   const land_price = inputs.land_price
   const building_price = property_price - land_price
+  // TODO:
+  // const property_tax_base_land = inputs.property_tax_base_land
+  // const property_tax_base_building = inputs.property_tax_base_building
+  const property_tax_base_land = property_price / 2
+  const property_tax_base_building = property_price / 2
+
+  const property_tax_land = tax_lib.calc_property_tax(property_tax_base_land)
+  const property_tax_building = tax_lib.calc_property_tax(
+    property_tax_base_building,
+  )
+  const city_planning_tax_land = tax_lib.calc_city_planning_tax(
+    property_tax_base_land,
+  )
+  const city_planning_tax_building = tax_lib.calc_city_planning_tax(
+    property_tax_base_building,
+  )
+  const property_tax = property_tax_land + property_tax_building
+  const city_planning_tax = city_planning_tax_land + city_planning_tax_building
 
   const gpi = Math.floor(inputs.gpi)
   const vacancy_rate = inputs.vacancy_rate / 100
@@ -131,6 +159,12 @@ export function simulate(inputs: Inputs<number>): SimData {
     yearly_cash_flow,
     gross_yield,
     real_yield,
+    property_tax_land,
+    property_tax_building,
+    city_planning_tax_land,
+    city_planning_tax_building,
+    property_tax,
+    city_planning_tax,
     gpi,
     egi,
     opex,
