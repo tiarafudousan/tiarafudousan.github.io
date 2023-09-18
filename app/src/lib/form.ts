@@ -3,11 +3,11 @@ export interface Inputs<a> {
   land_price: a
   building_type: string
   building_age: a
-  property_tax_base_land: a
-  property_tax_base_building: a
   gpi: a
   delta_gpi: a
   vacancy_rate: a
+  property_tax_base_land: a
+  property_tax_base_building: a
   opex_rate: a
   cash: a
   purchase_cost: a
@@ -22,11 +22,11 @@ export interface Errors {
   land_price?: string
   bulding_type?: string
   building_age?: string
-  property_tax_base_land?: string
-  property_tax_base_building?: string
   gpi?: string
   delta_gpi?: string
   vacancy_rate?: string
+  property_tax_base_land?: string
+  property_tax_base_building?: string
   opex_rate?: string
   cash?: string
   purchase_cost?: string
@@ -63,11 +63,11 @@ export function validate(
     land_price: 0,
     building_type: "RC",
     building_age: 0,
-    property_tax_base_land: 0,
-    property_tax_base_building: 0,
     gpi: 0,
     delta_gpi: 0,
     vacancy_rate: 0,
+    property_tax_base_land: 0,
+    property_tax_base_building: 0,
     opex_rate: 0,
     cash: 0,
     purchase_cost: 0,
@@ -106,26 +106,6 @@ export function validate(
     }
   }
   {
-    const [error, value] = validateNum(inputs.property_tax_base_land, true, 0)
-    if (error) {
-      errors.property_tax_base_land = error
-    } else {
-      values.property_tax_base_land = value
-    }
-  }
-  {
-    const [error, value] = validateNum(
-      inputs.property_tax_base_building,
-      true,
-      0,
-    )
-    if (error) {
-      errors.property_tax_base_building = error
-    } else {
-      values.property_tax_base_building = value
-    }
-  }
-  {
     const [error, value] = validateNum(inputs.gpi, true, 0)
     if (error) {
       errors.gpi = error
@@ -147,6 +127,26 @@ export function validate(
       errors.vacancy_rate = error
     } else {
       values.vacancy_rate = value
+    }
+  }
+  {
+    const [error, value] = validateNum(inputs.property_tax_base_land, true, 0)
+    if (error) {
+      errors.property_tax_base_land = error
+    } else {
+      values.property_tax_base_land = value
+    }
+  }
+  {
+    const [error, value] = validateNum(
+      inputs.property_tax_base_building,
+      true,
+      0,
+    )
+    if (error) {
+      errors.property_tax_base_building = error
+    } else {
+      values.property_tax_base_building = value
     }
   }
   {
