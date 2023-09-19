@@ -4,7 +4,7 @@ export function assert(b: boolean, msg: string) {
   }
 }
 
-export function sum(xs: number[]) {
+export function sum(...xs: number[]) {
   let y = 0
   for (let i = 0; i < xs.length; i++) {
     y += xs[i]

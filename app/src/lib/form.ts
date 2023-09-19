@@ -1,4 +1,5 @@
 export interface Inputs<a> {
+  // building //
   property_price: a
   land_price: a
   building_type: string
@@ -6,18 +7,26 @@ export interface Inputs<a> {
   gpi: a
   delta_gpi: a
   vacancy_rate: a
+  purchase_misc_fee: a
+  // opex //
   property_tax_base_land: a
   property_tax_base_building: a
-  opex_rate: a
+  maintanence_fee: a
+  restoration_fee: a
+  ad_fee: a
+  insurance_fee: a
+  opex_misc_fee: a
+  // loan //
   cash: a
-  purchase_cost: a
   principal: a
   years: a
   interest_rate: a
+  // tax //
   tax_rate: a
 }
 
 export interface Errors {
+  // building //
   property_price?: string
   land_price?: string
   bulding_type?: string
@@ -25,13 +34,20 @@ export interface Errors {
   gpi?: string
   delta_gpi?: string
   vacancy_rate?: string
+  purchase_misc_fee?: string
+  // opex //
   property_tax_base_land?: string
   property_tax_base_building?: string
-  opex_rate?: string
+  maintanence_fee?: string
+  restoration_fee?: string
+  ad_fee?: string
+  insurance_fee?: string
+  opex_misc_fee?: string
+  // loan //
   cash?: string
-  purchase_cost?: string
   years?: string
   interest_rate?: string
+  // tax //
   tax_rate?: string
 }
 
@@ -59,6 +75,7 @@ export function validate(
   inputs: Inputs<string>,
 ): [errors: Errors | null, values: Inputs<number>] {
   const values: Inputs<number> = {
+    // building //
     property_price: 0,
     land_price: 0,
     building_type: "RC",
@@ -66,14 +83,21 @@ export function validate(
     gpi: 0,
     delta_gpi: 0,
     vacancy_rate: 0,
+    purchase_misc_fee: 0,
+    // opex //
     property_tax_base_land: 0,
     property_tax_base_building: 0,
-    opex_rate: 0,
+    maintanence_fee: 0,
+    restoration_fee: 0,
+    ad_fee: 0,
+    insurance_fee: 0,
+    opex_misc_fee: 0,
+    // loan //
     cash: 0,
-    purchase_cost: 0,
     principal: 0,
     years: 0,
     interest_rate: 0,
+    // tax //
     tax_rate: 0,
   }
   const errors: Errors = {}
@@ -114,7 +138,7 @@ export function validate(
     }
   }
   {
-    const [error, value] = validateNum(inputs.delta_gpi, false, -100, 100)
+    const [error, value] = validateNum(inputs.delta_gpi, false, 0, 100)
     if (error) {
       errors.delta_gpi = error
     } else {
@@ -127,6 +151,14 @@ export function validate(
       errors.vacancy_rate = error
     } else {
       values.vacancy_rate = value
+    }
+  }
+  {
+    const [error, value] = validateNum(inputs.purchase_misc_fee, true, 0)
+    if (error) {
+      errors.purchase_misc_fee = error
+    } else {
+      values.purchase_misc_fee = value
     }
   }
   {
@@ -150,11 +182,43 @@ export function validate(
     }
   }
   {
-    const [error, value] = validateNum(inputs.opex_rate, false, 0, 100)
+    const [error, value] = validateNum(inputs.maintanence_fee, true, 0)
     if (error) {
-      errors.opex_rate = error
+      errors.maintanence_fee = error
     } else {
-      values.opex_rate = value
+      values.maintanence_fee = value
+    }
+  }
+  {
+    const [error, value] = validateNum(inputs.restoration_fee, true, 0)
+    if (error) {
+      errors.restoration_fee = error
+    } else {
+      values.restoration_fee = value
+    }
+  }
+  {
+    const [error, value] = validateNum(inputs.ad_fee, true, 0)
+    if (error) {
+      errors.ad_fee = error
+    } else {
+      values.ad_fee = value
+    }
+  }
+  {
+    const [error, value] = validateNum(inputs.insurance_fee, true, 0)
+    if (error) {
+      errors.insurance_fee = error
+    } else {
+      values.insurance_fee = value
+    }
+  }
+  {
+    const [error, value] = validateNum(inputs.opex_misc_fee, true, 0)
+    if (error) {
+      errors.opex_misc_fee = error
+    } else {
+      values.opex_misc_fee = value
     }
   }
   {
@@ -163,14 +227,6 @@ export function validate(
       errors.cash = error
     } else {
       values.cash = value
-    }
-  }
-  {
-    const [error, value] = validateNum(inputs.purchase_cost, true, 0)
-    if (error) {
-      errors.purchase_cost = error
-    } else {
-      values.purchase_cost = value
     }
   }
   {
@@ -198,7 +254,7 @@ export function validate(
     }
   }
 
-  if (!errors.property_price && !errors.cash && !errors.purchase_cost) {
+  if (!errors.property_price && !errors.cash && !errors.purchase_misc_fee) {
     const principal = calcPrincipal(inputs)
     if (principal != null) {
       values.principal = principal
@@ -222,14 +278,14 @@ export function validate(
 
 export function calcPrincipal(args: {
   property_price: string
-  purchase_cost: string
+  purchase_misc_fee: string
   cash: string
 }): number | null {
   const property_price = parseInt(args.property_price)
-  const purchase_cost = parseInt(args.purchase_cost)
+  const purchase_misc_fee = parseInt(args.purchase_misc_fee)
   const cash = parseInt(args.cash)
 
-  const principal = property_price + purchase_cost - cash
+  const principal = property_price + purchase_misc_fee - cash
 
   return isNaN(principal) ? null : principal
 }

@@ -11,14 +11,21 @@ const INPUTS: Inputs<string> = {
   gpi: "200",
   delta_gpi: "0",
   vacancy_rate: "15",
-  opex_rate: "20",
+  // opex //
   property_tax_base_land: "0",
   property_tax_base_building: "0",
+  maintanence_fee: "0",
+  restoration_fee: "0",
+  ad_fee: "0",
+  insurance_fee: "0",
+  opex_misc_fee: "0",
+  // loan //
   cash: "0",
-  purchase_cost: "0",
+  purchase_misc_fee: "0",
   principal: "2000",
   years: "15",
   interest_rate: "2",
+  // tax //
   tax_rate: "30",
 }
 
@@ -145,7 +152,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         error={errors?.gpi}
       />
       <Input
-        label="家賃変動率"
+        label="家賃下落率"
         unit="%"
         name="delta_gpi"
         value={inputs.delta_gpi}
@@ -161,12 +168,53 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         error={errors?.vacancy_rate}
       />
       <Input
-        label="諸経費率"
-        unit="%"
-        name="opex_rate"
-        value={inputs.opex_rate}
+        label="購入時諸費用"
+        unit="万円"
+        name="purchase_misc_fee"
+        value={inputs.purchase_misc_fee}
         onChange={onChange}
-        error={errors?.opex_rate}
+        error={errors?.purchase_misc_fee}
+      />
+      <h1 className="text-xl font-bold">支出</h1>
+      <Input
+        label="管理委託料"
+        unit="万円"
+        name="maintanence_fee"
+        value={inputs.maintanence_fee}
+        onChange={onChange}
+        error={errors?.maintanence_fee}
+      />
+      <Input
+        label="修繕費"
+        unit="万円"
+        name="restoration_fee"
+        value={inputs.restoration_fee}
+        onChange={onChange}
+        error={errors?.restoration_fee}
+      />
+      <Input
+        label="広告費"
+        unit="万円"
+        name="ad_fee"
+        value={inputs.ad_fee}
+        onChange={onChange}
+        error={errors?.ad_fee}
+      />
+      <Input
+        label="保険料"
+        unit="万円"
+        name="insurance_fee"
+        value={inputs.insurance_fee}
+        onChange={onChange}
+        error={errors?.insurance_fee}
+      />
+      <Input
+        label="他運用費"
+        unit="万円"
+        name="opex_misc_fee"
+        value={inputs.opex_misc_fee}
+        onChange={onChange}
+        error={errors?.opex_misc_fee}
       />
       <Input
         label="固定資産税評価額 (土地)"
@@ -192,14 +240,6 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         value={inputs.cash}
         onChange={onChange}
         error={errors?.cash}
-      />
-      <Input
-        label="購入時諸費用"
-        unit="万円"
-        name="purchase_cost"
-        value={inputs.purchase_cost}
-        onChange={onChange}
-        error={errors?.purchase_cost}
       />
       <Input
         label="借入金額"
