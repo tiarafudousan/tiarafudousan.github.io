@@ -230,10 +230,7 @@ function App() {
 
   // TODO: mobile
   return (
-    <div
-      ref={ref}
-      className="flex flex-row items-start py-10 mx-auto max-w-[800px]"
-    >
+    <div ref={ref} className="flex flex-row items-start max-w-[800px]">
       {loanSim != null ? (
         <LineGraph
           xMin={1}
@@ -248,10 +245,12 @@ function App() {
           colors={["blue", "orange", "red"]}
         />
       ) : null}
-      <Form onSubmit={onSubmit} onReset={onReset} />
+      <div className="h-screen overflow-y-auto px-6 py-6">
+        <Form onSubmit={onSubmit} onReset={onReset} />
+      </div>
 
       {res != null ? (
-        <div className="ml-8 min-w-[300px]">
+        <div className="px-6 py-6 min-w-[300px]">
           <div className="text-xl font-semibold mb-2">収支試算</div>
           <table className="w-full">
             <tbody>
