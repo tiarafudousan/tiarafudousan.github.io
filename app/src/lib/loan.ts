@@ -7,7 +7,7 @@ function agg(xs: number[]): number[] {
     xs,
     (xs: number[]) => padd(xs, YEARS * 12, 0),
     (xs: number[]) => chunk(xs, 12),
-    (xs: number[][]) => xs.map(sum),
+    (xs: number[][]) => xs.map((x) => sum(...x)),
   )
 }
 
