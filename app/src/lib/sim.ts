@@ -112,13 +112,12 @@ export function simulate(inputs: Inputs<number>): SimData {
   const ncf = noi - capex
 
   // BTCF //
-  // TODO: get ads of a particula year
+  // TODO: get ADS of a particula year
   const ads = loan_sim.debt_repayments[0]
   const lb = p
   const btcf = ncf - ads
 
   // ATCF //
-  // TODO: get ADS of a particula year
   const book_values = accounting_lib.calc_book_values({
     property_price: inputs.property_price,
     land_price: inputs.land_price,
@@ -151,7 +150,7 @@ export function simulate(inputs: Inputs<number>): SimData {
   const yearly_cash_out = monthly_debt_payment * 12 + opex
   const yearly_cash_flow = egi - yearly_cash_out
 
-  const gross_yield = gpi / total_cash_in
+  const gross_yield = gpi / inputs.property_price
   const real_yield = yearly_cash_flow / total_cash_in
 
   return {
