@@ -38,6 +38,7 @@ export interface SimData {
   building_depreciation: number
   equipment_depreciation_period: number
   equipment_depreciation: number
+  principal: number
   taxable_income: number
   tax: number
   atcf: number
@@ -182,6 +183,7 @@ export function simulate(inputs: Inputs<number>): SimData {
     building_depreciation,
     equipment_depreciation_period,
     equipment_depreciation,
+    principal,
     taxable_income,
     tax,
     atcf,

@@ -348,6 +348,16 @@ function App() {
                 </td>
               </tr>
               <tr>
+                <td>元金返済</td>
+                <td style={{ textAlign: "right" }}>{Yen(res.principal)} 円</td>
+              </tr>
+              <tr>
+                <td>申告所得</td>
+                <td style={{ textAlign: "right" }}>
+                  {Yen(res.taxable_income)} 円
+                </td>
+              </tr>
+              <tr>
                 <td>税金</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.tax)} 円</td>
               </tr>
