@@ -6,6 +6,7 @@ import Input from "./Input"
 const INPUTS: Inputs<string> = {
   property_price: "2000",
   land_price: "1000",
+  purchase_misc_fee: "0",
   building_type: "WOOD",
   building_age: "20",
   gpi: "200",
@@ -21,7 +22,6 @@ const INPUTS: Inputs<string> = {
   opex_misc_fee: "0",
   // loan //
   cash: "0",
-  purchase_misc_fee: "0",
   principal: "2000",
   years: "15",
   interest_rate: "2",
@@ -124,6 +124,14 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         onChange={onChange}
         error={errors?.land_price}
       />
+      <Input
+        label="購入時諸費用"
+        unit="万円"
+        name="purchase_misc_fee"
+        value={inputs.purchase_misc_fee}
+        onChange={onChange}
+        error={errors?.purchase_misc_fee}
+      />
       <div className="flex flex-col">
         <div className="flex flex-row items-center py-1">
           <label className="w-[200px] mr-2">構造</label>
@@ -166,14 +174,6 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         value={inputs.vacancy_rate}
         onChange={onChange}
         error={errors?.vacancy_rate}
-      />
-      <Input
-        label="購入時諸費用"
-        unit="万円"
-        name="purchase_misc_fee"
-        value={inputs.purchase_misc_fee}
-        onChange={onChange}
-        error={errors?.purchase_misc_fee}
       />
       <h1 className="text-xl font-bold">支出</h1>
       <Input
