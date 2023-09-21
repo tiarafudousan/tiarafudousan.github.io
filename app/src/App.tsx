@@ -229,6 +229,7 @@ function App() {
   }
 
   // TODO: mobile
+  // TODO: simple and advance forms
   return (
     <div ref={ref} className="flex flex-row items-start max-w-[800px]">
       {loanSim != null ? (

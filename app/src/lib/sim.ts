@@ -7,7 +7,7 @@ import * as accounting_lib from "./accounting"
 import * as tax_lib from "./tax"
 
 export interface SimData {
-  total_cash_in: number
+  total_invested: number
   total_debt_payment: number
   monthly_debt_payment: number
   monthly_repayment_ratio: number
@@ -49,6 +49,7 @@ export interface SimData {
 }
 
 // TODO: capex - 大規模修繕
+// TODO: BER, DCR, IRR?
 export function simulate(inputs: Inputs<number>): SimData {
   const building_price = inputs.property_price - inputs.land_price
 
@@ -68,7 +69,7 @@ export function simulate(inputs: Inputs<number>): SimData {
   const interest_rate = inputs.interest_rate / (100 * 12)
 
   // property_price + cost = cash + principal
-  const total_cash_in = cash + p
+  const total_invested = cash + p
 
   const monthly_debt_payment =
     n > 0
@@ -141,20 +142,19 @@ export function simulate(inputs: Inputs<number>): SimData {
   const tax = Math.max(taxable_income * tax_rate, 0)
   const atcf = btcf - tax
 
-  // TODO: correct equations?
-  const fcr = noi / total_cash_in
-  const ccr = cash > 0 ? btcf / cash : 1
-  const k = lb > 0 ? ads / lb : 0
-  // TODO: delta gpi
-
   const yearly_cash_out = monthly_debt_payment * 12 + opex
   const yearly_cash_flow = egi - yearly_cash_out
 
   const gross_yield = gpi / inputs.property_price
-  const real_yield = yearly_cash_flow / total_cash_in
+  const real_yield = yearly_cash_flow / total_invested
+
+  const fcr = noi / total_invested
+  const ccr = cash > 0 ? btcf / cash : 1
+  const k = lb > 0 ? ads / lb : 0
+  // TODO: delta gpi
 
   return {
-    total_cash_in,
+    total_invested,
     total_debt_payment,
     monthly_debt_payment,
     monthly_repayment_ratio,

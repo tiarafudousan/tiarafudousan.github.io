@@ -69,7 +69,8 @@ CCR > FCR > K%
 | ADS | Annual debt service | 年間負債支払額 |  |
 | BTCF | Before tax cash flow | 税引前 CF | NCF - ADS |
 | ATCF | After tax cash flow | 税引後 CF |  |
-| K% | Loan constant | ローン定数 | ADS / remaining loan |
+| LB | Loan balance | ローン残債 |
+| K% | Loan constant | ローン定数 | ADS / LB |
 | FCR | Free and clear return | 総収益率 | NOI / (property price + misc costs) |
 | CCR | Cash and cash return | 自己資金配当率 | BTCF / cash invested |
 
