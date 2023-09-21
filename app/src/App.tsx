@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react"
 import "./App.css"
+import styles from "./App.module.css"
 import { Inputs } from "./lib/form"
 import { simulate, SimData } from "./lib/sim"
 import { sim_fixed_rate_loan, FixedRateLoan } from "./lib/loan"
@@ -230,6 +231,8 @@ function App() {
 
   // TODO: mobile
   // TODO: simple and advance forms
+  // TODO: line graphs
+  // TODO: heat map
   return (
     <div ref={ref} className="flex flex-row items-start max-w-[800px]">
       {loanSim != null ? (
@@ -281,7 +284,7 @@ function App() {
                 <td>返済額 (月)</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.ads / 12)} 円</td>
               </tr>
-              <tr>
+              <tr className="border-b-2 border-gray-200">
                 <td>返済比率</td>
                 <td style={{ textAlign: "right" }}>
                   {Percent(res.egi > 0 ? res.ads / res.egi : 1)} %
@@ -291,7 +294,7 @@ function App() {
                 <td>GPI</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.gpi)} 円</td>
               </tr>
-              <tr>
+              <tr className="border-b-2 border-gray-200">
                 <td>EGI</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.egi)} 円</td>
               </tr>
@@ -319,7 +322,7 @@ function App() {
                   {Yen(res.city_planning_tax_building)} 円
                 </td>
               </tr>
-              <tr>
+              <tr className="border-b-2 border-gray-200">
                 <td>OPEX</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.opex)} 円</td>
               </tr>
@@ -331,7 +334,7 @@ function App() {
                 <td>ADS</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.ads)} 円</td>
               </tr>
-              <tr>
+              <tr className="border-b-2 border-gray-200">
                 <td>BTCF</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.btcf)} 円</td>
               </tr>
@@ -361,7 +364,7 @@ function App() {
                 <td>税金</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.tax)} 円</td>
               </tr>
-              <tr>
+              <tr className="border-b-2 border-gray-200">
                 <td>ATCF</td>
                 <td style={{ textAlign: "right" }}>{Yen(res.atcf)} 円</td>
               </tr>
