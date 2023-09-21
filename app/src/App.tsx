@@ -258,7 +258,7 @@ function App() {
               <tr>
                 <td>総投資額</td>
                 <td style={{ textAlign: "right" }}>
-                  {Yen(res.total_cash_in)} 円
+                  {Yen(res.total_invested)} 円
                 </td>
               </tr>
               <tr>
