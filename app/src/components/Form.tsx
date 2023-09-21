@@ -107,7 +107,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
 
   return (
     <form onSubmit={_onSubmit}>
-      <h1 className="text-xl font-bold">物件</h1>
+      <h1 className="text-xl font-semibold">物件</h1>
       <Input
         label="物件価格"
         unit="万円"
@@ -175,7 +175,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         onChange={onChange}
         error={errors?.vacancy_rate}
       />
-      <h1 className="text-xl font-bold">支出</h1>
+      <h1 className="text-xl font-semibold">支出</h1>
       <Input
         label="管理委託料"
         unit="万円"
@@ -232,7 +232,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         onChange={onChange}
         error={errors?.property_tax_base_building}
       />
-      <h1 className="text-xl font-bold">融資</h1>
+      <h1 className="text-xl font-semibold">融資</h1>
       <Input
         label="自己資金"
         unit="万円"
@@ -266,7 +266,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         onChange={onChange}
         error={errors?.interest_rate}
       />
-      <h1 className="text-xl font-bold">税金</h1>
+      <h1 className="text-xl font-semibold">税金</h1>
       <Input
         label="法人税率"
         unit="%"
