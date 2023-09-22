@@ -133,8 +133,8 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         error={errors?.purchase_misc_fee}
       />
       <div className="flex flex-col">
-        <div className="flex flex-row items-center py-1">
-          <label className="w-[200px] mr-2">構造</label>
+        <label>構造</label>
+        <div className="flex flex-row items-center">
           <Select
             value={inputs.building_type}
             options={BUILDING_OPTIONS}
