@@ -1,6 +1,7 @@
 import { Inputs } from "./form"
 import { sum } from "./utils"
 import * as loan_lib from "./loan"
+import { FixedRateLoan } from "./loan"
 import * as building_lib from "./building"
 import { BuildingType } from "./building"
 import * as accounting_lib from "./accounting"
@@ -50,7 +51,10 @@ export interface SimData {
 
 // TODO: capex - 大規模修繕
 // TODO: BER, DCR, IRR?
-export function simulate(inputs: Inputs<number>): SimData {
+export function simulate(
+  inputs: Inputs<number>,
+  loan_sim: FixedRateLoan,
+): SimData {
   const building_price = inputs.property_price - inputs.land_price
 
   // GPI //
@@ -78,8 +82,6 @@ export function simulate(inputs: Inputs<number>): SimData {
   const monthly_repayment_ratio =
     monthly_cash_in > 0 ? monthly_debt_payment / monthly_cash_in : 1
   const total_debt_payment = n * monthly_debt_payment
-
-  const loan_sim = loan_lib.sim_fixed_rate_loan(p, interest_rate, n)
 
   // OPEX //
   const property_tax_land = tax_lib.calc_property_tax(

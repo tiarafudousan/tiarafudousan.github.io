@@ -3,6 +3,7 @@ import "./App.css"
 import styles from "./App.module.css"
 import { Inputs } from "./lib/form"
 import { simulate, SimData } from "./lib/sim"
+import * as loan_lib from "./lib/loan"
 import { sim_fixed_rate_loan, FixedRateLoan } from "./lib/loan"
 import { lerp, bound } from "./components/graphs/lib"
 import Form from "./components/Form"
@@ -115,16 +116,16 @@ function App() {
   // }, [])
 
   function onSubmit(values: Inputs<number>) {
-    const res = simulate(values)
+    const loan_sim = loan_lib.sim_fixed_rate_loan(
+      values.principal,
+      values.interest_rate / (100 * 12),
+      values.years * 12,
+    )
+    const res = simulate(values, loan_sim)
     setSimData(res)
 
     console.log("SIM", res)
 
-    // const principal = Math.floor(values.principal)
-    // const n = values.years * 12
-    // const interest_rate = values.interest_rate / (100 * 12)
-    // const loan_sim = sim_fixed_rate_loan(principal, interest_rate, n)
-    // setLoanSim(loan_sim)
     return
 
     const total_cash_in = res.total_cash_in
@@ -231,8 +232,8 @@ function App() {
 
   // TODO: mobile
   // TODO: simple and advance forms
-  // TODO: line graphs
-  // TODO: heat map
+  // TODO: line graphs (WIP)
+  // TODO: heat map (WIP)
   return (
     <div ref={ref} className="flex flex-row items-start max-w-[800px]">
       {loanSim != null ? (
