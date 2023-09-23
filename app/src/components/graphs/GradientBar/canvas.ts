@@ -62,7 +62,8 @@ export function draw(ctx: Context, params: Params) {
   const gradient = ctx.graph.createLinearGradient(0, 0, graphWidth, 0)
   for (let i = 0; i < GRADIENTS.length; i++) {
     const grad = GRADIENTS[i]
-    gradient.addColorStop(grad.value, grad.color)
+    // Reverse color scheme
+    gradient.addColorStop(1 - grad.value, grad.color)
   }
 
   ctx.graph.fillStyle = gradient
