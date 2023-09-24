@@ -1,18 +1,10 @@
 export const GRADIENTS = [
-  // {
-  //   value: 0.2,
-  //   color: "indigo",
-  // },
-  // {
-  //   value: 0.4,
-  //   color: "blue",
-  // },
   {
-    value: 0.25,
+    value: 0,
     color: "cyan",
   },
   {
-    value: 0.5,
+    value: 0.25,
     color: "lime",
   },
   {

@@ -4,7 +4,7 @@ import styles from "./App.module.css"
 import { Inputs } from "./lib/form"
 import { simulate, SimData } from "./lib/sim"
 import * as loan_lib from "./lib/loan"
-import { sim_fixed_rate_loan, FixedRateLoan } from "./lib/loan"
+import { FixedRateLoan } from "./lib/loan"
 import { lerp, bound } from "./components/graphs/lib"
 import Form from "./components/Form"
 import LineGraph, { xy } from "./components/graphs/LineGraph"
@@ -102,19 +102,6 @@ function App() {
     }
   }, [])
 
-  // useEffect(() => {
-  //   const values = {
-  //     principal: 2000,
-  //     years: 10,
-  //     interest_rate: 5,
-  //   }
-  //   const principal = Math.floor(values.principal)
-  //   const n = values.years * 12
-  //   const interest_rate = values.interest_rate / (100 * 12)
-  //   const loan_sim = sim_fixed_rate_loan(principal, interest_rate, n)
-  //   setLoanSim(loan_sim)
-  // }, [])
-
   function onSubmit(values: Inputs<number>) {
     const loan_sim = loan_lib.sim_fixed_rate_loan(
       values.principal,
@@ -124,13 +111,9 @@ function App() {
     const res = simulate(values, loan_sim)
     setSimData(res)
 
-    console.log("SIM", res)
-
-    return
-
-    const total_cash_in = res.total_cash_in
-    const yMax = total_cash_in
-    const yMin = total_cash_in * (1 - 10 * TOTAL_INVESTMENT_DELTA)
+    const total_invested = res.total_invested
+    const yMax = total_invested
+    const yMin = total_invested * (1 - 10 * TOTAL_INVESTMENT_DELTA)
 
     const ys = [
       lerp(yMin, yMax, 0),
@@ -156,16 +139,26 @@ function App() {
       zs.ccr.push([])
 
       for (let j = 0; j <= 10; j++) {
-        const total = total_cash_in * (1 - j * TOTAL_INVESTMENT_DELTA)
+        const total = total_invested * (1 - j * TOTAL_INVESTMENT_DELTA)
         const cash = (total * i) / 10
+        const principal = total - cash
 
-        const res = simulate({
-          ...values,
-          cash,
-          principal: total - cash,
-        })
+        const loan_sim = loan_lib.sim_fixed_rate_loan(
+          principal,
+          values.interest_rate / (100 * 12),
+          values.years * 12,
+        )
 
-        const roi = res.real_yield * 100
+        const res = simulate(
+          {
+            ...values,
+            cash,
+            principal,
+          },
+          loan_sim,
+        )
+
+        const roi = (res.atcf / values.property_price) * 100
         const ccr = res.ccr * 100
 
         zMax.roi = Math.max(zMax.roi, roi)
@@ -233,9 +226,8 @@ function App() {
   // TODO: mobile
   // TODO: simple and advance forms
   // TODO: line graphs (WIP)
-  // TODO: heat map (WIP)
   return (
-    <div ref={ref} className="flex flex-row items-start max-w-[800px]">
+    <div ref={ref} className="flex flex-row">
       {loanSim != null ? (
         <LineGraph
           xMin={1}
@@ -250,185 +242,189 @@ function App() {
           colors={["blue", "orange", "red"]}
         />
       ) : null}
-      <div className="h-screen overflow-y-auto px-6 py-6">
+      <div className="min-w-[260px] h-screen overflow-y-auto px-6 py-6">
         <Form onSubmit={onSubmit} onReset={onReset} />
       </div>
 
-      {res != null ? (
-        <div className="px-6 py-6 min-w-[300px]">
-          <div className="text-xl font-semibold mb-2">収支試算</div>
-          <table className="w-full">
-            <tbody>
-              <tr>
-                <td>総投資額</td>
-                <td style={{ textAlign: "right" }}>
-                  {Yen(res.total_invested)} 円
-                </td>
-              </tr>
-              <tr>
-                <td>表面利回り</td>
-                <td style={{ textAlign: "right" }}>
-                  {Percent(res.gross_yield)} %
-                </td>
-              </tr>
-              <tr>
-                <td>返済総額</td>
-                <td style={{ textAlign: "right" }}>
-                  {Yen(res.total_debt_payment)} 円
-                </td>
-              </tr>
-              <tr>
-                <td>収入 (月)</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.noi / 12)} 円</td>
-              </tr>
-              <tr>
-                <td>返済額 (月)</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.ads / 12)} 円</td>
-              </tr>
-              <tr className="border-b-2 border-gray-200">
-                <td>返済比率</td>
-                <td style={{ textAlign: "right" }}>
-                  {Percent(res.egi > 0 ? res.ads / res.egi : 1)} %
-                </td>
-              </tr>
-              <tr>
-                <td>GPI</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.gpi)} 円</td>
-              </tr>
-              <tr className="border-b-2 border-gray-200">
-                <td>EGI</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.egi)} 円</td>
-              </tr>
-              <tr>
-                <td>固定資産税 (土地)</td>
-                <td style={{ textAlign: "right" }}>
-                  {Yen(res.property_tax_land)} 円
-                </td>
-              </tr>
-              <tr>
-                <td>固定資産税 (建物)</td>
-                <td style={{ textAlign: "right" }}>
-                  {Yen(res.property_tax_building)} 円
-                </td>
-              </tr>
-              <tr>
-                <td>都市計画税 (土地)</td>
-                <td style={{ textAlign: "right" }}>
-                  {Yen(res.city_planning_tax_land)} 円
-                </td>
-              </tr>
-              <tr>
-                <td>都市計画税 (建物)</td>
-                <td style={{ textAlign: "right" }}>
-                  {Yen(res.city_planning_tax_building)} 円
-                </td>
-              </tr>
-              <tr className="border-b-2 border-gray-200">
-                <td>OPEX</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.opex)} 円</td>
-              </tr>
-              <tr>
-                <td>NOI</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.noi)} 円</td>
-              </tr>
-              <tr>
-                <td>ADS</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.ads)} 円</td>
-              </tr>
-              <tr className="border-b-2 border-gray-200">
-                <td>BTCF</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.btcf)} 円</td>
-              </tr>
-              <tr>
-                <td>減価償却 (建物)</td>
-                <td style={{ textAlign: "right" }}>
-                  {Yen(res.building_depreciation)} 円
-                </td>
-              </tr>
-              <tr>
-                <td>減価償却年数 (建物)</td>
-                <td style={{ textAlign: "right" }}>
-                  {res.building_depreciation_period} 年
-                </td>
-              </tr>
-              <tr>
-                <td>元金返済</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.principal)} 円</td>
-              </tr>
-              <tr>
-                <td>申告所得</td>
-                <td style={{ textAlign: "right" }}>
-                  {Yen(res.taxable_income)} 円
-                </td>
-              </tr>
-              <tr>
-                <td>税金</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.tax)} 円</td>
-              </tr>
-              <tr className="border-b-2 border-gray-200">
-                <td>ATCF</td>
-                <td style={{ textAlign: "right" }}>{Yen(res.atcf)} 円</td>
-              </tr>
-              <tr>
-                <td>K</td>
-                <td style={{ textAlign: "right" }}>{Percent(res.k)} %</td>
-              </tr>
-              <tr>
-                <td>FCR</td>
-                <td style={{ textAlign: "right" }}>{Percent(res.fcr)} %</td>
-              </tr>
-              <tr>
-                <td>CCR</td>
-                <td style={{ textAlign: "right" }}>{Percent(res.ccr)} %</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      ) : null}
+      <div className="flex flex-row overflow-x-auto">
+        {res != null ? (
+          <div className="px-6 py-6 min-w-[300px]">
+            <div className="text-xl font-semibold mb-2">収支試算</div>
+            <table className="w-full">
+              <tbody>
+                <tr>
+                  <td>総投資額</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(res.total_invested)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>表面利回り</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Percent(res.gross_yield)} %
+                  </td>
+                </tr>
+                <tr>
+                  <td>返済総額</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(res.total_debt_payment)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>収入 (月)</td>
+                  <td style={{ textAlign: "right" }}>{Yen(res.noi / 12)} 円</td>
+                </tr>
+                <tr>
+                  <td>返済額 (月)</td>
+                  <td style={{ textAlign: "right" }}>{Yen(res.ads / 12)} 円</td>
+                </tr>
+                <tr className="border-b-2 border-gray-200">
+                  <td>返済比率</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Percent(res.egi > 0 ? res.ads / res.egi : 1)} %
+                  </td>
+                </tr>
+                <tr>
+                  <td>GPI</td>
+                  <td style={{ textAlign: "right" }}>{Yen(res.gpi)} 円</td>
+                </tr>
+                <tr className="border-b-2 border-gray-200">
+                  <td>EGI</td>
+                  <td style={{ textAlign: "right" }}>{Yen(res.egi)} 円</td>
+                </tr>
+                <tr>
+                  <td>固定資産税 (土地)</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(res.property_tax_land)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>固定資産税 (建物)</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(res.property_tax_building)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>都市計画税 (土地)</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(res.city_planning_tax_land)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>都市計画税 (建物)</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(res.city_planning_tax_building)} 円
+                  </td>
+                </tr>
+                <tr className="border-b-2 border-gray-200">
+                  <td>OPEX</td>
+                  <td style={{ textAlign: "right" }}>{Yen(res.opex)} 円</td>
+                </tr>
+                <tr>
+                  <td>NOI</td>
+                  <td style={{ textAlign: "right" }}>{Yen(res.noi)} 円</td>
+                </tr>
+                <tr>
+                  <td>ADS</td>
+                  <td style={{ textAlign: "right" }}>{Yen(res.ads)} 円</td>
+                </tr>
+                <tr className="border-b-2 border-gray-200">
+                  <td>BTCF</td>
+                  <td style={{ textAlign: "right" }}>{Yen(res.btcf)} 円</td>
+                </tr>
+                <tr>
+                  <td>減価償却 (建物)</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(res.building_depreciation)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>減価償却年数 (建物)</td>
+                  <td style={{ textAlign: "right" }}>
+                    {res.building_depreciation_period} 年
+                  </td>
+                </tr>
+                <tr>
+                  <td>元金返済</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(res.principal)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>申告所得</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(res.taxable_income)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>税金</td>
+                  <td style={{ textAlign: "right" }}>{Yen(res.tax)} 円</td>
+                </tr>
+                <tr className="border-b-2 border-gray-200">
+                  <td>ATCF</td>
+                  <td style={{ textAlign: "right" }}>{Yen(res.atcf)} 円</td>
+                </tr>
+                <tr>
+                  <td>K</td>
+                  <td style={{ textAlign: "right" }}>{Percent(res.k)} %</td>
+                </tr>
+                <tr>
+                  <td>FCR</td>
+                  <td style={{ textAlign: "right" }}>{Percent(res.fcr)} %</td>
+                </tr>
+                <tr>
+                  <td>CCR</td>
+                  <td style={{ textAlign: "right" }}>{Percent(res.ccr)} %</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        ) : null}
 
-      {data != null ? (
-        <div className="mt-8 flex flex-col items-center mx-auto">
-          <Select
-            value={zType}
-            onChange={onChangeDataType}
-            options={[
-              { value: "roi", text: "返済後利回り" },
-              { value: "ccr", text: "CCR" },
-            ]}
-          />
-          <GradientBar
-            width={canvasSize}
-            height={60}
-            zMin={data[zType].zMin}
-            zMax={data[zType].zMax}
-            render={(z) => `${z.toFixed(2)} %`}
-          />
-          <Range
-            label={zType == "roi" ? "返済後利回り" : "CCR"}
-            min={0}
-            max={zType == "roi" ? MAX_ROI : MAX_CCR}
-            value={minZ[zType]}
-            onChange={onChangeMinZ}
-          />
-          <HeatMap
-            width={canvasSize}
-            height={canvasSize}
-            xs={XS}
-            ys={data.ys}
-            zs={data[zType].zs}
-            xMin={X_MIN}
-            xMax={X_MAX}
-            yMin={data.yMin}
-            yMax={data.yMax}
-            zMin={data[zType].zMin}
-            zMax={data[zType].zMax}
-            renderX={renderX}
-            renderY={renderY}
-            renderZ={renderZ}
-          />
-          <div className="text-sm">X = 自己資金比率 Y = 総投資額</div>
-        </div>
-      ) : null}
+        {data != null ? (
+          <div className="mt-8 flex flex-col items-center mx-auto">
+            <Select
+              value={zType}
+              onChange={onChangeDataType}
+              options={[
+                { value: "roi", text: "ATCF 利回り" },
+                { value: "ccr", text: "CCR" },
+              ]}
+            />
+            <GradientBar
+              width={canvasSize}
+              height={60}
+              zMin={data[zType].zMin}
+              zMax={data[zType].zMax}
+              render={(z) => `${z.toFixed(2)} %`}
+            />
+            <Range
+              label={zType == "roi" ? "ATCF 利回り" : "CCR"}
+              min={0}
+              max={zType == "roi" ? MAX_ROI : MAX_CCR}
+              value={minZ[zType]}
+              onChange={onChangeMinZ}
+            />
+            <HeatMap
+              width={canvasSize}
+              height={canvasSize}
+              xs={XS}
+              ys={data.ys}
+              zs={data[zType].zs}
+              xMin={X_MIN}
+              xMax={X_MAX}
+              yMin={data.yMin}
+              yMax={data.yMax}
+              zMin={data[zType].zMin}
+              zMax={data[zType].zMax}
+              renderX={renderX}
+              renderY={renderY}
+              renderZ={renderZ}
+            />
+            <div className="text-sm">X = 自己資金比率 Y = 総投資額</div>
+          </div>
+        ) : null}
+      </div>
     </div>
   )
 }
