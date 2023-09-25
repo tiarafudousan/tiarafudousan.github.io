@@ -59,8 +59,6 @@ export function calc_cf(
   // Loan //
   const cash = Math.floor(inputs.cash)
   const p = Math.floor(inputs.principal)
-  const n = inputs.years * 12
-  const interest_rate = inputs.interest_rate / (100 * 12)
 
   // property_price + cost = cash + principal
   const total_invested = cash + p
