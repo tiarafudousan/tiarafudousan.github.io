@@ -130,7 +130,6 @@ export function calc_cf(
   const fcr = noi / total_invested
   const ccr = cash > 0 ? btcf / cash : 1
   const k = lb > 0 ? ads / lb : 0
-  // TODO: delta gpi
 
   return {
     total_invested,
@@ -163,4 +162,31 @@ export function calc_cf(
     ccr,
     k,
   }
+}
+
+export function sim_cf(params: {
+  inputs: Inputs<number>
+  loan_sim: FixedRateLoan
+  years: number
+}): CashFlowData[] {
+  const { inputs, loan_sim, years } = params
+  const cf_data: CashFlowData[] = []
+
+  let gpi = inputs.gpi
+  const delta_gpi = (-1 * inputs.delta_gpi) / 100
+  for (let i = 0; i < years; i++) {
+    const data = calc_cf(
+      {
+        ...inputs,
+        gpi,
+      },
+      loan_sim,
+    )
+
+    gpi = Math.max(gpi * (1 + delta_gpi), 0)
+
+    cf_data.push(data)
+  }
+
+  return cf_data
 }

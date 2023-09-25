@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react"
 import "./App.css"
 import styles from "./App.module.css"
 import { Inputs } from "./lib/form"
-import { calc_cf, CashFlowData } from "./lib/cf"
+import { calc_cf, sim_cf, CashFlowData } from "./lib/cf"
 import * as loan_lib from "./lib/loan"
 import { FixedRateLoan } from "./lib/loan"
 import { lerp, bound } from "./components/graphs/lib"
@@ -12,6 +12,8 @@ import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
 import Range from "./components/Range"
 import Select from "./components/Select"
+
+const YEARS = 30
 
 // Heat map
 function renderX(x: number): string {
@@ -82,8 +84,6 @@ const DEFAULT_Z = {
   ccr: TARGET_CCR,
 }
 
-const YEARS = 30
-
 function App() {
   const ref = useRef(null)
   const [canvasSize, setCanvasSize] = useState(0)
@@ -93,6 +93,7 @@ function App() {
   const [sim, setSimData] = useState<CashFlowData | null>(null)
   const [heat, setHeatMapData] = useState<HeatMapData | null>(null)
   const [loanSimData, setLoanSimData] = useState<FixedRateLoan | null>(null)
+  const [cashFlowData, setCashFlowData] = useState<CashFlowData[]>([])
 
   useEffect(() => {
     if (ref.current) {
@@ -111,6 +112,13 @@ function App() {
     const cfData = calc_cf(values, loan_sim)
     setSimData(cfData)
 
+    const cf_data = sim_cf({
+      inputs: values,
+      loan_sim,
+      years: YEARS,
+    })
+
+    setCashFlowData(cf_data)
     // TODO: remove
     setLoanSimData(loan_sim)
 
@@ -244,11 +252,12 @@ function App() {
             yMin={0}
             yMax={300}
             data={[
+              xy(cashFlowData.map((d) => d.gpi)),
               xy(loanSimData.principals),
               xy(loanSimData.interests),
               xy(loanSimData.debt_repayments),
             ]}
-            colors={["blue", "orange", "red"]}
+            colors={["green", "blue", "orange", "red"]}
           />
         ) : null}
 
