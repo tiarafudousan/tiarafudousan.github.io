@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react"
 import "./App.css"
 import styles from "./App.module.css"
 import { Inputs } from "./lib/form"
-import { simulate, SimData } from "./lib/sim"
+import { calc_cf, CashFlowData } from "./lib/cf"
 import * as loan_lib from "./lib/loan"
 import { FixedRateLoan } from "./lib/loan"
 import { lerp, bound } from "./components/graphs/lib"
@@ -90,9 +90,9 @@ function App() {
 
   const [zType, setDataType] = useState<ZType>("roi")
   const [minZ, setMinZ] = useState(DEFAULT_Z)
-  const [res, setSimData] = useState<SimData | null>(null)
-  const [loanSim, setLoanSim] = useState<FixedRateLoan | null>(null)
-  const [data, setHeatMapData] = useState<HeatMapData | null>(null)
+  const [sim, setSimData] = useState<CashFlowData | null>(null)
+  const [heat, setHeatMapData] = useState<HeatMapData | null>(null)
+  const [loanSimData, setLoanSimData] = useState<FixedRateLoan | null>(null)
 
   useEffect(() => {
     if (ref.current) {
@@ -108,10 +108,13 @@ function App() {
       values.interest_rate / (100 * 12),
       values.years * 12,
     )
-    const res = simulate(values, loan_sim)
-    setSimData(res)
+    const cfData = calc_cf(values, loan_sim)
+    setSimData(cfData)
 
-    const total_invested = res.total_invested
+    // TODO: remove
+    setLoanSimData(loan_sim)
+
+    const total_invested = cfData.total_invested
     const yMax = total_invested
     const yMin = total_invested * (1 - 10 * TOTAL_INVESTMENT_DELTA)
 
@@ -149,7 +152,7 @@ function App() {
           values.years * 12,
         )
 
-        const res = simulate(
+        const cfData = calc_cf(
           {
             ...values,
             cash,
@@ -158,8 +161,8 @@ function App() {
           loan_sim,
         )
 
-        const roi = (res.atcf / values.property_price) * 100
-        const ccr = res.ccr * 100
+        const roi = (cfData.atcf / values.property_price) * 100
+        const ccr = cfData.ccr * 100
 
         zMax.roi = Math.max(zMax.roi, roi)
         zMax.ccr = Math.max(zMax.ccr, ccr)
@@ -195,7 +198,7 @@ function App() {
   function onReset() {
     setHeatMapData(null)
     setSimData(null)
-    setLoanSim(null)
+    setLoanSimData(null)
     setMinZ(DEFAULT_Z)
   }
 
@@ -224,30 +227,32 @@ function App() {
   }
 
   // TODO: mobile
+  // TODO: sticky to bottom, form buttons?
   // TODO: simple and advance forms
-  // TODO: line graphs (WIP)
+  // TODO: line graphs (WIP) - cummulative cf
   return (
     <div ref={ref} className="flex flex-row">
-      {loanSim != null ? (
-        <LineGraph
-          xMin={1}
-          xMax={YEARS}
-          yMin={0}
-          yMax={300}
-          data={[
-            xy(loanSim.principals, 1, 0),
-            xy(loanSim.interests, 1, 0),
-            xy(loanSim.debt_repayments, 1, 0),
-          ]}
-          colors={["blue", "orange", "red"]}
-        />
-      ) : null}
       <div className="min-w-[260px] h-screen overflow-y-auto px-6 py-6">
         <Form onSubmit={onSubmit} onReset={onReset} />
       </div>
 
       <div className="flex flex-row overflow-x-auto">
-        {res != null ? (
+        {loanSimData != null ? (
+          <LineGraph
+            xMin={0}
+            xMax={YEARS}
+            yMin={0}
+            yMax={300}
+            data={[
+              xy(loanSimData.principals),
+              xy(loanSimData.interests),
+              xy(loanSimData.debt_repayments),
+            ]}
+            colors={["blue", "orange", "red"]}
+          />
+        ) : null}
+
+        {sim != null ? (
           <div className="px-6 py-6 min-w-[300px]">
             <div className="text-xl font-semibold mb-2">収支試算</div>
             <table className="w-full">
@@ -255,133 +260,133 @@ function App() {
                 <tr>
                   <td>総投資額</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(res.total_invested)} 円
+                    {Yen(sim.total_invested)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>表面利回り</td>
                   <td style={{ textAlign: "right" }}>
-                    {Percent(res.gross_yield)} %
+                    {Percent(sim.gross_yield)} %
                   </td>
                 </tr>
                 <tr>
                   <td>返済総額</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(res.total_debt_payment)} 円
+                    {Yen(sim.total_debt_payment)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>収入 (月)</td>
-                  <td style={{ textAlign: "right" }}>{Yen(res.noi / 12)} 円</td>
+                  <td style={{ textAlign: "right" }}>{Yen(sim.noi / 12)} 円</td>
                 </tr>
                 <tr>
                   <td>返済額 (月)</td>
-                  <td style={{ textAlign: "right" }}>{Yen(res.ads / 12)} 円</td>
+                  <td style={{ textAlign: "right" }}>{Yen(sim.ads / 12)} 円</td>
                 </tr>
                 <tr className="border-b-2 border-gray-200">
                   <td>返済比率</td>
                   <td style={{ textAlign: "right" }}>
-                    {Percent(res.egi > 0 ? res.ads / res.egi : 1)} %
+                    {Percent(sim.egi > 0 ? sim.ads / sim.egi : 1)} %
                   </td>
                 </tr>
                 <tr>
                   <td>GPI</td>
-                  <td style={{ textAlign: "right" }}>{Yen(res.gpi)} 円</td>
+                  <td style={{ textAlign: "right" }}>{Yen(sim.gpi)} 円</td>
                 </tr>
                 <tr className="border-b-2 border-gray-200">
                   <td>EGI</td>
-                  <td style={{ textAlign: "right" }}>{Yen(res.egi)} 円</td>
+                  <td style={{ textAlign: "right" }}>{Yen(sim.egi)} 円</td>
                 </tr>
                 <tr>
                   <td>固定資産税 (土地)</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(res.property_tax_land)} 円
+                    {Yen(sim.property_tax_land)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>固定資産税 (建物)</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(res.property_tax_building)} 円
+                    {Yen(sim.property_tax_building)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>都市計画税 (土地)</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(res.city_planning_tax_land)} 円
+                    {Yen(sim.city_planning_tax_land)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>都市計画税 (建物)</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(res.city_planning_tax_building)} 円
+                    {Yen(sim.city_planning_tax_building)} 円
                   </td>
                 </tr>
                 <tr className="border-b-2 border-gray-200">
                   <td>OPEX</td>
-                  <td style={{ textAlign: "right" }}>{Yen(res.opex)} 円</td>
+                  <td style={{ textAlign: "right" }}>{Yen(sim.opex)} 円</td>
                 </tr>
                 <tr>
                   <td>NOI</td>
-                  <td style={{ textAlign: "right" }}>{Yen(res.noi)} 円</td>
+                  <td style={{ textAlign: "right" }}>{Yen(sim.noi)} 円</td>
                 </tr>
                 <tr>
                   <td>ADS</td>
-                  <td style={{ textAlign: "right" }}>{Yen(res.ads)} 円</td>
+                  <td style={{ textAlign: "right" }}>{Yen(sim.ads)} 円</td>
                 </tr>
                 <tr className="border-b-2 border-gray-200">
                   <td>BTCF</td>
-                  <td style={{ textAlign: "right" }}>{Yen(res.btcf)} 円</td>
+                  <td style={{ textAlign: "right" }}>{Yen(sim.btcf)} 円</td>
                 </tr>
                 <tr>
                   <td>減価償却 (建物)</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(res.building_depreciation)} 円
+                    {Yen(sim.building_depreciation)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>減価償却年数 (建物)</td>
                   <td style={{ textAlign: "right" }}>
-                    {res.building_depreciation_period} 年
+                    {sim.building_depreciation_period} 年
                   </td>
                 </tr>
                 <tr>
                   <td>元金返済</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(res.principal)} 円
+                    {Yen(sim.principal)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>申告所得</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(res.taxable_income)} 円
+                    {Yen(sim.taxable_income)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>税金</td>
-                  <td style={{ textAlign: "right" }}>{Yen(res.tax)} 円</td>
+                  <td style={{ textAlign: "right" }}>{Yen(sim.tax)} 円</td>
                 </tr>
                 <tr className="border-b-2 border-gray-200">
                   <td>ATCF</td>
-                  <td style={{ textAlign: "right" }}>{Yen(res.atcf)} 円</td>
+                  <td style={{ textAlign: "right" }}>{Yen(sim.atcf)} 円</td>
                 </tr>
                 <tr>
                   <td>K</td>
-                  <td style={{ textAlign: "right" }}>{Percent(res.k)} %</td>
+                  <td style={{ textAlign: "right" }}>{Percent(sim.k)} %</td>
                 </tr>
                 <tr>
                   <td>FCR</td>
-                  <td style={{ textAlign: "right" }}>{Percent(res.fcr)} %</td>
+                  <td style={{ textAlign: "right" }}>{Percent(sim.fcr)} %</td>
                 </tr>
                 <tr>
                   <td>CCR</td>
-                  <td style={{ textAlign: "right" }}>{Percent(res.ccr)} %</td>
+                  <td style={{ textAlign: "right" }}>{Percent(sim.ccr)} %</td>
                 </tr>
               </tbody>
             </table>
           </div>
         ) : null}
 
-        {data != null ? (
+        {heat != null ? (
           <div className="mt-8 flex flex-col items-center mx-auto">
             <Select
               value={zType}
@@ -394,8 +399,8 @@ function App() {
             <GradientBar
               width={canvasSize}
               height={60}
-              zMin={data[zType].zMin}
-              zMax={data[zType].zMax}
+              zMin={heat[zType].zMin}
+              zMax={heat[zType].zMax}
               render={(z) => `${z.toFixed(2)} %`}
             />
             <Range
@@ -409,14 +414,14 @@ function App() {
               width={canvasSize}
               height={canvasSize}
               xs={XS}
-              ys={data.ys}
-              zs={data[zType].zs}
+              ys={heat.ys}
+              zs={heat[zType].zs}
               xMin={X_MIN}
               xMax={X_MAX}
-              yMin={data.yMin}
-              yMax={data.yMax}
-              zMin={data[zType].zMin}
-              zMax={data[zType].zMax}
+              yMin={heat.yMin}
+              yMax={heat.yMax}
+              zMin={heat[zType].zMin}
+              zMax={heat[zType].zMax}
               renderX={renderX}
               renderY={renderY}
               renderZ={renderZ}

@@ -7,7 +7,7 @@ import { BuildingType } from "./building"
 import * as accounting_lib from "./accounting"
 import * as tax_lib from "./tax"
 
-export interface SimData {
+export interface CashFlowData {
   total_invested: number
   total_debt_payment: number
   monthly_debt_payment: number
@@ -49,12 +49,13 @@ export interface SimData {
   k: number
 }
 
+// TODO: initial purchase cost
 // TODO: capex - 大規模修繕
 // TODO: BER, DCR, IRR?
-export function simulate(
+export function calc_cf(
   inputs: Inputs<number>,
   loan_sim: FixedRateLoan,
-): SimData {
+): CashFlowData {
   const building_price = inputs.property_price - inputs.land_price
 
   // GPI //
