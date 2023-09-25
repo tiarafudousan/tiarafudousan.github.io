@@ -1,6 +1,5 @@
 import { Inputs } from "./form"
 import { sum } from "./utils"
-import * as loan_lib from "./loan"
 import { FixedRateLoan } from "./loan"
 import * as building_lib from "./building"
 import { BuildingType } from "./building"
@@ -10,17 +9,8 @@ import * as tax_lib from "./tax"
 export interface CashFlowData {
   total_invested: number
   total_debt_payment: number
-  monthly_debt_payment: number
-  monthly_repayment_ratio: number
-  // Monthly cash in before debt payment
-  monthly_cash_in: number
-  yearly_cash_out: number
-  yearly_cash_flow: number
   // 表面利回り
   gross_yield: number
-  // 実質利回り
-  real_yield: number
-
   gpi: number
   egi: number
   property_tax_land: number
@@ -65,7 +55,6 @@ export function calc_cf(
 
   // EGI //
   const egi = gpi * (1 - vacancy_rate)
-  const monthly_cash_in = egi / 12
 
   // Loan //
   const cash = Math.floor(inputs.cash)
@@ -75,14 +64,7 @@ export function calc_cf(
 
   // property_price + cost = cash + principal
   const total_invested = cash + p
-
-  const monthly_debt_payment =
-    n > 0
-      ? loan_lib.calc_fixed_rate_loan_monthly_payment(p, interest_rate, n)
-      : 0
-  const monthly_repayment_ratio =
-    monthly_cash_in > 0 ? monthly_debt_payment / monthly_cash_in : 1
-  const total_debt_payment = n * monthly_debt_payment
+  const total_debt_payment = loan_sim.total
 
   // OPEX //
   const property_tax_land = tax_lib.calc_property_tax(
@@ -145,11 +127,7 @@ export function calc_cf(
   const tax = Math.max(taxable_income * tax_rate, 0)
   const atcf = btcf - tax
 
-  const yearly_cash_out = monthly_debt_payment * 12 + opex
-  const yearly_cash_flow = egi - yearly_cash_out
-
   const gross_yield = gpi / inputs.property_price
-  const real_yield = yearly_cash_flow / total_invested
 
   const fcr = noi / total_invested
   const ccr = cash > 0 ? btcf / cash : 1
@@ -159,14 +137,7 @@ export function calc_cf(
   return {
     total_invested,
     total_debt_payment,
-    monthly_debt_payment,
-    monthly_repayment_ratio,
-    monthly_cash_in,
-    yearly_cash_out,
-    yearly_cash_flow,
     gross_yield,
-    real_yield,
-
     gpi,
     egi,
     property_tax_land,
