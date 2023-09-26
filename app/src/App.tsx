@@ -109,7 +109,11 @@ function App() {
       values.interest_rate / (100 * 12),
       values.years * 12,
     )
-    const cfData = calc_cf(values, loan_sim)
+    const cfData = calc_cf({
+      inputs: values,
+      loan_sim,
+      delta_year: 0,
+    })
     setSimData(cfData)
 
     const cf_data = sim_cf({
@@ -160,14 +164,15 @@ function App() {
           values.years * 12,
         )
 
-        const cfData = calc_cf(
-          {
+        const cfData = calc_cf({
+          inputs: {
             ...values,
             cash,
             principal,
           },
           loan_sim,
-        )
+          delta_year: 0,
+        })
 
         const roi = (cfData.atcf / values.property_price) * 100
         const ccr = cfData.ccr * 100
@@ -249,15 +254,18 @@ function App() {
           <LineGraph
             xMin={0}
             xMax={YEARS}
-            yMin={0}
+            yMin={-300}
             yMax={300}
             data={[
               xy(cashFlowData.map((d) => d.gpi)),
+              xy(cashFlowData.map((d) => d.noi)),
+              xy(cashFlowData.map((d) => d.btcf)),
+              xy(cashFlowData.map((d) => d.atcf)),
               xy(loanSimData.principals),
               xy(loanSimData.interests),
               xy(loanSimData.debt_repayments),
             ]}
-            colors={["green", "blue", "orange", "red"]}
+            colors={["green", "lime", "olive", "teal", "blue", "orange", "red"]}
           />
         ) : null}
 

@@ -42,10 +42,13 @@ export interface CashFlowData {
 // TODO: initial purchase cost
 // TODO: capex - 大規模修繕
 // TODO: BER, DCR, IRR?
-export function calc_cf(
-  inputs: Inputs<number>,
-  loan_sim: FixedRateLoan,
-): CashFlowData {
+export function calc_cf(params: {
+  inputs: Inputs<number>
+  loan_sim: FixedRateLoan
+  delta_year: number
+}): CashFlowData {
+  const { inputs, loan_sim, delta_year } = params
+
   const building_price = inputs.property_price - inputs.land_price
 
   // GPI //
@@ -96,8 +99,7 @@ export function calc_cf(
   const ncf = noi - capex
 
   // BTCF //
-  // TODO: get ADS of a particula year
-  const ads = loan_sim.debt_repayments[0]
+  const ads = loan_sim.debt_repayments[delta_year]
   const lb = p
   const btcf = ncf - ads
 
@@ -114,11 +116,13 @@ export function calc_cf(
     inputs.building_age,
   )
   const building_depreciation =
-    book_values.building / building_depreciation_period
+    delta_year < building_depreciation_period
+      ? book_values.building / building_depreciation_period
+      : 0
   // TODO: equipment depreciation
   const equipment_depreciation_period = 0
   const equipment_depreciation = 0
-  const principal = loan_sim.principals[0]
+  const principal = loan_sim.principals[delta_year]
   const taxable_income =
     btcf - (building_depreciation + equipment_depreciation) + principal
   // TODO: tax
@@ -175,13 +179,14 @@ export function sim_cf(params: {
   let gpi = inputs.gpi
   const delta_gpi = (-1 * inputs.delta_gpi) / 100
   for (let i = 0; i < years; i++) {
-    const data = calc_cf(
-      {
+    const data = calc_cf({
+      inputs: {
         ...inputs,
         gpi,
       },
       loan_sim,
-    )
+      delta_year: i,
+    })
 
     gpi = Math.max(gpi * (1 + delta_gpi), 0)
 
