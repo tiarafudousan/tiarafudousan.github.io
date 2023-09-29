@@ -7,6 +7,7 @@ import * as loan_lib from "./lib/loan"
 import { FixedRateLoan } from "./lib/loan"
 import { lerp, bound } from "./components/graphs/lib"
 import Form from "./components/Form"
+import Table from "./components/Table"
 import LineGraph, { xy } from "./components/graphs/LineGraph"
 import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
@@ -242,7 +243,7 @@ function App() {
   // TODO: mobile
   // TODO: sticky to bottom, form buttons?
   // TODO: simple and advance forms
-  // TODO: line graphs (WIP) - cummulative cf
+  // TODO: line graphs (WIP) - cummulative cf normalized
   return (
     <div ref={ref} className="flex flex-row">
       <div className="min-w-[260px] h-screen overflow-y-auto px-6 py-6">
@@ -251,30 +252,33 @@ function App() {
 
       <div className="flex flex-row overflow-x-auto">
         {loanSimData != null ? (
-          <LineGraph
-            xMin={0}
-            xMax={YEARS - 1}
-            yMin={Math.min(...cashFlowData.map((d) => d.atcf)) * 1.2}
-            yMax={cashFlowData[0].gpi * 1.2}
-            data={[
-              xy(cashFlowData.map((d) => d.gpi)),
-              xy(cashFlowData.map((d) => d.noi)),
-              xy(cashFlowData.map((d) => d.btcf)),
-              xy(cashFlowData.map((d) => d.atcf)),
-              xy(loanSimData.principals),
-              xy(loanSimData.interests),
-              xy(loanSimData.debt_repayments),
-            ]}
-            colors={[
-              "olivedrab",
-              "yellowgreen",
-              "purple",
-              "teal",
-              "gold",
-              "orange",
-              "tomato",
-            ]}
-          />
+          <div className="flex flex-col">
+            <LineGraph
+              xMin={0}
+              xMax={YEARS - 1}
+              yMin={Math.min(...cashFlowData.map((d) => d.atcf)) * 1.2}
+              yMax={cashFlowData[0].gpi * 1.2}
+              data={[
+                xy(cashFlowData.map((d) => d.gpi)),
+                xy(cashFlowData.map((d) => d.noi)),
+                xy(cashFlowData.map((d) => d.btcf)),
+                xy(cashFlowData.map((d) => d.atcf)),
+                xy(loanSimData.principals),
+                xy(loanSimData.interests),
+                xy(loanSimData.debt_repayments),
+              ]}
+              colors={[
+                "olivedrab",
+                "yellowgreen",
+                "purple",
+                "teal",
+                "gold",
+                "orange",
+                "tomato",
+              ]}
+            />
+            <Table data={cashFlowData} />
+          </div>
         ) : null}
 
         {sim != null ? (
