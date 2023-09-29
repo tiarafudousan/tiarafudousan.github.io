@@ -253,9 +253,9 @@ function App() {
         {loanSimData != null ? (
           <LineGraph
             xMin={0}
-            xMax={YEARS}
-            yMin={-300}
-            yMax={300}
+            xMax={YEARS - 1}
+            yMin={Math.min(...cashFlowData.map((d) => d.atcf)) * 1.2}
+            yMax={cashFlowData[0].gpi * 1.2}
             data={[
               xy(cashFlowData.map((d) => d.gpi)),
               xy(cashFlowData.map((d) => d.noi)),
@@ -265,7 +265,15 @@ function App() {
               xy(loanSimData.interests),
               xy(loanSimData.debt_repayments),
             ]}
-            colors={["green", "lime", "olive", "teal", "blue", "orange", "red"]}
+            colors={[
+              "olivedrab",
+              "yellowgreen",
+              "purple",
+              "teal",
+              "gold",
+              "orange",
+              "tomato",
+            ]}
           />
         ) : null}
 
