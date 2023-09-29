@@ -49,7 +49,8 @@ const LineGraph: React.FC<Props> = ({
       <Graph
         width={800}
         height={300}
-        backgroundColor="white"
+        backgroundColor="beige"
+        animate={true}
         range={range}
         xAxis={{
           xAxisHeight: 22,
