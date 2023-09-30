@@ -40,7 +40,7 @@ const LineGraph: React.FC<Props> = ({
   return (
     <Graph
       width={800}
-      height={300}
+      height={280}
       backgroundColor="beige"
       animate={true}
       range={range}
