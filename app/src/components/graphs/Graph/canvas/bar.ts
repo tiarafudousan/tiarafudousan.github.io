@@ -12,9 +12,15 @@ export function draw(
   } = layout
   const { xMin, xMax, yMin, yMax } = range
 
-  const { data = [], step = 1, getBarColor = () => "", barWidth = 1 } = graph
+  const {
+    data = [],
+    step = 1,
+    getBarColor = () => "",
+    barWidth = 1,
+    y0 = yMin,
+  } = graph
 
-  const canvasY0 = getCanvasY(height, top, yMax, yMin, yMin)
+  const canvasY0 = getCanvasY(height, top, yMax, yMin, y0)
 
   if (step > 0) {
     for (let i = 0; i < data.length; i += step) {
@@ -28,12 +34,7 @@ export function draw(
         const barHeight = canvasY0 - canvasY
 
         ctx.fillStyle = getBarColor(d)
-        ctx.fillRect(
-          canvasX - barWidth / 2,
-          canvasY,
-          barWidth,
-          Math.max(0, barHeight - 1),
-        )
+        ctx.fillRect(canvasX - barWidth / 2, canvasY, barWidth, barHeight)
       }
     }
   }

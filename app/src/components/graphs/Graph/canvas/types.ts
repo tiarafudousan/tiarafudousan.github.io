@@ -120,6 +120,7 @@ export interface BarGraph {
   step: number
   getBarColor: (bar: Bar) => string
   barWidth: number
+  y0: number
 }
 
 export interface LineGraph {

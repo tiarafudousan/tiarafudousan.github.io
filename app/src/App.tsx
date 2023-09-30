@@ -262,8 +262,8 @@ function App() {
             <LineGraph
               xMin={0}
               xMax={YEARS - 1}
-              yMin={Math.min(...cashFlowData.map((d) => d.atcf)) * 1.2}
-              yMax={cashFlowData[0].gpi * 1.2}
+              yMin={Math.min(...cashFlowData.map((d) => d.atcf))}
+              yMax={cashFlowData[0].gpi}
               data={[
                 xy(cashFlowData.map((d) => d.gpi)),
                 xy(cashFlowData.map((d) => d.noi)),
@@ -287,7 +287,12 @@ function App() {
               xMin={0}
               xMax={YEARS - 1}
               yMin={Math.min(...fold(cashFlowData.map((d) => d.atcf)))}
-              yMax={Math.max(...fold(cashFlowData.map((d) => d.atcf)))}
+              yMax={
+                Math.max(
+                  Math.max(...fold(cashFlowData.map((d) => d.atcf))),
+                  0,
+                ) * 1.1
+              }
               data={[xy(fold(cashFlowData.map((d) => d.atcf)))]}
             />
             <Table data={cashFlowData} />
