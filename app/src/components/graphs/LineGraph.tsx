@@ -2,13 +2,6 @@ import React from "react"
 import Graph from "./Graph"
 import { LineGraphType, Point } from "./Graph/canvas/types"
 
-export function xy(arr: number[], x0 = 0, y0 = 0): Point[] {
-  return arr.map((y, x) => ({
-    x: x + x0,
-    y: y + y0,
-  }))
-}
-
 interface Props {
   xMin: number
   xMax: number

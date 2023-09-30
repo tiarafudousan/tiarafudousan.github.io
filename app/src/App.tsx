@@ -2,13 +2,16 @@ import React, { useState, useRef, useEffect } from "react"
 import "./App.css"
 import styles from "./App.module.css"
 import { Inputs } from "./lib/form"
+import { fold } from "./lib/utils"
 import { calc_cf, sim_cf, CashFlowData } from "./lib/cf"
 import * as loan_lib from "./lib/loan"
 import { FixedRateLoan } from "./lib/loan"
 import { lerp, bound } from "./components/graphs/lib"
 import Form from "./components/Form"
 import Table from "./components/Table"
-import LineGraph, { xy } from "./components/graphs/LineGraph"
+import LineGraph from "./components/graphs/LineGraph"
+import BarGraph from "./components/graphs/BarGraph"
+import { xy } from "./components/graphs/Graph/utils"
 import HeatMap from "./components/graphs/HeatMap"
 import GradientBar from "./components/graphs/GradientBar"
 import Range from "./components/Range"
@@ -122,6 +125,9 @@ function App() {
       loan_sim,
       years: YEARS,
     })
+
+    const cumulative_cf = fold(cf_data.map((d) => d.atcf))
+    console.log(cumulative_cf)
 
     setCashFlowData(cf_data)
     // TODO: remove
@@ -243,7 +249,7 @@ function App() {
   // TODO: mobile
   // TODO: sticky to bottom, form buttons?
   // TODO: simple and advance forms
-  // TODO: line graphs (WIP) - cummulative cf normalized
+  // TODO: line graphs (WIP) - cummulative cf normalized, hover
   return (
     <div ref={ref} className="flex flex-row">
       <div className="min-w-[260px] h-screen overflow-y-auto px-6 py-6">
@@ -276,6 +282,13 @@ function App() {
                 "orange",
                 "tomato",
               ]}
+            />
+            <BarGraph
+              xMin={0}
+              xMax={YEARS - 1}
+              yMin={Math.min(...fold(cashFlowData.map((d) => d.atcf)))}
+              yMax={Math.max(...fold(cashFlowData.map((d) => d.atcf)))}
+              data={[xy(fold(cashFlowData.map((d) => d.atcf)))]}
             />
             <Table data={cashFlowData} />
           </div>
