@@ -12,7 +12,7 @@ export function sum(...xs: number[]) {
   return y
 }
 
-export function integrate(xs: number[]): number[] {
+export function fold(xs: number[]): number[] {
   let y = 0
   const ys: number[] = []
   for (let i = 0; i < xs.length; i++) {

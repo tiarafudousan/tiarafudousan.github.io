@@ -1,6 +1,6 @@
 import React from "react"
 import Graph from "./Graph"
-import { LineGraphType, Point } from "./Graph/canvas/types"
+import { BarGraphType, Point } from "./Graph/canvas/types"
 
 export function xy(arr: number[], x0 = 0, y0 = 0): Point[] {
   return arr.map((y, x) => ({
@@ -15,17 +15,9 @@ interface Props {
   yMin: number
   yMax: number
   data: Point[][]
-  colors: string[]
 }
 
-const LineGraph: React.FC<Props> = ({
-  xMin,
-  xMax,
-  yMin,
-  yMax,
-  data,
-  colors,
-}) => {
+const BarGraph: React.FC<Props> = ({ xMin, xMax, yMin, yMax, data }) => {
   const range = {
     xMin,
     xMax,
@@ -33,27 +25,26 @@ const LineGraph: React.FC<Props> = ({
     yMax,
   }
 
-  const xTickInterval = 1
-  const yTickInterval = Math.max(Math.floor((yMax - yMin) / (8 * 10)) * 10, 10)
+  const yTickInterval = Math.max(Math.floor((yMax - yMin) / (6 * 10)) * 10, 10)
 
-  const graphs: LineGraphType[] = data.map((d, i) => ({
-    type: "line",
-    lineColor: colors[i],
-    lineWidth: 2,
+  const graphs: BarGraphType[] = data.map((d, i) => ({
+    type: "bar",
     step: 1,
     data: d,
+    getBarColor: (bar) => (bar.y >= 0 ? "green" : "red"),
+    barWidth: 4,
   }))
 
   return (
     <Graph
       width={800}
-      height={300}
+      height={150}
       backgroundColor="beige"
       animate={true}
       range={range}
       xAxis={{
         xAxisHeight: 22,
-        xTickInterval,
+        xTickInterval: 1,
         xAxisLineColor: "black",
         xAxisTextColor: "black",
         xLineColor: "grey",
@@ -69,4 +60,4 @@ const LineGraph: React.FC<Props> = ({
   )
 }
 
-export default LineGraph
+export default BarGraph
