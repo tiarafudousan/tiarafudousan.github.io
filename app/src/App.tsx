@@ -388,6 +388,12 @@ function App() {
                     {Yen(sim.city_planning_tax_building)} 円
                   </td>
                 </tr>
+                <tr>
+                  <td>管理費</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(sim.maintanence_fee)} 円
+                  </td>
+                </tr>
                 <tr className="border-b-2 border-gray-200">
                   <td>OPEX</td>
                   <td style={{ textAlign: "right" }}>{Yen(sim.opex)} 円</td>

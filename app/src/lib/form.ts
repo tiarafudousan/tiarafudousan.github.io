@@ -11,7 +11,7 @@ export interface Inputs<a> {
   // opex //
   property_tax_base_land: a
   property_tax_base_building: a
-  maintanence_fee: a
+  maintanence_fee_rate: a
   restoration_fee: a
   ad_fee: a
   insurance_fee: a
@@ -38,7 +38,7 @@ export interface Errors {
   // opex //
   property_tax_base_land?: string
   property_tax_base_building?: string
-  maintanence_fee?: string
+  maintanence_fee_rate?: string
   restoration_fee?: string
   ad_fee?: string
   insurance_fee?: string
@@ -87,7 +87,7 @@ export function validate(
     // opex //
     property_tax_base_land: 0,
     property_tax_base_building: 0,
-    maintanence_fee: 0,
+    maintanence_fee_rate: 0,
     restoration_fee: 0,
     ad_fee: 0,
     insurance_fee: 0,
@@ -182,11 +182,16 @@ export function validate(
     }
   }
   {
-    const [error, value] = validateNum(inputs.maintanence_fee, true, 0)
+    const [error, value] = validateNum(
+      inputs.maintanence_fee_rate,
+      false,
+      0,
+      100,
+    )
     if (error) {
-      errors.maintanence_fee = error
+      errors.maintanence_fee_rate = error
     } else {
-      values.maintanence_fee = value
+      values.maintanence_fee_rate = value
     }
   }
   {

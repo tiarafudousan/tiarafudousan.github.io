@@ -15,7 +15,7 @@ const INPUTS: Inputs<string> = {
   // opex //
   property_tax_base_land: "0",
   property_tax_base_building: "0",
-  maintanence_fee: "0",
+  maintanence_fee_rate: "5",
   restoration_fee: "0",
   ad_fee: "0",
   insurance_fee: "0",
@@ -178,11 +178,11 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
       <h1 className="text-xl font-semibold">支出</h1>
       <Input
         label="管理委託料"
-        unit="万円"
-        name="maintanence_fee"
-        value={inputs.maintanence_fee}
+        unit="%"
+        name="maintanence_fee_rate"
+        value={inputs.maintanence_fee_rate}
         onChange={onChange}
-        error={errors?.maintanence_fee}
+        error={errors?.maintanence_fee_rate}
       />
       <Input
         label="修繕費"

@@ -19,6 +19,7 @@ export interface CashFlowData {
   city_planning_tax_building: number
   property_tax: number
   city_planning_tax: number
+  maintanence_fee: number
   opex: number
   noi: number
   capex: number
@@ -39,7 +40,7 @@ export interface CashFlowData {
   k: number
 }
 
-// TODO: initial purchase cost
+// TODO: initial purchase cost WIP
 // TODO: capex - 大規模修繕
 // TODO: BER, DCR, IRR?
 export function calc_cf(params: {
@@ -53,10 +54,9 @@ export function calc_cf(params: {
 
   // GPI //
   const gpi = Math.floor(inputs.gpi)
-  const vacancy_rate = inputs.vacancy_rate / 100
-  const tax_rate = inputs.tax_rate / 100
 
   // EGI //
+  const vacancy_rate = inputs.vacancy_rate / 100
   const egi = gpi * (1 - vacancy_rate)
 
   // Loan //
@@ -82,11 +82,12 @@ export function calc_cf(params: {
   )
   const property_tax = property_tax_land + property_tax_building
   const city_planning_tax = city_planning_tax_land + city_planning_tax_building
+  const maintanence_fee = (egi * inputs.maintanence_fee_rate) / 100
 
   const opex = sum(
     property_tax,
     city_planning_tax,
-    inputs.maintanence_fee,
+    maintanence_fee,
     inputs.restoration_fee,
     inputs.ad_fee,
     inputs.insurance_fee,
@@ -126,6 +127,7 @@ export function calc_cf(params: {
   const taxable_income =
     btcf - (building_depreciation + equipment_depreciation) + principal
   // TODO: tax
+  const tax_rate = inputs.tax_rate / 100
   const tax = Math.max(taxable_income * tax_rate, 0)
   const atcf = btcf - tax
 
@@ -147,6 +149,7 @@ export function calc_cf(params: {
     city_planning_tax_building,
     property_tax,
     city_planning_tax,
+    maintanence_fee,
     opex,
     noi,
     capex,
