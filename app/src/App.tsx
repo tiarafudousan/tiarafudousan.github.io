@@ -56,6 +56,24 @@ const XS = [
 
 const MIN_GRAPH_WIDTH = 350
 const MAX_GRAPH_WIDTH = 600
+const COLORS = [
+  "rgba(107, 142, 35, 1)",
+  "rgba(154, 205, 50, 1)",
+  "rgba(128, 0, 128, 1)",
+  "rgba(0, 128, 128, 1)",
+  "rgba(255, 215, 0, 1)",
+  "rgba(255, 165, 0, 1)",
+  "rgba(255, 99, 71, 1)",
+]
+const AMBIENT_COLORS = [
+  "rgba(107, 142, 35, 0.2)",
+  "rgba(154, 205, 50, 0.2)",
+  "rgba(128, 0, 128, 0.2)",
+  "rgba(0, 128, 128, 0.2)",
+  "rgba(255, 215, 0, 0.2)",
+  "rgba(255, 165, 0, 0.2)",
+  "rgba(255, 99, 71, 0.2)",
+]
 
 interface HeatMapData {
   yMin: number
@@ -249,7 +267,7 @@ function App() {
   // TODO: mobile
   // TODO: sticky to bottom, form buttons?
   // TODO: simple and advance forms
-  // TODO: line graphs (WIP) - cummulative cf normalized, hover
+
   return (
     <div ref={ref} className="flex flex-row">
       <div className="min-w-[260px] h-screen overflow-y-auto px-6 py-6">
@@ -273,14 +291,16 @@ function App() {
                 xy(loanSimData.interests),
                 xy(loanSimData.debt_repayments),
               ]}
-              colors={[
-                "olivedrab",
-                "yellowgreen",
-                "purple",
-                "teal",
-                "gold",
-                "orange",
-                "tomato",
+              colors={COLORS}
+              ambientColors={AMBIENT_COLORS}
+              labels={[
+                "GPI",
+                "NOI",
+                "BTCF",
+                "ATCF",
+                "元金返済",
+                "金利",
+                "返済額",
               ]}
             />
             <BarGraph
