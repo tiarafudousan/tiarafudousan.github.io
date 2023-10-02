@@ -163,6 +163,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         label="家賃下落率"
         unit="%"
         name="delta_gpi"
+        step={0.1}
         value={inputs.delta_gpi}
         onChange={onChange}
         error={errors?.delta_gpi}

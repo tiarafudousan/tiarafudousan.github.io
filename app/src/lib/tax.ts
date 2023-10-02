@@ -37,6 +37,46 @@ export function calc_city_planning_tax(tax_base: number): number {
   return tax_base * 0.003
 }
 
+// 印紙税 //
+export type ContractType = "bank" | "real_estate"
+
+const STAMP_TAXES = [
+  // value under contract, bank tax, real estate tax
+  [9999, 0, 0],
+  [100_000, 200, 0],
+  [500_000, 400, 200],
+  [1_000_000, 1_000, 500],
+  [5_000_000, 2_000, 1_000],
+  [10_000_000, 10_000, 5_000],
+  [50_000_000, 20_000, 10_000],
+  [100_000_000, 60_000, 30_000],
+  [500_000_000, 100_000, 60_000],
+  [1_000_000_000, 200_000, 160_000],
+  [5_000_000_000, 400_000, 320_000],
+  [Infinity, 600_000, 480_000],
+]
+
+export function calc_stamp_tax(
+  contract_type: ContractType,
+  value: number,
+): number {
+  const i = contract_type == "bank" ? 1 : 2
+
+  for (let j = 0; j < STAMP_TAXES.length; j++) {
+    if (value <= STAMP_TAXES[j][0]) {
+      return STAMP_TAXES[j][i]
+    }
+  }
+
+  return STAMP_TAXES[-1][i]
+}
+
+// 抵当権 - mortgage //
+// 抵当権設定のための登録免許税
+export function calc_mortgage_registration_tax(mortgage_value: number): number {
+  return Math.floor(mortgage_value * 0.004)
+}
+
 // // ### 法人税 ###
 // function calc_corporate_tax(income):
 //     i = income
