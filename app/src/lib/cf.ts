@@ -5,6 +5,7 @@ import * as building_lib from "./building"
 import { BuildingType } from "./building"
 import * as accounting_lib from "./accounting"
 import * as tax_lib from "./tax"
+import * as agent_lib from "./agent"
 
 export interface CashFlowData {
   total_invested: number
@@ -40,7 +41,96 @@ export interface CashFlowData {
   k: number
 }
 
-// TODO: initial purchase cost WIP
+export interface InitialCost {
+  stamp_tax_real_estate: number
+  stamp_tax_bank: number
+  mortgage_registration_tax: number
+  registration_license_tax_land: number
+  registration_license_tax_building: number
+  judicial_scrivener_fee: number
+  brokerage_fee: number
+  real_estate_acquisition_tax_land: number
+  real_estate_acquisition_tax_building: number
+  purchase_misc_fee: number
+  total: number
+}
+
+export function calc_initial_cost(inputs: Inputs<number>): InitialCost {
+  // 印紙代 - 売買契約
+  const stamp_tax_real_estate = tax_lib.calc_stamp_tax(
+    "real_estate",
+    inputs.property_price,
+  )
+  // 印紙代 - 銀行金消契約
+  const stamp_tax_bank = tax_lib.calc_stamp_tax("bank", inputs.principal)
+  // 抵当権設定費用
+  const mortgage_registration_tax = tax_lib.calc_mortgage_registration_tax(
+    inputs.principal,
+  )
+  // 所有権移転登録免許税 (土地建物合計額)
+  const registration_license_tax_land = tax_lib.calc_registration_license_tax(
+    "land",
+    inputs.property_tax_eval_land,
+  )
+  const registration_license_tax_building =
+    tax_lib.calc_registration_license_tax(
+      "building",
+      inputs.property_tax_eval_building,
+    )
+  // 司法書士費用
+  inputs.judicial_scrivener_fee
+  // 仲介手数料率 (税込)
+  // TODO: sales tax
+  const sales_tax = 0
+  const brokerage_fee = agent_lib.calc_brokerage_fee(
+    inputs.brokerage_fee_rate,
+    inputs.property_price,
+    sales_tax,
+  )
+  // 不動産取得税土地
+  const real_estate_acquisition_tax_land =
+    tax_lib.calc_real_estate_acquisition_tax(
+      "land",
+      inputs.property_tax_eval_land,
+    )
+  // 不動産取得税建物
+  const real_estate_acquisition_tax_building =
+    tax_lib.calc_real_estate_acquisition_tax(
+      "building",
+      inputs.property_tax_eval_building,
+    )
+  // misc purchase fee
+  inputs.purchase_misc_fee
+
+  const total = sum(
+    stamp_tax_real_estate,
+    stamp_tax_bank,
+    mortgage_registration_tax,
+    registration_license_tax_land,
+    registration_license_tax_building,
+    inputs.judicial_scrivener_fee,
+    brokerage_fee,
+    real_estate_acquisition_tax_land,
+    real_estate_acquisition_tax_building,
+    inputs.purchase_misc_fee,
+  )
+
+  return {
+    stamp_tax_real_estate,
+    stamp_tax_bank,
+    mortgage_registration_tax,
+    registration_license_tax_land,
+    registration_license_tax_building,
+    judicial_scrivener_fee: inputs.judicial_scrivener_fee,
+    brokerage_fee,
+    real_estate_acquisition_tax_land,
+    real_estate_acquisition_tax_building,
+    purchase_misc_fee: inputs.purchase_misc_fee,
+    total,
+  }
+}
+
+// TODO: 積算
 // TODO: capex - 大規模修繕
 // TODO: BER, DCR, IRR?
 export function calc_cf(params: {
@@ -48,6 +138,7 @@ export function calc_cf(params: {
   loan_sim: FixedRateLoan
   delta_year: number
 }): CashFlowData {
+  // TODO: initial purchase cost
   const { inputs, loan_sim, delta_year } = params
 
   const building_price = inputs.property_price - inputs.land_price
