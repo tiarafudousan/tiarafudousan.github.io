@@ -6,35 +6,39 @@ const ACQUISITION_TAX_RATES = { land: 0.015, building: 0.03 }
 export type RegistrationType = "land" | "building"
 const REGISTRATION_TAX_RATES = { land: 0.015, building: 0.02 }
 
+/*
+固定資産税課税標準額と固定資産税評価額は同じです。 
+住宅用地などでは、固定資産税評価額より小さくなったり,
+土地の固定資産税課税標準額は固定資産税評価額より小さくなるケースが多い
+*/
 export function calc_real_estate_acquisition_tax(
   real_estate_type: RealEstateType,
-  property_tax_value: number,
+  // 固定資産税評価額
+  property_tax_eval: number,
 ): number {
-  return Math.floor(
-    property_tax_value * ACQUISITION_TAX_RATES[real_estate_type],
-  )
+  return Math.floor(property_tax_eval * ACQUISITION_TAX_RATES[real_estate_type])
 }
 
 // 所有権移転登録免許税
 export function calc_registration_license_tax(
   registeration_type: RegistrationType,
-  property_tax_value: number,
+  property_tax_eval: number,
 ): number {
   return Math.floor(
-    property_tax_value * REGISTRATION_TAX_RATES[registeration_type],
+    property_tax_eval * REGISTRATION_TAX_RATES[registeration_type],
   )
 }
 
 // 固定資産税 - estimate
-export function calc_property_tax(tax_base: number): number {
-  // tax_base = 固定資産税 課税標準額
-  return tax_base * 0.014
+export function calc_property_tax(property_tax_base: number): number {
+  // property_tax_base = 固定資産税 課税標準額
+  return property_tax_base * 0.014
 }
 
 // 都市計画税 - estimate
-export function calc_city_planning_tax(tax_base: number): number {
-  // tax_base = 都市計画税 課税標準額
-  return tax_base * 0.003
+export function calc_city_planning_tax(property_tax_base: number): number {
+  // property_tax_base = 都市計画税 課税標準額
+  return property_tax_base * 0.003
 }
 
 // 印紙税 //

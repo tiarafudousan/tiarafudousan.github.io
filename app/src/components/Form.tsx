@@ -6,12 +6,17 @@ import Input from "./Input"
 const INPUTS: Inputs<string> = {
   property_price: "2000",
   land_price: "1000",
-  purchase_misc_fee: "0",
   building_type: "WOOD",
   building_age: "20",
   gpi: "200",
   delta_gpi: "0",
   vacancy_rate: "15",
+  // purchase fee //
+  property_tax_eval_land: "0",
+  property_tax_eval_building: "0",
+  judicial_scrivener_fee: "0",
+  brokerage_fee_rate: "3",
+  purchase_misc_fee: "0",
   // opex //
   property_tax_base_land: "0",
   property_tax_base_building: "0",
@@ -124,14 +129,6 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         onChange={onChange}
         error={errors?.land_price}
       />
-      <Input
-        label="購入時諸費用"
-        unit="万円"
-        name="purchase_misc_fee"
-        value={inputs.purchase_misc_fee}
-        onChange={onChange}
-        error={errors?.purchase_misc_fee}
-      />
       <div className="flex flex-col">
         <label>構造</label>
         <div className="flex flex-row items-center">
@@ -175,6 +172,47 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         value={inputs.vacancy_rate}
         onChange={onChange}
         error={errors?.vacancy_rate}
+      />
+      <h1 className="text-xl font-semibold">購入費</h1>
+      <Input
+        label="固定資産税評価額 (土地)"
+        unit="万円"
+        name="property_tax_eval_land"
+        value={inputs.property_tax_eval_land}
+        onChange={onChange}
+        error={errors?.property_tax_eval_land}
+      />
+      <Input
+        label="固定資産税評価額 (建物)"
+        unit="万円"
+        name="property_tax_eval_building"
+        value={inputs.property_tax_eval_building}
+        onChange={onChange}
+        error={errors?.property_tax_eval_building}
+      />
+      <Input
+        label="司法書士費"
+        unit="万円"
+        name="judicial_scrivener_fee"
+        value={inputs.judicial_scrivener_fee}
+        onChange={onChange}
+        error={errors?.judicial_scrivener_fee}
+      />
+      <Input
+        label="仲介手数料率"
+        unit="%"
+        name="brokerage_fee_rate"
+        value={inputs.brokerage_fee_rate}
+        onChange={onChange}
+        error={errors?.brokerage_fee_rate}
+      />
+      <Input
+        label="購入時諸費用"
+        unit="万円"
+        name="purchase_misc_fee"
+        value={inputs.purchase_misc_fee}
+        onChange={onChange}
+        error={errors?.purchase_misc_fee}
       />
       <h1 className="text-xl font-semibold">支出</h1>
       <Input

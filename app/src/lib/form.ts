@@ -2,12 +2,17 @@ export interface Inputs<a> {
   // building //
   property_price: a
   land_price: a
-  purchase_misc_fee: a
   building_type: string
   building_age: a
   gpi: a
   delta_gpi: a
   vacancy_rate: a
+  // purchase fee //
+  property_tax_eval_land: a
+  property_tax_eval_building: a
+  judicial_scrivener_fee: a
+  brokerage_fee_rate: a
+  purchase_misc_fee: a
   // opex //
   property_tax_base_land: a
   property_tax_base_building: a
@@ -29,12 +34,17 @@ export interface Errors {
   // building //
   property_price?: string
   land_price?: string
-  purchase_misc_fee?: string
   bulding_type?: string
   building_age?: string
   gpi?: string
   delta_gpi?: string
   vacancy_rate?: string
+  // purchase fee //
+  property_tax_eval_land?: string
+  property_tax_eval_building?: string
+  judicial_scrivener_fee?: string
+  brokerage_fee_rate?: string
+  purchase_misc_fee?: string
   // opex //
   property_tax_base_land?: string
   property_tax_base_building?: string
@@ -78,12 +88,17 @@ export function validate(
     // building //
     property_price: 0,
     land_price: 0,
-    purchase_misc_fee: 0,
     building_type: "RC",
     building_age: 0,
     gpi: 0,
     delta_gpi: 0,
     vacancy_rate: 0,
+    // purchase fee //
+    property_tax_eval_land: 0,
+    property_tax_eval_building: 0,
+    judicial_scrivener_fee: 0,
+    brokerage_fee_rate: 0,
+    purchase_misc_fee: 0,
     // opex //
     property_tax_base_land: 0,
     property_tax_base_building: 0,
@@ -116,14 +131,6 @@ export function validate(
       errors.land_price = error
     } else {
       values.land_price = value
-    }
-  }
-  {
-    const [error, value] = validateNum(inputs.purchase_misc_fee, true, 0)
-    if (error) {
-      errors.purchase_misc_fee = error
-    } else {
-      values.purchase_misc_fee = value
     }
   }
 
@@ -159,6 +166,50 @@ export function validate(
       errors.vacancy_rate = error
     } else {
       values.vacancy_rate = value
+    }
+  }
+  {
+    const [error, value] = validateNum(inputs.property_tax_eval_land, true, 0)
+    if (error) {
+      errors.property_tax_eval_land = error
+    } else {
+      values.property_tax_eval_land = value
+    }
+  }
+  {
+    const [error, value] = validateNum(
+      inputs.property_tax_eval_building,
+      true,
+      0,
+    )
+    if (error) {
+      errors.property_tax_eval_building = error
+    } else {
+      values.property_tax_eval_building = value
+    }
+  }
+  {
+    const [error, value] = validateNum(inputs.judicial_scrivener_fee, true, 0)
+    if (error) {
+      errors.judicial_scrivener_fee = error
+    } else {
+      values.judicial_scrivener_fee = value
+    }
+  }
+  {
+    const [error, value] = validateNum(inputs.brokerage_fee_rate, false, 0, 100)
+    if (error) {
+      errors.brokerage_fee_rate = error
+    } else {
+      values.brokerage_fee_rate = value
+    }
+  }
+  {
+    const [error, value] = validateNum(inputs.purchase_misc_fee, true, 0)
+    if (error) {
+      errors.purchase_misc_fee = error
+    } else {
+      values.purchase_misc_fee = value
     }
   }
   {

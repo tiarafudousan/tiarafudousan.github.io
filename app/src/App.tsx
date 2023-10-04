@@ -268,6 +268,8 @@ function App() {
   // TODO: sticky to bottom, form buttons?
   // TODO: simple and advance forms
 
+  // TODO: fix graph - line rendered below y = 0
+
   return (
     <div ref={ref} className="flex flex-row">
       <div className="min-w-[260px] h-screen overflow-y-auto px-6 py-6">
