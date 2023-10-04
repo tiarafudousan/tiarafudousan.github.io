@@ -83,7 +83,7 @@ export function calc_initial_cost(inputs: Inputs<number>): InitialCost {
   // TODO: sales tax
   const sales_tax = 0
   const brokerage_fee = agent_lib.calc_brokerage_fee(
-    inputs.brokerage_fee_rate,
+    inputs.brokerage_fee_rate / 100,
     inputs.property_price,
     sales_tax,
   )
