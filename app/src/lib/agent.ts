@@ -8,5 +8,10 @@ export function calc_brokerage_fee(
 ): number {
   assert(0 < rate && rate < 1, "rate")
   assert(property_price > building_sales_tax, "price")
-  return Math.floor((property_price - building_sales_tax) * rate) + 60_000
+  console.log(
+    "HERE",
+
+    Math.floor((property_price - building_sales_tax) * rate),
+  )
+  return Math.floor((property_price - building_sales_tax) * rate) + 6
 }

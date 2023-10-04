@@ -44,6 +44,7 @@ export function calc_city_planning_tax(property_tax_base: number): number {
 // 印紙税 //
 export type ContractType = "bank" | "real_estate"
 
+// TODO: normalized to 10_000 = 1
 const STAMP_TAXES = [
   // value under contract, bank tax, real estate tax
   [9999, 0, 0],

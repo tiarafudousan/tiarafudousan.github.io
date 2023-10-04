@@ -63,11 +63,11 @@ export function calc_initial_cost(inputs: Inputs<number>): InitialCost {
   )
   // 印紙代 - 銀行金消契約
   const stamp_tax_bank = tax_lib.calc_stamp_tax("bank", inputs.principal)
-  // 抵当権設定費用
+  // 抵当権設定費
   const mortgage_registration_tax = tax_lib.calc_mortgage_registration_tax(
     inputs.principal,
   )
-  // 所有権移転登録免許税 (土地建物合計額)
+  // 所有権移転登録免許税
   const registration_license_tax_land = tax_lib.calc_registration_license_tax(
     "land",
     inputs.property_tax_eval_land,
@@ -77,7 +77,7 @@ export function calc_initial_cost(inputs: Inputs<number>): InitialCost {
       "building",
       inputs.property_tax_eval_building,
     )
-  // 司法書士費用
+  // 司法書士費
   inputs.judicial_scrivener_fee
   // 仲介手数料率 (税込)
   // TODO: sales tax
@@ -87,13 +87,13 @@ export function calc_initial_cost(inputs: Inputs<number>): InitialCost {
     inputs.property_price,
     sales_tax,
   )
-  // 不動産取得税土地
+  // 不動産取得税 土地
   const real_estate_acquisition_tax_land =
     tax_lib.calc_real_estate_acquisition_tax(
       "land",
       inputs.property_tax_eval_land,
     )
-  // 不動産取得税建物
+  // 不動産取得税 建物
   const real_estate_acquisition_tax_building =
     tax_lib.calc_real_estate_acquisition_tax(
       "building",

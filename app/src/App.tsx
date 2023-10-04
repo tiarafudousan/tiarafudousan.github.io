@@ -3,7 +3,13 @@ import "./App.css"
 import styles from "./App.module.css"
 import { Inputs } from "./lib/form"
 import { fold } from "./lib/utils"
-import { calc_cf, sim_cf, CashFlowData } from "./lib/cf"
+import {
+  calc_cf,
+  sim_cf,
+  CashFlowData,
+  calc_initial_cost,
+  InitialCost,
+} from "./lib/cf"
 import * as loan_lib from "./lib/loan"
 import { FixedRateLoan } from "./lib/loan"
 import { lerp, bound } from "./components/graphs/lib"
@@ -116,6 +122,9 @@ function App() {
   const [heat, setHeatMapData] = useState<HeatMapData | null>(null)
   const [loanSimData, setLoanSimData] = useState<FixedRateLoan | null>(null)
   const [cashFlowData, setCashFlowData] = useState<CashFlowData[]>([])
+  const [initialCostData, setInitialCostData] = useState<InitialCost | null>(
+    null,
+  )
 
   useEffect(() => {
     if (ref.current) {
@@ -126,6 +135,8 @@ function App() {
   }, [])
 
   function onSubmit(values: Inputs<number>) {
+    const initial_cost = calc_initial_cost(values)
+
     const loan_sim = loan_lib.sim_fixed_rate_loan(
       values.principal,
       values.interest_rate / (100 * 12),
@@ -136,7 +147,6 @@ function App() {
       loan_sim,
       delta_year: 0,
     })
-    setSimData(cfData)
 
     const cf_data = sim_cf({
       inputs: values,
@@ -144,11 +154,10 @@ function App() {
       years: YEARS,
     })
 
-    const cumulative_cf = fold(cf_data.map((d) => d.atcf))
-    console.log(cumulative_cf)
-
+    setInitialCostData(initial_cost)
+    // TODO: remove?
+    setSimData(cfData)
     setCashFlowData(cf_data)
-    // TODO: remove
     setLoanSimData(loan_sim)
 
     const total_invested = cfData.total_invested
@@ -318,6 +327,83 @@ function App() {
               data={[xy(fold(cashFlowData.map((d) => d.atcf)))]}
             />
             <Table data={cashFlowData} />
+          </div>
+        ) : null}
+
+        {initialCostData != null ? (
+          <div className="px-6 py-6 min-w-[380px]">
+            <div className="text-xl font-semibold mb-2">購入費</div>
+            <table className="w-full">
+              <tbody>
+                <tr>
+                  <td>印紙代 売買契約</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(initialCostData.stamp_tax_real_estate)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>印紙代 金消契約</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(initialCostData.stamp_tax_bank)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>抵当権設定費</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(initialCostData.mortgage_registration_tax)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>所有権移転登録免許税 (土地)</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(initialCostData.registration_license_tax_land)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>所有権移転登録免許税 (建物)</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(initialCostData.registration_license_tax_building)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>司法書士費</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(initialCostData.judicial_scrivener_fee)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>仲介手数料</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(initialCostData.brokerage_fee)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>不動産取得税 (土地)</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(initialCostData.real_estate_acquisition_tax_land)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>不動産取得税 (建物)</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(initialCostData.real_estate_acquisition_tax_building)}{" "}
+                    円
+                  </td>
+                </tr>
+                <tr className="border-b-2 border-gray-200">
+                  <td>諸経費</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(initialCostData.purchase_misc_fee)} 円
+                  </td>
+                </tr>
+                <tr>
+                  <td>合計</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(initialCostData.total)} 円
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         ) : null}
 

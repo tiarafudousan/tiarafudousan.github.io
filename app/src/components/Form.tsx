@@ -14,7 +14,7 @@ const INPUTS: Inputs<string> = {
   // purchase fee //
   property_tax_eval_land: "0",
   property_tax_eval_building: "0",
-  judicial_scrivener_fee: "0",
+  judicial_scrivener_fee: "10",
   brokerage_fee_rate: "3",
   purchase_misc_fee: "0",
   // opex //
