@@ -1,4 +1,4 @@
-import { assert } from "./utils"
+import { assert, scale_down } from "./utils"
 
 // ### 不動産取得税 ###
 export type RealEstateType = "land" | "building"
@@ -44,21 +44,22 @@ export function calc_city_planning_tax(property_tax_base: number): number {
 // 印紙税 //
 export type ContractType = "bank" | "real_estate"
 
-// TODO: normalized to 10_000 = 1
+const S = 10_000
+
 const STAMP_TAXES = [
   // value under contract, bank tax, real estate tax
-  [9999, 0, 0],
-  [100_000, 200, 0],
-  [500_000, 400, 200],
-  [1_000_000, 1_000, 500],
-  [5_000_000, 2_000, 1_000],
-  [10_000_000, 10_000, 5_000],
-  [50_000_000, 20_000, 10_000],
-  [100_000_000, 60_000, 30_000],
-  [500_000_000, 100_000, 60_000],
-  [1_000_000_000, 200_000, 160_000],
-  [5_000_000_000, 400_000, 320_000],
-  [Infinity, 600_000, 480_000],
+  scale_down([9999, 0, 0], S),
+  scale_down([100_000, 200, 0], S),
+  scale_down([500_000, 400, 200], S),
+  scale_down([1_000_000, 1_000, 500], S),
+  scale_down([5_000_000, 2_000, 1_000], S),
+  scale_down([10_000_000, 10_000, 5_000], S),
+  scale_down([50_000_000, 20_000, 10_000], S),
+  scale_down([100_000_000, 60_000, 30_000], S),
+  scale_down([500_000_000, 100_000, 60_000], S),
+  scale_down([1_000_000_000, 200_000, 160_000], S),
+  scale_down([5_000_000_000, 400_000, 320_000], S),
+  scale_down([Infinity, 600_000, 480_000], S),
 ]
 
 export function calc_stamp_tax(

@@ -12,6 +12,11 @@ export function sum(...xs: number[]) {
   return y
 }
 
+export function scale_down(xs: number[], s: number): number[] {
+  assert(s > 0, "s = 0")
+  return xs.map((x) => x / s)
+}
+
 export function fold(xs: number[]): number[] {
   let y = 0
   const ys: number[] = []
