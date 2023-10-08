@@ -118,7 +118,6 @@ function App() {
 
   const [zType, setDataType] = useState<ZType>("roi")
   const [minZ, setMinZ] = useState(DEFAULT_Z)
-  const [sim, setSimData] = useState<CashFlowData | null>(null)
   const [heat, setHeatMapData] = useState<HeatMapData | null>(null)
   const [loanSimData, setLoanSimData] = useState<FixedRateLoan | null>(null)
   const [cashFlowData, setCashFlowData] = useState<CashFlowData[]>([])
@@ -142,12 +141,6 @@ function App() {
       values.interest_rate / (100 * 12),
       values.years * 12,
     )
-    const cfData = calc_cf({
-      inputs: values,
-      loan_sim,
-      delta_year: 0,
-    })
-
     const cf_data = sim_cf({
       inputs: values,
       loan_sim,
@@ -155,12 +148,10 @@ function App() {
     })
 
     setInitialCostData(initial_cost)
-    // TODO: remove?
-    setSimData(cfData)
     setCashFlowData(cf_data)
     setLoanSimData(loan_sim)
 
-    const total_invested = cfData.total_invested
+    const total_invested = cf_data[0].total_invested
     const yMax = total_invested
     const yMin = total_invested * (1 - 10 * TOTAL_INVESTMENT_DELTA)
 
@@ -244,7 +235,6 @@ function App() {
 
   function onReset() {
     setHeatMapData(null)
-    setSimData(null)
     setLoanSimData(null)
     setMinZ(DEFAULT_Z)
   }
@@ -407,7 +397,7 @@ function App() {
           </div>
         ) : null}
 
-        {sim != null ? (
+        {cashFlowData.length > 0 ? (
           <div className="px-6 py-6 min-w-[300px]">
             <div className="text-xl font-semibold mb-2">収支試算</div>
             <table className="w-full">
@@ -415,132 +405,163 @@ function App() {
                 <tr>
                   <td>総投資額</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(sim.total_invested)} 円
+                    {Yen(cashFlowData[0].total_invested)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>表面利回り</td>
                   <td style={{ textAlign: "right" }}>
-                    {Percent(sim.gross_yield)} %
+                    {Percent(cashFlowData[0].gross_yield)} %
                   </td>
                 </tr>
                 <tr>
                   <td>返済総額</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(sim.total_debt_payment)} 円
+                    {Yen(cashFlowData[0].total_debt_payment)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>収入 (月)</td>
-                  <td style={{ textAlign: "right" }}>{Yen(sim.noi / 12)} 円</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(cashFlowData[0].noi / 12)} 円
+                  </td>
                 </tr>
                 <tr>
                   <td>返済額 (月)</td>
-                  <td style={{ textAlign: "right" }}>{Yen(sim.ads / 12)} 円</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(cashFlowData[0].ads / 12)} 円
+                  </td>
                 </tr>
                 <tr className="border-b-2 border-gray-200">
                   <td>返済比率</td>
                   <td style={{ textAlign: "right" }}>
-                    {Percent(sim.egi > 0 ? sim.ads / sim.egi : 1)} %
+                    {Percent(
+                      cashFlowData[0].egi > 0
+                        ? cashFlowData[0].ads / cashFlowData[0].egi
+                        : 1,
+                    )}{" "}
+                    %
                   </td>
                 </tr>
                 <tr>
                   <td>GPI</td>
-                  <td style={{ textAlign: "right" }}>{Yen(sim.gpi)} 円</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(cashFlowData[0].gpi)} 円
+                  </td>
                 </tr>
                 <tr className="border-b-2 border-gray-200">
                   <td>EGI</td>
-                  <td style={{ textAlign: "right" }}>{Yen(sim.egi)} 円</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(cashFlowData[0].egi)} 円
+                  </td>
                 </tr>
                 <tr>
                   <td>固定資産税 (土地)</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(sim.property_tax_land)} 円
+                    {Yen(cashFlowData[0].property_tax_land)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>固定資産税 (建物)</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(sim.property_tax_building)} 円
+                    {Yen(cashFlowData[0].property_tax_building)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>都市計画税 (土地)</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(sim.city_planning_tax_land)} 円
+                    {Yen(cashFlowData[0].city_planning_tax_land)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>都市計画税 (建物)</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(sim.city_planning_tax_building)} 円
+                    {Yen(cashFlowData[0].city_planning_tax_building)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>管理費</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(sim.maintanence_fee)} 円
+                    {Yen(cashFlowData[0].maintanence_fee)} 円
                   </td>
                 </tr>
                 <tr className="border-b-2 border-gray-200">
                   <td>OPEX</td>
-                  <td style={{ textAlign: "right" }}>{Yen(sim.opex)} 円</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(cashFlowData[0].opex)} 円
+                  </td>
                 </tr>
                 <tr>
                   <td>NOI</td>
-                  <td style={{ textAlign: "right" }}>{Yen(sim.noi)} 円</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(cashFlowData[0].noi)} 円
+                  </td>
                 </tr>
                 <tr>
                   <td>ADS</td>
-                  <td style={{ textAlign: "right" }}>{Yen(sim.ads)} 円</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(cashFlowData[0].ads)} 円
+                  </td>
                 </tr>
                 <tr className="border-b-2 border-gray-200">
                   <td>BTCF</td>
-                  <td style={{ textAlign: "right" }}>{Yen(sim.btcf)} 円</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(cashFlowData[0].btcf)} 円
+                  </td>
                 </tr>
                 <tr>
                   <td>減価償却 (建物)</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(sim.building_depreciation)} 円
+                    {Yen(cashFlowData[0].building_depreciation)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>減価償却年数 (建物)</td>
                   <td style={{ textAlign: "right" }}>
-                    {sim.building_depreciation_period} 年
+                    {cashFlowData[0].building_depreciation_period} 年
                   </td>
                 </tr>
                 <tr>
                   <td>元金返済</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(sim.principal)} 円
+                    {Yen(cashFlowData[0].principal)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>申告所得</td>
                   <td style={{ textAlign: "right" }}>
-                    {Yen(sim.taxable_income)} 円
+                    {Yen(cashFlowData[0].taxable_income)} 円
                   </td>
                 </tr>
                 <tr>
                   <td>税金</td>
-                  <td style={{ textAlign: "right" }}>{Yen(sim.tax)} 円</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(cashFlowData[0].tax)} 円
+                  </td>
                 </tr>
                 <tr className="border-b-2 border-gray-200">
                   <td>ATCF</td>
-                  <td style={{ textAlign: "right" }}>{Yen(sim.atcf)} 円</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Yen(cashFlowData[0].atcf)} 円
+                  </td>
                 </tr>
                 <tr>
                   <td>K</td>
-                  <td style={{ textAlign: "right" }}>{Percent(sim.k)} %</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Percent(cashFlowData[0].k)} %
+                  </td>
                 </tr>
                 <tr>
                   <td>FCR</td>
-                  <td style={{ textAlign: "right" }}>{Percent(sim.fcr)} %</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Percent(cashFlowData[0].fcr)} %
+                  </td>
                 </tr>
                 <tr>
                   <td>CCR</td>
-                  <td style={{ textAlign: "right" }}>{Percent(sim.ccr)} %</td>
+                  <td style={{ textAlign: "right" }}>
+                    {Percent(cashFlowData[0].ccr)} %
+                  </td>
                 </tr>
               </tbody>
             </table>
