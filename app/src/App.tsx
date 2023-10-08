@@ -266,7 +266,6 @@ function App() {
   // TODO: mobile
   // TODO: sticky to bottom, form buttons?
   // TODO: simple and advance forms
-
   // TODO: fix graph - line rendered below y = 0
 
   return (
