@@ -78,7 +78,7 @@ export function calc_stamp_tax(
 }
 
 // 抵当権 - mortgage //
-// 抵当権設定のための登録免許税
+// 抵当権設定 登録免許税
 export function calc_mortgage_registration_tax(mortgage_value: number): number {
   return Math.floor(mortgage_value * 0.004)
 }
