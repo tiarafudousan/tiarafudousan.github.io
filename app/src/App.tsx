@@ -134,6 +134,8 @@ function App() {
   }, [])
 
   function onSubmit(values: Inputs<number>) {
+    const is_small_scale_residential_land = true
+
     const initial_cost = calc_initial_cost(values)
 
     const loan_sim = loan_lib.sim_fixed_rate_loan(
@@ -145,6 +147,7 @@ function App() {
       inputs: values,
       loan_sim,
       years: YEARS,
+      is_small_scale_residential_land,
     })
 
     setInitialCostData(initial_cost)
@@ -197,6 +200,7 @@ function App() {
           },
           loan_sim,
           delta_year: 0,
+          is_small_scale_residential_land,
         })
 
         const roi = (cfData.atcf / values.property_price) * 100

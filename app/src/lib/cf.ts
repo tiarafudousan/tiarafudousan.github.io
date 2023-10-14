@@ -42,6 +42,7 @@ export interface CashFlowData {
 }
 
 export interface InitialCost {
+  // TODO: sales tax on building
   stamp_tax_real_estate: number
   stamp_tax_bank: number
   mortgage_registration_tax: number
@@ -137,9 +138,11 @@ export function calc_cf(params: {
   inputs: Inputs<number>
   loan_sim: FixedRateLoan
   delta_year: number
+  is_small_scale_residential_land: boolean
 }): CashFlowData {
   // TODO: initial purchase cost
-  const { inputs, loan_sim, delta_year } = params
+  const { inputs, loan_sim, delta_year, is_small_scale_residential_land } =
+    params
 
   const building_price = inputs.property_price - inputs.land_price
 
@@ -161,12 +164,14 @@ export function calc_cf(params: {
   // OPEX //
   const property_tax_land = tax_lib.calc_property_tax(
     inputs.property_tax_base_land,
+    { is_small_scale_residential_land },
   )
   const property_tax_building = tax_lib.calc_property_tax(
     inputs.property_tax_base_building,
   )
   const city_planning_tax_land = tax_lib.calc_city_planning_tax(
     inputs.property_tax_base_land,
+    { is_small_scale_residential_land },
   )
   const city_planning_tax_building = tax_lib.calc_city_planning_tax(
     inputs.property_tax_base_building,
@@ -266,8 +271,9 @@ export function sim_cf(params: {
   inputs: Inputs<number>
   loan_sim: FixedRateLoan
   years: number
+  is_small_scale_residential_land: boolean
 }): CashFlowData[] {
-  const { inputs, loan_sim, years } = params
+  const { inputs, loan_sim, years, is_small_scale_residential_land } = params
   const cf_data: CashFlowData[] = []
 
   let gpi = inputs.gpi
@@ -280,6 +286,7 @@ export function sim_cf(params: {
       },
       loan_sim,
       delta_year: i,
+      is_small_scale_residential_land,
     })
 
     gpi = Math.max(gpi * (1 + delta_gpi), 0)

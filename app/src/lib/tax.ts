@@ -30,15 +30,29 @@ export function calc_registration_license_tax(
 }
 
 // 固定資産税 - estimate
-export function calc_property_tax(property_tax_base: number): number {
-  // property_tax_base = 固定資産税 課税標準額
-  return property_tax_base * 0.014
+export function calc_property_tax(
+  property_tax_base: number,
+  opts: { is_small_scale_residential_land?: boolean } = {},
+): number {
+  // 小規模宅地 - small scale residential land
+  const { is_small_scale_residential_land = false } = opts
+  // 固定資産税 課税標準額 - property_tax_base
+  return (
+    property_tax_base * 0.014 * (is_small_scale_residential_land ? 1 / 6 : 1)
+  )
 }
 
 // 都市計画税 - estimate
-export function calc_city_planning_tax(property_tax_base: number): number {
-  // property_tax_base = 都市計画税 課税標準額
-  return property_tax_base * 0.003
+export function calc_city_planning_tax(
+  property_tax_base: number,
+  opts: { is_small_scale_residential_land?: boolean } = {},
+): number {
+  // 小規模宅地 - small scale residential land
+  const { is_small_scale_residential_land = false } = opts
+  // 都市計画税 課税標準額 - property_tax_base
+  return (
+    property_tax_base * 0.003 * (is_small_scale_residential_land ? 1 / 3 : 1)
+  )
 }
 
 // 印紙税 //

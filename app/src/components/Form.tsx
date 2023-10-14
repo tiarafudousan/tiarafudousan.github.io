@@ -256,7 +256,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         error={errors?.opex_misc_fee}
       />
       <Input
-        label="固定資産税評価額 (土地)"
+        label="固定資産税課税標準額 (土地)"
         unit="万円"
         name="property_tax_base_land"
         value={inputs.property_tax_base_land}
@@ -264,7 +264,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         error={errors?.property_tax_base_land}
       />
       <Input
-        label="固定資産税評価額 (建物)"
+        label="固定資産税課税標準額 (建物)"
         unit="万円"
         name="property_tax_base_building"
         value={inputs.property_tax_base_building}
