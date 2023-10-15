@@ -274,7 +274,7 @@ function App() {
 
   return (
     <div ref={ref} className="flex flex-row">
-      <div className="min-w-[260px] h-screen overflow-y-auto px-6 py-6">
+      <div className="min-w-[280px] h-screen overflow-y-auto px-6 py-6">
         <Form onSubmit={onSubmit} onReset={onReset} />
       </div>
 
