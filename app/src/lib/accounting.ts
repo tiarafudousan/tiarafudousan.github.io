@@ -14,14 +14,11 @@ export function calc_book_values(args: CalcBookValueParams): {
   land: number
   building: number
 } {
-  const property_price = args["property_price"]
-  const land_price = args["land_price"]
-  const building_price = args["building_price"]
+  const { property_price, land_price, building_price, expenses } = args
   assert(
     land_price + building_price == property_price,
     "land + building price != property price",
   )
-  const expenses = args["expenses"]
 
   const land_ratio = land_price / property_price
   const land_expenses = land_ratio * expenses

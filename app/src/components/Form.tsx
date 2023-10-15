@@ -5,7 +5,7 @@ import Input from "./Input"
 
 const INPUTS: Inputs<string> = {
   property_price: "2000",
-  land_price: "1000",
+  building_price: "500",
   building_type: "WOOD",
   building_age: "20",
   gpi: "200",
@@ -122,12 +122,12 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         error={errors?.property_price}
       />
       <Input
-        label="土地価格"
+        label="建物価格"
         unit="万円"
-        name="land_price"
-        value={inputs.land_price}
+        name="building_price"
+        value={inputs.building_price}
         onChange={onChange}
-        error={errors?.land_price}
+        error={errors?.building_price}
       />
       <div className="flex flex-col">
         <label>構造</label>

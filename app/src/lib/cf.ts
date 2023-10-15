@@ -42,7 +42,7 @@ export interface CashFlowData {
 }
 
 export interface InitialCost {
-  // TODO: sales tax on building
+  building_sales_tax: number
   stamp_tax_real_estate: number
   stamp_tax_bank: number
   mortgage_registration_tax: number
@@ -57,6 +57,9 @@ export interface InitialCost {
 }
 
 export function calc_initial_cost(inputs: Inputs<number>): InitialCost {
+  // 消費税
+  const building_sales_tax = tax_lib.calc_sales_tax(inputs.building_price)
+
   // 印紙代 - 売買契約
   const stamp_tax_real_estate = tax_lib.calc_stamp_tax(
     "real_estate",
@@ -104,6 +107,7 @@ export function calc_initial_cost(inputs: Inputs<number>): InitialCost {
   inputs.purchase_misc_fee
 
   const total = sum(
+    building_sales_tax,
     stamp_tax_real_estate,
     stamp_tax_bank,
     mortgage_registration_tax,
@@ -117,6 +121,7 @@ export function calc_initial_cost(inputs: Inputs<number>): InitialCost {
   )
 
   return {
+    building_sales_tax,
     stamp_tax_real_estate,
     stamp_tax_bank,
     mortgage_registration_tax,
@@ -144,7 +149,7 @@ export function calc_cf(params: {
   const { inputs, loan_sim, delta_year, is_small_scale_residential_land } =
     params
 
-  const building_price = inputs.property_price - inputs.land_price
+  const land_price = inputs.property_price - inputs.building_price
 
   // GPI //
   const gpi = Math.floor(inputs.gpi)
@@ -203,8 +208,8 @@ export function calc_cf(params: {
   // ATCF //
   const book_values = accounting_lib.calc_book_values({
     property_price: inputs.property_price,
-    land_price: inputs.land_price,
-    building_price,
+    land_price,
+    building_price: inputs.building_price,
     // TODO: expenses
     expenses: 0,
   })

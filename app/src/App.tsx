@@ -329,6 +329,12 @@ function App() {
             <table className="w-full">
               <tbody>
                 <tr>
+                  <td>消費税 物件</td>
+                  <td style={{ textAlign: "right" }}>
+                    {yen(initialCostData.building_sales_tax)} 円
+                  </td>
+                </tr>
+                <tr>
                   <td>印紙代 売買契約</td>
                   <td style={{ textAlign: "right" }}>
                     {yen(initialCostData.stamp_tax_real_estate)} 円

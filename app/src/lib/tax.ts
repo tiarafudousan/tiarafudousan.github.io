@@ -1,5 +1,9 @@
 import { assert, scale_down } from "./utils"
 
+export function calc_sales_tax(building_price: number): number {
+  return building_price * 0.1
+}
+
 // ### 不動産取得税 ###
 export type RealEstateType = "land" | "building"
 const ACQUISITION_TAX_RATES = { land: 0.015, building: 0.03 }

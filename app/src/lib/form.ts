@@ -1,7 +1,7 @@
 export interface Inputs<a> {
   // building //
   property_price: a
-  land_price: a
+  building_price: a
   building_type: string
   building_age: a
   gpi: a
@@ -33,7 +33,7 @@ export interface Inputs<a> {
 export interface Errors {
   // building //
   property_price?: string
-  land_price?: string
+  building_price?: string
   bulding_type?: string
   building_age?: string
   gpi?: string
@@ -87,7 +87,7 @@ export function validate(
   const values: Inputs<number> = {
     // building //
     property_price: 0,
-    land_price: 0,
+    building_price: 0,
     building_type: "RC",
     building_age: 0,
     gpi: 0,
@@ -126,11 +126,11 @@ export function validate(
     }
   }
   {
-    const [error, value] = validateNum(inputs.land_price, true, 0)
+    const [error, value] = validateNum(inputs.building_price, true, 0)
     if (error) {
-      errors.land_price = error
+      errors.building_price = error
     } else {
-      values.land_price = value
+      values.building_price = value
     }
   }
 
@@ -320,8 +320,8 @@ export function validate(
     }
   }
 
-  if (values.land_price > values.property_price) {
-    errors.land_price = "土地価格 > 物件価格"
+  if (values.building_price > values.property_price) {
+    errors.building_price = "建物価格 > 物件価格"
   }
 
   // if principal > 0 then years > 0
