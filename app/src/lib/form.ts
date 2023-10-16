@@ -22,7 +22,6 @@ export interface Inputs<a> {
   insurance_fee: a
   opex_misc_fee: a
   // loan //
-  cash: a
   principal: a
   years: a
   interest_rate: a
@@ -54,7 +53,7 @@ export interface Errors {
   insurance_fee?: string
   opex_misc_fee?: string
   // loan //
-  cash?: string
+  principal?: string
   years?: string
   interest_rate?: string
   // tax //
@@ -108,7 +107,6 @@ export function validate(
     insurance_fee: 0,
     opex_misc_fee: 0,
     // loan //
-    cash: 0,
     principal: 0,
     years: 0,
     interest_rate: 0,
@@ -278,11 +276,11 @@ export function validate(
     }
   }
   {
-    const [error, value] = validateNum(inputs.cash, true, 0)
+    const [error, value] = validateNum(inputs.principal, true, 0)
     if (error) {
-      errors.cash = error
+      errors.principal = error
     } else {
-      values.cash = value
+      values.principal = value
     }
   }
   {
@@ -310,16 +308,6 @@ export function validate(
     }
   }
 
-  if (!errors.property_price && !errors.cash && !errors.purchase_misc_fee) {
-    const principal = calcPrincipal(inputs)
-    if (principal != null) {
-      values.principal = principal
-      if (values.principal < 0) {
-        errors.cash = "自己資金 > 物件価格 + 購入時諸費用"
-      }
-    }
-  }
-
   if (values.building_price > values.property_price) {
     errors.building_price = "建物価格 > 物件価格"
   }
@@ -330,18 +318,4 @@ export function validate(
   }
 
   return [Object.keys(errors).length > 0 ? errors : null, values]
-}
-
-export function calcPrincipal(args: {
-  property_price: string
-  purchase_misc_fee: string
-  cash: string
-}): number | null {
-  const property_price = parseInt(args.property_price)
-  const purchase_misc_fee = parseInt(args.purchase_misc_fee)
-  const cash = parseInt(args.cash)
-
-  const principal = property_price + purchase_misc_fee - cash
-
-  return isNaN(principal) ? null : principal
 }

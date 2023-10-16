@@ -141,13 +141,19 @@ export function calc_initial_cost(inputs: Inputs<number>): InitialCost {
 // TODO: BER, DCR, IRR?
 export function calc_cf(params: {
   inputs: Inputs<number>
+  initial_cost: number
   loan_sim: FixedRateLoan
   delta_year: number
   is_small_scale_residential_land: boolean
 }): CashFlowData {
   // TODO: initial purchase cost
-  const { inputs, loan_sim, delta_year, is_small_scale_residential_land } =
-    params
+  const {
+    inputs,
+    initial_cost,
+    loan_sim,
+    delta_year,
+    is_small_scale_residential_land,
+  } = params
 
   const land_price = inputs.property_price - inputs.building_price
 
@@ -159,7 +165,10 @@ export function calc_cf(params: {
   const egi = gpi * (1 - vacancy_rate)
 
   // Loan //
-  const cash = Math.floor(inputs.cash)
+  // property price + initial cost = principal + cash
+  const cash = Math.floor(
+    inputs.property_price + initial_cost - inputs.principal,
+  )
   const p = Math.floor(inputs.principal)
 
   // property_price + cost = cash + principal
@@ -274,11 +283,18 @@ export function calc_cf(params: {
 
 export function sim_cf(params: {
   inputs: Inputs<number>
+  initial_cost: number
   loan_sim: FixedRateLoan
   years: number
   is_small_scale_residential_land: boolean
 }): CashFlowData[] {
-  const { inputs, loan_sim, years, is_small_scale_residential_land } = params
+  const {
+    inputs,
+    initial_cost,
+    loan_sim,
+    years,
+    is_small_scale_residential_land,
+  } = params
   const cf_data: CashFlowData[] = []
 
   let gpi = inputs.gpi
@@ -289,6 +305,7 @@ export function sim_cf(params: {
         ...inputs,
         gpi,
       },
+      initial_cost,
       loan_sim,
       delta_year: i,
       is_small_scale_residential_land,

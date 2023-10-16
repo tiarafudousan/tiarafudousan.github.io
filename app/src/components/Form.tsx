@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Inputs, Errors, calcPrincipal, validate } from "../lib/form"
+import { Inputs, Errors, validate } from "../lib/form"
 import Select from "./Select"
 import Input from "./Input"
 
@@ -7,8 +7,8 @@ const INPUTS: Inputs<string> = {
   property_price: "2000",
   building_price: "500",
   building_type: "WOOD",
-  building_age: "20",
-  gpi: "200",
+  building_age: "30",
+  gpi: "220",
   delta_gpi: "0",
   vacancy_rate: "15",
   // purchase fee //
@@ -26,7 +26,6 @@ const INPUTS: Inputs<string> = {
   insurance_fee: "0",
   opex_misc_fee: "0",
   // loan //
-  cash: "0",
   principal: "2000",
   years: "15",
   interest_rate: "2",
@@ -63,19 +62,10 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
   const [errors, setErrors] = useState<Errors>({})
 
   function onChange(name: string, value: string) {
-    setInputs((inputs) => {
-      const newInputs = {
-        ...inputs,
-        [name]: value,
-      }
-
-      const principal = calcPrincipal(newInputs)
-
-      return {
-        ...newInputs,
-        principal: principal != null ? principal.toString() : "",
-      }
-    })
+    setInputs((inputs) => ({
+      ...inputs,
+      [name]: value,
+    }))
   }
 
   function onChangeSelect(value: string) {
@@ -273,20 +263,11 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
       />
       <h1 className="text-xl font-semibold">融資</h1>
       <Input
-        label="自己資金"
-        unit="万円"
-        name="cash"
-        value={inputs.cash}
-        onChange={onChange}
-        error={errors?.cash}
-      />
-      <Input
         label="借入金額"
         unit="万円"
         name="principal"
         value={inputs.principal}
-        error=""
-        disabled={true}
+        error={errors?.principal}
       />
       <Input
         label="借入期間"

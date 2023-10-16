@@ -31,7 +31,7 @@ function renderX(x: number): string {
 }
 
 function renderY(y: number): string {
-  return `${y} 万`
+  return `${Math.floor(y)} 万`
 }
 
 function renderZ(z: number): string {
@@ -145,6 +145,7 @@ function App() {
     )
     const cf_data = sim_cf({
       inputs: values,
+      initial_cost: initial_cost.total,
       loan_sim,
       years: YEARS,
       is_small_scale_residential_land,
@@ -195,9 +196,10 @@ function App() {
         const cfData = calc_cf({
           inputs: {
             ...values,
-            cash,
             principal,
           },
+          // TODO: initial cost > 0?
+          initial_cost: 0,
           loan_sim,
           delta_year: 0,
           is_small_scale_residential_land,
