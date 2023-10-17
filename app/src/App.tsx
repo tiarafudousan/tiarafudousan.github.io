@@ -16,6 +16,7 @@ import { yen, percent } from "./lib/format"
 import { lerp, bound } from "./components/graphs/lib"
 import Form from "./components/Form"
 import Table from "./components/Table"
+import InitialCostTable from "./components/InitialCostTable"
 import CashFlowTree from "./components/CashFlowTree"
 import LineGraph from "./components/graphs/LineGraph"
 import BarGraph from "./components/graphs/BarGraph"
@@ -278,84 +279,7 @@ function App() {
       <div className="flex flex-row overflow-x-auto">
         {initialCostData != null ? (
           <div className="px-6 py-6 min-w-[380px]">
-            <div className="text-xl font-semibold mb-2">購入費</div>
-            <table className="w-full">
-              <tbody>
-                <tr>
-                  <td>消費税 物件</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(initialCostData.building_sales_tax)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>印紙代 売買契約</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(initialCostData.stamp_tax_real_estate)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>印紙代 金消契約</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(initialCostData.stamp_tax_bank)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>抵当権設定費</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(initialCostData.mortgage_registration_tax)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>所有権移転登録免許税 (土地)</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(initialCostData.registration_license_tax_land)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>所有権移転登録免許税 (建物)</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(initialCostData.registration_license_tax_building)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>司法書士費</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(initialCostData.judicial_scrivener_fee)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>仲介手数料</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(initialCostData.brokerage_fee)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>不動産取得税 (土地)</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(initialCostData.real_estate_acquisition_tax_land)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>不動産取得税 (建物)</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(initialCostData.real_estate_acquisition_tax_building)}{" "}
-                    円
-                  </td>
-                </tr>
-                <tr className="border-b-2 border-gray-200">
-                  <td>諸経費</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(initialCostData.purchase_misc_fee)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>合計</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(initialCostData.total)} 円
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <InitialCostTable data={initialCostData} />
           </div>
         ) : null}
 
