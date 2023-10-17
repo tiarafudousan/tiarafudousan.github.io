@@ -6,13 +6,17 @@ interface Props {
 }
 
 const CashFlowTable: React.FC<Props> = ({ data }) => {
+  function color(x: number) {
+    return <span className={x >= 0 ? "" : "text-red-500"}>{x}</span>
+  }
+
   function row(text: string, get: (d: CashFlowData) => number) {
     return (
       <tr>
         <th className="border border-slate-300 text-left px-2">{text}</th>
         {data.map((d, i) => (
           <td key={i} className="border border-slate-300 px-2 text-right">
-            {get(d)}
+            {color(get(d))}
           </td>
         ))}
       </tr>
