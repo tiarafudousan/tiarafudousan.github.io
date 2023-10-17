@@ -12,7 +12,6 @@ import {
 } from "./lib/cf"
 import * as loan_lib from "./lib/loan"
 import { FixedRateLoan } from "./lib/loan"
-import { yen, percent } from "./lib/format"
 import { lerp, bound } from "./components/graphs/lib"
 import Form from "./components/Form"
 import CashFlowTable from "./components/CashFlowTable"
@@ -276,15 +275,21 @@ function App() {
         <Form onSubmit={onSubmit} onReset={onReset} />
       </div>
 
-      <div className="flex flex-row overflow-x-auto">
+      <div className="flex flex-row overflow-x-auto py-6">
         {initialCostData != null ? (
-          <div className="px-6 py-6 min-w-[380px]">
+          <div className="px-4 min-w-[360px]">
             <InitialCostTable data={initialCostData} />
           </div>
         ) : null}
 
+        {cashFlowData.length > 0 ? (
+          <div className="px-4 min-w-[300px]">
+            <CashFlowTree data={cashFlowData[0]} />
+          </div>
+        ) : null}
+
         {loanSimData != null ? (
-          <div className="flex flex-col">
+          <div className="flex flex-col px-4">
             <LineGraph
               xMin={0}
               xMax={YEARS - 1}
@@ -323,13 +328,9 @@ function App() {
               }
               data={[xy(fold(cashFlowData.map((d) => d.atcf)))]}
             />
-            <CashFlowTable data={cashFlowData} />
-          </div>
-        ) : null}
-
-        {cashFlowData.length > 0 ? (
-          <div className="px-6 py-6 min-w-[300px]">
-            <CashFlowTree data={cashFlowData[0]} />
+            <div className="overflow-x-auto w-[800px]">
+              <CashFlowTable data={cashFlowData} />
+            </div>
           </div>
         ) : null}
 

@@ -2,6 +2,9 @@ import React from "react"
 import Graph from "./Graph"
 import { BarGraphType, Point } from "./Graph/canvas/types"
 
+const GRAPH_WIDTH = 800
+const GRAPH_HEIGHT = 150
+
 interface Props {
   xMin: number
   xMax: number
@@ -31,8 +34,8 @@ const BarGraph: React.FC<Props> = ({ xMin, xMax, yMin, yMax, data }) => {
 
   return (
     <Graph
-      width={800}
-      height={150}
+      width={GRAPH_WIDTH}
+      height={GRAPH_HEIGHT}
       backgroundColor="beige"
       animate={true}
       range={range}

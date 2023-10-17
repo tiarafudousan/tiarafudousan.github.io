@@ -9,6 +9,8 @@ import {
 } from "./Graph/canvas/types"
 import { isInside, findNearestIndex, getX, getY } from "./Graph/canvas/math"
 
+const GRAPH_WIDTH = 800
+const GRAPH_HEIGHT = 280
 const HOVER_WIDTH = 300
 const HOVER_MARGIN = 20
 const HOVER_HEIGHT = 168
@@ -117,8 +119,8 @@ const LineGraph: React.FC<Props> = ({
   return (
     <div className="relative">
       <Graph
-        width={800}
-        height={280}
+        width={GRAPH_WIDTH}
+        height={GRAPH_HEIGHT}
         backgroundColor="beige"
         animate={true}
         range={range}

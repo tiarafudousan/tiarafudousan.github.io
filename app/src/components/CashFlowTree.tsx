@@ -25,6 +25,10 @@ const CashFlowTree: React.FC<Props> = ({ data }) => {
             </td>
           </tr>
           <tr>
+            <td>現金</td>
+            <td style={{ textAlign: "right" }}>{yen(data.cash)} 円</td>
+          </tr>
+          <tr>
             <td>返済総額</td>
             <td style={{ textAlign: "right" }}>
               {yen(data.total_debt_payment)} 円

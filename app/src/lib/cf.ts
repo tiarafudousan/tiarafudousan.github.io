@@ -7,40 +7,6 @@ import * as accounting_lib from "./accounting"
 import * as tax_lib from "./tax"
 import * as agent_lib from "./agent"
 
-export interface CashFlowData {
-  total_invested: number
-  total_debt_payment: number
-  // 表面利回り
-  gross_yield: number
-  gpi: number
-  egi: number
-  property_tax_land: number
-  property_tax_building: number
-  city_planning_tax_land: number
-  city_planning_tax_building: number
-  property_tax: number
-  city_planning_tax: number
-  maintanence_fee: number
-  opex: number
-  noi: number
-  capex: number
-  ncf: number
-  ads: number
-  btcf: number
-  building_depreciation_period: number
-  building_depreciation: number
-  equipment_depreciation_period: number
-  equipment_depreciation: number
-  principal: number
-  taxable_income: number
-  tax: number
-  atcf: number
-  lb: number
-  fcr: number
-  ccr: number
-  k: number
-}
-
 export interface InitialCost {
   building_sales_tax: number
   stamp_tax_real_estate: number
@@ -136,6 +102,41 @@ export function calc_initial_cost(inputs: Inputs<number>): InitialCost {
   }
 }
 
+export interface CashFlowData {
+  total_invested: number
+  total_debt_payment: number
+  cash: number
+  // 表面利回り
+  gross_yield: number
+  gpi: number
+  egi: number
+  property_tax_land: number
+  property_tax_building: number
+  city_planning_tax_land: number
+  city_planning_tax_building: number
+  property_tax: number
+  city_planning_tax: number
+  maintanence_fee: number
+  opex: number
+  noi: number
+  capex: number
+  ncf: number
+  ads: number
+  btcf: number
+  building_depreciation_period: number
+  building_depreciation: number
+  equipment_depreciation_period: number
+  equipment_depreciation: number
+  principal: number
+  taxable_income: number
+  tax: number
+  atcf: number
+  lb: number
+  fcr: number
+  ccr: number
+  k: number
+}
+
 // TODO: 積算
 // TODO: capex - 大規模修繕
 // TODO: BER, DCR, IRR?
@@ -170,9 +171,7 @@ export function calc_cf(params: {
     inputs.property_price + initial_cost - inputs.principal,
   )
   const p = Math.floor(inputs.principal)
-
-  // property_price + cost = cash + principal
-  const total_invested = cash + p
+  const total_invested = inputs.property_price + initial_cost
   const total_debt_payment = loan_sim.total
 
   // OPEX //
@@ -250,6 +249,7 @@ export function calc_cf(params: {
   return {
     total_invested,
     total_debt_payment,
+    cash,
     gross_yield,
     gpi,
     egi,
