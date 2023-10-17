@@ -12,9 +12,11 @@ import {
 } from "./lib/cf"
 import * as loan_lib from "./lib/loan"
 import { FixedRateLoan } from "./lib/loan"
+import { yen, percent } from "./lib/format"
 import { lerp, bound } from "./components/graphs/lib"
 import Form from "./components/Form"
 import Table from "./components/Table"
+import CashFlowTree from "./components/CashFlowTree"
 import LineGraph from "./components/graphs/LineGraph"
 import BarGraph from "./components/graphs/BarGraph"
 import { xy } from "./components/graphs/Graph/utils"
@@ -95,14 +97,6 @@ interface HeatMapData {
     zMax: number
     zs: number[][]
   }
-}
-
-function yen(value: number): string {
-  return Math.round(value * 10000).toLocaleString()
-}
-
-function percent(value: number): string {
-  return (value * 100).toFixed(2)
 }
 
 type ZType = "roi" | "ccr"
@@ -193,6 +187,7 @@ function App() {
           values.years * 12,
         )
 
+        // TODO: simulate include initial cost?
         const cfData = calc_cf({
           inputs: {
             ...values,
@@ -281,50 +276,6 @@ function App() {
       </div>
 
       <div className="flex flex-row overflow-x-auto">
-        {loanSimData != null ? (
-          <div className="flex flex-col">
-            <LineGraph
-              xMin={0}
-              xMax={YEARS - 1}
-              yMin={Math.min(...cashFlowData.map((d) => d.atcf))}
-              yMax={cashFlowData[0].gpi}
-              data={[
-                xy(cashFlowData.map((d) => d.gpi)),
-                xy(cashFlowData.map((d) => d.noi)),
-                xy(cashFlowData.map((d) => d.btcf)),
-                xy(cashFlowData.map((d) => d.atcf)),
-                xy(loanSimData.principals),
-                xy(loanSimData.interests),
-                xy(loanSimData.debt_repayments),
-              ]}
-              colors={COLORS}
-              ambientColors={AMBIENT_COLORS}
-              labels={[
-                "GPI",
-                "NOI",
-                "BTCF",
-                "ATCF",
-                "元金返済",
-                "金利",
-                "返済額",
-              ]}
-            />
-            <BarGraph
-              xMin={0}
-              xMax={YEARS - 1}
-              yMin={Math.min(...fold(cashFlowData.map((d) => d.atcf)))}
-              yMax={
-                Math.max(
-                  Math.max(...fold(cashFlowData.map((d) => d.atcf))),
-                  0,
-                ) * 1.1
-              }
-              data={[xy(fold(cashFlowData.map((d) => d.atcf)))]}
-            />
-            <Table data={cashFlowData} />
-          </div>
-        ) : null}
-
         {initialCostData != null ? (
           <div className="px-6 py-6 min-w-[380px]">
             <div className="text-xl font-semibold mb-2">購入費</div>
@@ -408,174 +359,53 @@ function App() {
           </div>
         ) : null}
 
+        {loanSimData != null ? (
+          <div className="flex flex-col">
+            <LineGraph
+              xMin={0}
+              xMax={YEARS - 1}
+              yMin={Math.min(...cashFlowData.map((d) => d.atcf))}
+              yMax={cashFlowData[0].gpi}
+              data={[
+                xy(cashFlowData.map((d) => d.gpi)),
+                xy(cashFlowData.map((d) => d.noi)),
+                xy(cashFlowData.map((d) => d.btcf)),
+                xy(cashFlowData.map((d) => d.atcf)),
+                xy(loanSimData.principals),
+                xy(loanSimData.interests),
+                xy(loanSimData.debt_repayments),
+              ]}
+              colors={COLORS}
+              ambientColors={AMBIENT_COLORS}
+              labels={[
+                "GPI",
+                "NOI",
+                "BTCF",
+                "ATCF",
+                "元金返済",
+                "金利",
+                "返済額",
+              ]}
+            />
+            <BarGraph
+              xMin={0}
+              xMax={YEARS - 1}
+              yMin={Math.min(...fold(cashFlowData.map((d) => d.atcf)))}
+              yMax={
+                Math.max(
+                  Math.max(...fold(cashFlowData.map((d) => d.atcf))),
+                  0,
+                ) * 1.1
+              }
+              data={[xy(fold(cashFlowData.map((d) => d.atcf)))]}
+            />
+            <Table data={cashFlowData} />
+          </div>
+        ) : null}
+
         {cashFlowData.length > 0 ? (
           <div className="px-6 py-6 min-w-[300px]">
-            <div className="text-xl font-semibold mb-2">収支試算</div>
-            <table className="w-full">
-              <tbody>
-                <tr>
-                  <td>総投資額</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].total_invested)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>表面利回り</td>
-                  <td style={{ textAlign: "right" }}>
-                    {percent(cashFlowData[0].gross_yield)} %
-                  </td>
-                </tr>
-                <tr>
-                  <td>返済総額</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].total_debt_payment)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>収入 (月)</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].noi / 12)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>返済額 (月)</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].ads / 12)} 円
-                  </td>
-                </tr>
-                <tr className="border-b-2 border-gray-200">
-                  <td>返済比率</td>
-                  <td style={{ textAlign: "right" }}>
-                    {percent(
-                      cashFlowData[0].egi > 0
-                        ? cashFlowData[0].ads / cashFlowData[0].egi
-                        : 1,
-                    )}{" "}
-                    %
-                  </td>
-                </tr>
-                <tr>
-                  <td>GPI</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].gpi)} 円
-                  </td>
-                </tr>
-                <tr className="border-b-2 border-gray-200">
-                  <td>EGI</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].egi)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>固定資産税 (土地)</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].property_tax_land)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>固定資産税 (建物)</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].property_tax_building)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>都市計画税 (土地)</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].city_planning_tax_land)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>都市計画税 (建物)</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].city_planning_tax_building)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>管理費</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].maintanence_fee)} 円
-                  </td>
-                </tr>
-                <tr className="border-b-2 border-gray-200">
-                  <td>OPEX</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].opex)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>NOI</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].noi)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>ADS</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].ads)} 円
-                  </td>
-                </tr>
-                <tr className="border-b-2 border-gray-200">
-                  <td>BTCF</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].btcf)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>減価償却 (建物)</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].building_depreciation)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>減価償却年数 (建物)</td>
-                  <td style={{ textAlign: "right" }}>
-                    {cashFlowData[0].building_depreciation_period} 年
-                  </td>
-                </tr>
-                <tr>
-                  <td>元金返済</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].principal)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>申告所得</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].taxable_income)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>税金</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].tax)} 円
-                  </td>
-                </tr>
-                <tr className="border-b-2 border-gray-200">
-                  <td>ATCF</td>
-                  <td style={{ textAlign: "right" }}>
-                    {yen(cashFlowData[0].atcf)} 円
-                  </td>
-                </tr>
-                <tr>
-                  <td>K</td>
-                  <td style={{ textAlign: "right" }}>
-                    {percent(cashFlowData[0].k)} %
-                  </td>
-                </tr>
-                <tr>
-                  <td>FCR</td>
-                  <td style={{ textAlign: "right" }}>
-                    {percent(cashFlowData[0].fcr)} %
-                  </td>
-                </tr>
-                <tr>
-                  <td>CCR</td>
-                  <td style={{ textAlign: "right" }}>
-                    {percent(cashFlowData[0].ccr)} %
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <CashFlowTree data={cashFlowData[0]} />
           </div>
         ) : null}
 

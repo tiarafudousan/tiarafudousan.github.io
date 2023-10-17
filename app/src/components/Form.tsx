@@ -267,6 +267,7 @@ const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
         unit="万円"
         name="principal"
         value={inputs.principal}
+        onChange={onChange}
         error={errors?.principal}
       />
       <Input
