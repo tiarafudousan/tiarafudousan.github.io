@@ -5,7 +5,7 @@ interface Props {
   data: CashFlowData[]
 }
 
-const Table: React.FC<Props> = ({ data }) => {
+const CashFlowTable: React.FC<Props> = ({ data }) => {
   function row(text: string, get: (d: CashFlowData) => number) {
     return (
       <tr>
@@ -43,4 +43,4 @@ const Table: React.FC<Props> = ({ data }) => {
   )
 }
 
-export default Table
+export default CashFlowTable

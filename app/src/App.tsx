@@ -15,7 +15,7 @@ import { FixedRateLoan } from "./lib/loan"
 import { yen, percent } from "./lib/format"
 import { lerp, bound } from "./components/graphs/lib"
 import Form from "./components/Form"
-import Table from "./components/Table"
+import CashFlowTable from "./components/CashFlowTable"
 import InitialCostTable from "./components/InitialCostTable"
 import CashFlowTree from "./components/CashFlowTree"
 import LineGraph from "./components/graphs/LineGraph"
@@ -323,7 +323,7 @@ function App() {
               }
               data={[xy(fold(cashFlowData.map((d) => d.atcf)))]}
             />
-            <Table data={cashFlowData} />
+            <CashFlowTable data={cashFlowData} />
           </div>
         ) : null}
 
