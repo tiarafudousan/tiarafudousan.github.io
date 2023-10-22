@@ -29,7 +29,7 @@ const BarGraph: React.FC<Props> = ({ xMin, xMax, yMin, yMax, data }) => {
     data: d,
     getBarColor: (bar) => (bar.y >= 0 ? "green" : "red"),
     barWidth: 4,
-    y0: 0,
+    y0: yMin >= 0 ? yMin : 0,
   }))
 
   return (
