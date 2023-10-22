@@ -35,11 +35,19 @@ const CashFlowTree: React.FC<Props> = ({ data }) => {
             </td>
           </tr>
           <tr>
-            <td>収入 (月)</td>
+            <td>EGI (月)</td>
+            <td style={{ textAlign: "right" }}>{yen(data.egi / 12)} 円</td>
+          </tr>
+          <tr>
+            <td>NOI (月)</td>
             <td style={{ textAlign: "right" }}>{yen(data.noi / 12)} 円</td>
           </tr>
           <tr>
-            <td>返済額 (月)</td>
+            <td>OPEX (月)</td>
+            <td style={{ textAlign: "right" }}>{yen(data.opex / 12)} 円</td>
+          </tr>
+          <tr>
+            <td>ADS (月)</td>
             <td style={{ textAlign: "right" }}>{yen(data.ads / 12)} 円</td>
           </tr>
           <tr className="border-b-2 border-gray-200">
