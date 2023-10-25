@@ -293,7 +293,7 @@ function App() {
             <LineGraph
               xMin={0}
               xMax={YEARS - 1}
-              yMin={Math.min(...cashFlowData.map((d) => d.atcf))}
+              yMin={Math.min(0, ...cashFlowData.map((d) => d.atcf))}
               yMax={cashFlowData[0].gpi}
               data={[
                 xy(cashFlowData.map((d) => d.gpi)),
