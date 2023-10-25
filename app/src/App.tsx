@@ -276,17 +276,19 @@ function App() {
       </div>
 
       <div className="flex flex-row overflow-x-auto py-6">
-        {initialCostData != null ? (
-          <div className="px-4 min-w-[360px]">
-            <InitialCostTable data={initialCostData} />
-          </div>
-        ) : null}
+        <div className="flex flex-col">
+          {initialCostData != null ? (
+            <div className="px-4 min-w-[360px]">
+              <InitialCostTable data={initialCostData} />
+            </div>
+          ) : null}
 
-        {cashFlowData.length > 0 ? (
-          <div className="px-4 min-w-[300px]">
-            <CashFlowTree data={cashFlowData[0]} />
-          </div>
-        ) : null}
+          {cashFlowData.length > 0 ? (
+            <div className="py-4 px-4 min-w-[300px]">
+              <CashFlowTree data={cashFlowData[0]} />
+            </div>
+          ) : null}
+        </div>
 
         {loanSimData != null ? (
           <div className="flex flex-col px-4">
