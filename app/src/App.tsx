@@ -200,7 +200,7 @@ function App() {
           is_small_scale_residential_land,
         })
 
-        const roi = (cfData.atcf / values.property_price) * 100
+        const roi = (cfData.btcf / values.property_price) * 100
         const ccr = cfData.ccr * 100
 
         zMax.roi = Math.max(zMax.roi, roi)
@@ -340,7 +340,7 @@ function App() {
               value={zType}
               onChange={onChangeDataType}
               options={[
-                { value: "roi", text: "ATCF 利回り" },
+                { value: "roi", text: "BTCF 利回り" },
                 { value: "ccr", text: "CCR" },
               ]}
             />
@@ -352,7 +352,7 @@ function App() {
               render={(z) => `${z.toFixed(2)} %`}
             />
             <Range
-              label={zType == "roi" ? "ATCF 利回り" : "CCR"}
+              label={zType == "roi" ? "BTCF 利回り" : "CCR"}
               min={0}
               max={zType == "roi" ? MAX_ROI : MAX_CCR}
               value={minZ[zType]}
