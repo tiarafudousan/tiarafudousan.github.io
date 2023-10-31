@@ -16,6 +16,8 @@ export interface InitialCost {
   registration_license_tax_building: number
   judicial_scrivener_fee: number
   brokerage_fee: number
+  brokerage_fee_land: number
+  brokerage_fee_building: number
   real_estate_acquisition_tax_land: number
   real_estate_acquisition_tax_building: number
   purchase_misc_fee: number
@@ -57,6 +59,10 @@ export function calc_initial_cost(inputs: Inputs<number>): InitialCost {
     inputs.property_price,
     sales_tax,
   )
+  const brokerage_fee_building = Math.floor(
+    brokerage_fee * (inputs.building_price / inputs.property_price),
+  )
+  const brokerage_fee_land = brokerage_fee - brokerage_fee_building
   // 不動産取得税 土地
   const real_estate_acquisition_tax_land =
     tax_lib.calc_real_estate_acquisition_tax(
@@ -69,8 +75,6 @@ export function calc_initial_cost(inputs: Inputs<number>): InitialCost {
       "building",
       inputs.property_tax_eval_building,
     )
-  // misc purchase fee
-  inputs.purchase_misc_fee
 
   const total = sum(
     building_sales_tax,
@@ -95,6 +99,8 @@ export function calc_initial_cost(inputs: Inputs<number>): InitialCost {
     registration_license_tax_building,
     judicial_scrivener_fee: inputs.judicial_scrivener_fee,
     brokerage_fee,
+    brokerage_fee_land,
+    brokerage_fee_building,
     real_estate_acquisition_tax_land,
     real_estate_acquisition_tax_building,
     purchase_misc_fee: inputs.purchase_misc_fee,
@@ -166,6 +172,7 @@ export function calc_cf(params: {
   const egi = gpi * (1 - vacancy_rate)
 
   // Loan //
+  // TODO: here
   // property price + initial cost = principal + cash
   const cash = Math.floor(
     inputs.property_price + initial_cost - inputs.principal,
