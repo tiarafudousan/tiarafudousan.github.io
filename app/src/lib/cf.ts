@@ -148,12 +148,11 @@ export interface CashFlowData {
 // TODO: BER, DCR, IRR?
 export function calc_cf(params: {
   inputs: Inputs<number>
-  initial_cost: number
+  initial_cost: InitialCost
   loan_sim: FixedRateLoan
   delta_year: number
   is_small_scale_residential_land: boolean
 }): CashFlowData {
-  // TODO: initial purchase cost
   const {
     inputs,
     initial_cost,
@@ -163,6 +162,8 @@ export function calc_cf(params: {
   } = params
 
   const land_price = inputs.property_price - inputs.building_price
+  const tax_debuctible_initial_cost =
+    initial_cost.total - initial_cost.brokerage_fee
 
   // GPI //
   const gpi = Math.floor(inputs.gpi)
@@ -172,13 +173,12 @@ export function calc_cf(params: {
   const egi = gpi * (1 - vacancy_rate)
 
   // Loan //
-  // TODO: here
   // property price + initial cost = principal + cash
   const cash = Math.floor(
-    inputs.property_price + initial_cost - inputs.principal,
+    inputs.property_price + initial_cost.total - inputs.principal,
   )
   const p = Math.floor(inputs.principal)
-  const total_invested = inputs.property_price + initial_cost
+  const total_invested = inputs.property_price + initial_cost.total
   const total_debt_payment = loan_sim.total
 
   // OPEX //
@@ -208,10 +208,11 @@ export function calc_cf(params: {
     inputs.ad_fee,
     inputs.insurance_fee,
     inputs.opex_misc_fee,
+    delta_year == 0 ? tax_debuctible_initial_cost : 0,
   )
   const noi = egi - opex
 
-  // TODO: capex
+  // TODO: capex and carry loss from previous year
   const capex = 0
   const ncf = noi - capex
 
@@ -234,7 +235,8 @@ export function calc_cf(params: {
   )
   const building_depreciation =
     delta_year < building_depreciation_period
-      ? book_values.building / building_depreciation_period
+      ? (book_values.building + initial_cost.brokerage_fee_building) /
+        building_depreciation_period
       : 0
   // TODO: equipment depreciation
   const equipment_depreciation_period = 0
@@ -290,7 +292,7 @@ export function calc_cf(params: {
 
 export function sim_cf(params: {
   inputs: Inputs<number>
-  initial_cost: number
+  initial_cost: InitialCost
   loan_sim: FixedRateLoan
   years: number
   is_small_scale_residential_land: boolean

@@ -32,6 +32,8 @@ const BarGraph: React.FC<Props> = ({ xMin, xMax, yMin, yMax, data }) => {
     y0: yMin >= 0 ? yMin : 0,
   }))
 
+  // TODO: hover, BTCF and ATCF
+
   return (
     <Graph
       width={GRAPH_WIDTH}

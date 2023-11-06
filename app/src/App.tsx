@@ -131,7 +131,6 @@ function App() {
     const is_small_scale_residential_land = true
 
     const initial_cost = calc_initial_cost(values)
-
     const loan_sim = loan_lib.sim_fixed_rate_loan(
       values.principal,
       values.interest_rate / (100 * 12),
@@ -139,7 +138,7 @@ function App() {
     )
     const cf_data = sim_cf({
       inputs: values,
-      initial_cost: initial_cost.total,
+      initial_cost,
       loan_sim,
       years: YEARS,
       is_small_scale_residential_land,
@@ -193,8 +192,7 @@ function App() {
             ...values,
             principal,
           },
-          // TODO: initial cost > 0?
-          initial_cost: 0,
+          initial_cost,
           loan_sim,
           delta_year: 0,
           is_small_scale_residential_land,
