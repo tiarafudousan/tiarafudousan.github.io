@@ -162,8 +162,7 @@ export function calc_cf(params: {
   } = params
 
   const land_price = inputs.property_price - inputs.building_price
-  const tax_debuctible_initial_cost =
-    initial_cost.total - initial_cost.brokerage_fee
+  const initial_cost_opex = initial_cost.total - initial_cost.brokerage_fee
 
   // GPI //
   const gpi = Math.floor(inputs.gpi)
@@ -208,7 +207,7 @@ export function calc_cf(params: {
     inputs.ad_fee,
     inputs.insurance_fee,
     inputs.opex_misc_fee,
-    delta_year == 0 ? tax_debuctible_initial_cost : 0,
+    delta_year == 0 ? initial_cost_opex : 0,
   )
   const noi = egi - opex
 
