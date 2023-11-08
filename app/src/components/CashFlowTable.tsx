@@ -23,7 +23,7 @@ const Row: React.FC<{
           {header}
         </th>
       ) : null}
-      <th className="font-medium border border-slate-300 text-left px-2 whitespace-nowrap">
+      <th className="font-medium border border-r-4 border-slate-300 text-left px-2 whitespace-nowrap">
         {text}
       </th>
       {data.map((d, i) => (
@@ -42,7 +42,7 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
       <thead>
         <tr>
           <th className=""></th>
-          <th className=""></th>
+          <th className="border-slate-300 border-r-4"></th>
           {data.map((_, i) => (
             <td key={i} className="border border-slate-300 text-center">
               {i}
@@ -68,8 +68,8 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
         />
 
         <Row
-          rowSpan={4}
-          header="費用"
+          rowSpan={9}
+          header="OPEX"
           text="固定資産税"
           data={data}
           get={(d) => Math.floor(d.property_tax)}
@@ -84,7 +84,27 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
           data={data}
           get={(d) => Math.floor(d.maintanence_fee)}
         />
-        {/* TODO: ad fee, restoration fee, insurance fee, opex misc fee, initial cost */}
+        <Row
+          text="修繕費"
+          data={data}
+          get={(d) => Math.floor(d.restoration_fee)}
+        />
+        <Row text="広告費" data={data} get={(d) => Math.floor(d.ad_fee)} />
+        <Row
+          text="保険料"
+          data={data}
+          get={(d) => Math.floor(d.insurance_fee)}
+        />
+        <Row
+          text="他運用費"
+          data={data}
+          get={(d) => Math.floor(d.opex_misc_fee)}
+        />
+        <Row
+          text="初年度経費"
+          data={data}
+          get={(d) => Math.floor(d.initial_cost)}
+        />
         <Row
           text="OPEX"
           backgroundColor="bg-blue-100"

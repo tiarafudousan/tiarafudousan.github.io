@@ -123,6 +123,11 @@ export interface CashFlowData {
   property_tax: number
   city_planning_tax: number
   maintanence_fee: number
+  restoration_fee: number
+  ad_fee: number
+  insurance_fee: number
+  opex_misc_fee: number
+  initial_cost: number
   opex: number
   noi: number
   capex: number
@@ -261,6 +266,7 @@ export function calc_cf(params: {
     gross_yield,
     gpi,
     egi,
+    // opex
     property_tax_land,
     property_tax_building,
     city_planning_tax_land,
@@ -268,6 +274,11 @@ export function calc_cf(params: {
     property_tax,
     city_planning_tax,
     maintanence_fee,
+    restoration_fee: inputs.restoration_fee,
+    ad_fee: inputs.ad_fee,
+    insurance_fee: inputs.insurance_fee,
+    opex_misc_fee: inputs.opex_misc_fee,
+    initial_cost: delta_year == 0 ? initial_cost_opex : 0,
     opex,
     noi,
     capex,
