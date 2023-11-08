@@ -5,68 +5,38 @@ const Color: React.FC<{ num: number }> = ({ num }) => {
   return <span className={num >= 0 ? "" : "text-red-500"}>{num}</span>
 }
 
-const RowSpan: React.FC<{
-  rowSpan: number
-  header: string
-  rows: {
-    text: string
-    get: (d: CashFlowData) => number
-  }[]
-}> = ({ rowSpan, header, rows }) => {
+const Row: React.FC<{
+  rowSpan?: number
+  header?: string
+  text: string
+  backgroundColor?: string
+  data: CashFlowData[]
+  get: (d: CashFlowData) => number
+}> = ({ rowSpan = 0, header = "", text, backgroundColor = "", data, get }) => {
   return (
-    <>
-      <tr>
-        <th rowSpan={rowSpan}>{header}</th>
-        <td>555-1234</td>
-      </tr>
-      <tr>
-        <td>555-8745</td>
-      </tr>
-    </>
+    <tr className={backgroundColor}>
+      {rowSpan >= 1 ? (
+        <th
+          className="bg-white font-semibold border border-slate-300 text-left px-2 align-top whitespace-nowrap"
+          rowSpan={rowSpan}
+        >
+          {header}
+        </th>
+      ) : null}
+      <th className="font-medium border border-slate-300 text-left px-2 whitespace-nowrap">
+        {text}
+      </th>
+      {data.map((d, i) => (
+        <td key={i} className="border border-slate-300 px-2 text-right">
+          <Color num={get(d)} />
+        </td>
+      ))}
+    </tr>
   )
 }
 
-interface Props {
-  data: CashFlowData[]
-}
-
 // TODO: sticky columns - freeze first 2 columns
-const CashFlowTable: React.FC<Props> = ({ data }) => {
-  function row({
-    rowSpan = 0,
-    header = "",
-    text,
-    get,
-    backgroundColor = "",
-  }: {
-    rowSpan?: number
-    header?: string
-    text: string
-    get: (d: CashFlowData) => number
-    backgroundColor?: string
-  }) {
-    return (
-      <tr className={backgroundColor}>
-        {rowSpan >= 1 ? (
-          <th
-            className="font-semibold border border-slate-300 text-left px-2 align-top whitespace-nowrap"
-            rowSpan={rowSpan}
-          >
-            {header}
-          </th>
-        ) : null}
-        <th className="font-medium border border-slate-300 text-left px-2 whitespace-nowrap">
-          {text}
-        </th>
-        {data.map((d, i) => (
-          <td key={i} className="border border-slate-300 px-2 text-right">
-            <Color num={get(d)} />
-          </td>
-        ))}
-      </tr>
-    )
-  }
-
+const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
   return (
     <table className="text-sm border-collapse border border-slate-300 w-[600px] overflow-x-auto">
       <thead>
@@ -83,51 +53,67 @@ const CashFlowTable: React.FC<Props> = ({ data }) => {
       </thead>
 
       <tbody>
-        {row({ rowSpan: 2, header: "収入", text: "GPI", get: (d) => d.gpi })}
-        {row({
-          text: "EGI",
-          get: (d) => Math.floor(d.egi),
-          backgroundColor: "bg-blue-100",
-        })}
+        <Row
+          rowSpan={2}
+          header="収入"
+          text="GPI"
+          data={data}
+          get={(d) => d.gpi}
+        />
+        <Row
+          text="EGI"
+          backgroundColor="bg-blue-100"
+          data={data}
+          get={(d) => Math.floor(d.egi)}
+        />
 
-        {row({
-          rowSpan: 4,
-          header: "費用",
-          text: "固定資産税",
-          get: (d) => Math.floor(d.property_tax),
-        })}
-        {row({
-          text: "都市計画税 ",
-          get: (d) => Math.floor(d.city_planning_tax),
-        })}
-        {row({
-          text: "管理費",
-          get: (d) => Math.floor(d.maintanence_fee),
-        })}
+        <Row
+          rowSpan={4}
+          header="費用"
+          text="固定資産税"
+          data={data}
+          get={(d) => Math.floor(d.property_tax)}
+        />
+        <Row
+          text="都市計画税 "
+          data={data}
+          get={(d) => Math.floor(d.city_planning_tax)}
+        />
+        <Row
+          text="管理費"
+          data={data}
+          get={(d) => Math.floor(d.maintanence_fee)}
+        />
         {/* TODO: ad fee, restoration fee, insurance fee, opex misc fee, initial cost */}
-        {row({
-          text: "OPEX",
-          get: (d) => Math.floor(d.opex),
-          backgroundColor: "bg-blue-100",
-        })}
+        <Row
+          text="OPEX"
+          backgroundColor="bg-blue-100"
+          data={data}
+          get={(d) => Math.floor(d.opex)}
+        />
 
-        {row({
-          rowSpan: 3,
-          header: "BTCF",
-          text: "NOI",
-          get: (d) => Math.floor(d.noi),
-        })}
-        {row({
-          text: "ADS",
-          get: (d) => Math.floor(d.ads),
-        })}
-        {row({ text: "BTCF", get: (d) => Math.floor(d.btcf) })}
-        {row({
-          rowSpan: 1,
-          header: "ATCF",
-          text: "ATCF",
-          get: (d) => Math.floor(d.atcf),
-        })}
+        <Row
+          rowSpan={3}
+          header="BTCF"
+          text="NOI"
+          data={data}
+          get={(d) => Math.floor(d.noi)}
+        />
+        <Row text="ADS" data={data} get={(d) => Math.floor(d.ads)} />
+        <Row
+          text="BTCF"
+          backgroundColor="bg-blue-100"
+          data={data}
+          get={(d) => Math.floor(d.btcf)}
+        />
+        <Row
+          rowSpan={1}
+          header="ATCF"
+          text="ATCF"
+          backgroundColor="bg-blue-100"
+          data={data}
+          get={(d) => Math.floor(d.atcf)}
+        />
       </tbody>
     </table>
   )
