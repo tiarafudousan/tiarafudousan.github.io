@@ -216,7 +216,8 @@ export function calc_cf(params: {
   )
   const noi = egi - opex
 
-  // TODO: capex and carry loss from previous year
+  // TODO: capex
+  // TODO: carry loss from previous year
   const capex = 0
   const ncf = noi - capex
 
@@ -248,8 +249,8 @@ export function calc_cf(params: {
   const principal = loan_sim.principals[delta_year]
   const taxable_income =
     btcf - (building_depreciation + equipment_depreciation) + principal
-  // TODO: tax
   const tax_rate = inputs.tax_rate / 100
+  // TODO: calc tax (residence, income, etc...)
   const tax = Math.max(taxable_income * tax_rate, 0)
   const atcf = btcf - tax
 

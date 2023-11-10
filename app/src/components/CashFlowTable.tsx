@@ -127,8 +127,19 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
           get={(d) => Math.floor(d.btcf)}
         />
         <Row
-          rowSpan={1}
+          rowSpan={4}
           header="ATCF"
+          text="減価償却 建物"
+          data={data}
+          get={(d) => Math.floor(d.building_depreciation)}
+        />
+        <Row
+          text="減価償却 設備"
+          data={data}
+          get={(d) => Math.floor(d.equipment_depreciation)}
+        />
+        <Row text="元金" data={data} get={(d) => Math.floor(d.principal)} />
+        <Row
           text="ATCF"
           backgroundColor="bg-blue-100"
           data={data}
