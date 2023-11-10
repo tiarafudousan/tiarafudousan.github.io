@@ -2,7 +2,7 @@ import React from "react"
 import Graph from "./Graph"
 import { BarGraphType, Point } from "./Graph/canvas/types"
 
-const GRAPH_WIDTH = 800
+const GRAPH_WIDTH = 1000
 const GRAPH_HEIGHT = 150
 
 interface Props {

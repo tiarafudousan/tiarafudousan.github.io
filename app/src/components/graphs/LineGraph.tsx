@@ -9,8 +9,8 @@ import {
 } from "./Graph/canvas/types"
 import { isInside, findNearestIndex, getX, getY } from "./Graph/canvas/math"
 
-const GRAPH_WIDTH = 800
-const GRAPH_HEIGHT = 280
+const GRAPH_WIDTH = 1000
+const GRAPH_HEIGHT = 260
 const HOVER_WIDTH = 300
 const HOVER_MARGIN = 20
 const HOVER_HEIGHT = 168
