@@ -71,7 +71,7 @@ const LineGraph: React.FC<Props> = ({
     })
 
     const x = getX(graph.width, graph.left, xMax, xMin, point.x)
-    const j = Math.max(findNearestIndex(XS, x) - 1, 0)
+    const j = Math.max(findNearestIndex(XS, (x) => x, x) - 1, 0)
 
     const hoverData: Point[] = []
     const points: PointGraphType[] = []
@@ -130,6 +130,7 @@ const LineGraph: React.FC<Props> = ({
           xAxisLineColor: "black",
           xAxisTextColor: "black",
           xLineColor: "grey",
+          renderXTick: (x) => `${x + 1}`,
         }}
         yAxis={{
           yAxisWidth: 44,
