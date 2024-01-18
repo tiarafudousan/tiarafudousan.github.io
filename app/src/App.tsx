@@ -272,8 +272,8 @@ function App() {
       <div className="min-w-[280px] h-screen overflow-y-auto px-6 py-6">
         <Form onSubmit={onSubmit} onReset={onReset} />
       </div>
-
       <div className="flex flex-row overflow-x-auto py-6">
+        {/*}
         <div className="flex flex-col">
           {initialCostData != null ? (
             <div className="px-4 min-w-[360px]">
@@ -287,6 +287,7 @@ function App() {
             </div>
           ) : null}
         </div>
+        */}
 
         {loanSimData != null ? (
           <div className="flex flex-col px-4">
@@ -319,16 +320,16 @@ function App() {
             <BarGraph
               xMin={0}
               xMax={YEARS - 1}
-              yMin={Math.min(...fold(cashFlowData.map((d) => d.atcf)))}
+              yMin={Math.min(...fold(cashFlowData.map((d) => d.btcf)))}
               yMax={
                 Math.max(
-                  Math.max(...fold(cashFlowData.map((d) => d.atcf))),
+                  Math.max(...fold(cashFlowData.map((d) => d.btcf))),
                   0,
                 ) * 1.1
               }
-              data={[xy(fold(cashFlowData.map((d) => d.atcf)))]}
+              data={[xy(fold(cashFlowData.map((d) => d.btcf)))]}
             />
-            <div className="overflow-x-auto w-[800px]">
+            <div className="overflow-x-auto w-[1800px]">
               <CashFlowTable data={cashFlowData} />
             </div>
           </div>
