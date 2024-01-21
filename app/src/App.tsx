@@ -272,9 +272,100 @@ function App() {
       <div className="min-w-[280px] h-screen overflow-y-auto px-6 py-6">
         <Form onSubmit={onSubmit} onReset={onReset} />
       </div>
-      <div className="flex flex-row overflow-x-auto py-6">
-        {/*}
-        <div className="flex flex-col">
+      <div className="flex flex-col">
+        <div className="flex flex-row overflow-x-auto py-6">
+          {loanSimData != null ? (
+            <div className="flex flex-col px-4">
+              <LineGraph
+                xMin={0}
+                xMax={YEARS - 1}
+                yMin={Math.min(0, ...cashFlowData.map((d) => d.atcf))}
+                yMax={cashFlowData[0].gpi}
+                data={[
+                  xy(cashFlowData.map((d) => d.gpi)),
+                  xy(cashFlowData.map((d) => d.noi)),
+                  xy(cashFlowData.map((d) => d.btcf)),
+                  xy(cashFlowData.map((d) => d.atcf)),
+                  xy(loanSimData.principals),
+                  xy(loanSimData.interests),
+                  xy(loanSimData.debt_repayments),
+                ]}
+                colors={COLORS}
+                ambientColors={AMBIENT_COLORS}
+                labels={[
+                  "GPI",
+                  "NOI",
+                  "BTCF",
+                  "ATCF",
+                  "元金返済",
+                  "金利",
+                  "返済額",
+                ]}
+              />
+              <BarGraph
+                xMin={0}
+                xMax={YEARS - 1}
+                yMin={Math.min(...fold(cashFlowData.map((d) => d.btcf)))}
+                yMax={
+                  Math.max(
+                    Math.max(...fold(cashFlowData.map((d) => d.btcf))),
+                    0,
+                  ) * 1.1
+                }
+                data={[xy(fold(cashFlowData.map((d) => d.btcf)))]}
+              />
+              <div className="overflow-x-auto w-[1800px]">
+                <CashFlowTable data={cashFlowData} />
+              </div>
+            </div>
+          ) : null}
+
+          {heat != null ? (
+            <div className="mt-8 flex flex-col items-center mx-auto">
+              <Select
+                value={zType}
+                onChange={onChangeDataType}
+                options={[
+                  { value: "roi", text: "BTCF 利回り" },
+                  { value: "ccr", text: "CCR" },
+                ]}
+              />
+              <GradientBar
+                width={canvasSize}
+                height={60}
+                zMin={heat[zType].zMin}
+                zMax={heat[zType].zMax}
+                render={(z) => `${z.toFixed(2)} %`}
+              />
+              <Range
+                label={zType == "roi" ? "BTCF 利回り" : "CCR"}
+                min={0}
+                max={zType == "roi" ? MAX_ROI : MAX_CCR}
+                value={minZ[zType]}
+                onChange={onChangeMinZ}
+              />
+              <HeatMap
+                width={canvasSize}
+                height={canvasSize}
+                xs={XS}
+                ys={heat.ys}
+                zs={heat[zType].zs}
+                xMin={X_MIN}
+                xMax={X_MAX}
+                yMin={heat.yMin}
+                yMax={heat.yMax}
+                zMin={heat[zType].zMin}
+                zMax={heat[zType].zMax}
+                renderX={renderX}
+                renderY={renderY}
+                renderZ={renderZ}
+              />
+              <div className="text-sm">X = 自己資金比率 Y = 総投資額</div>
+            </div>
+          ) : null}
+        </div>
+
+        <div className="flex flex-col w-[360px]">
           {initialCostData != null ? (
             <div className="px-4 min-w-[360px]">
               <InitialCostTable data={initialCostData} />
@@ -287,97 +378,6 @@ function App() {
             </div>
           ) : null}
         </div>
-        */}
-
-        {loanSimData != null ? (
-          <div className="flex flex-col px-4">
-            <LineGraph
-              xMin={0}
-              xMax={YEARS - 1}
-              yMin={Math.min(0, ...cashFlowData.map((d) => d.atcf))}
-              yMax={cashFlowData[0].gpi}
-              data={[
-                xy(cashFlowData.map((d) => d.gpi)),
-                xy(cashFlowData.map((d) => d.noi)),
-                xy(cashFlowData.map((d) => d.btcf)),
-                xy(cashFlowData.map((d) => d.atcf)),
-                xy(loanSimData.principals),
-                xy(loanSimData.interests),
-                xy(loanSimData.debt_repayments),
-              ]}
-              colors={COLORS}
-              ambientColors={AMBIENT_COLORS}
-              labels={[
-                "GPI",
-                "NOI",
-                "BTCF",
-                "ATCF",
-                "元金返済",
-                "金利",
-                "返済額",
-              ]}
-            />
-            <BarGraph
-              xMin={0}
-              xMax={YEARS - 1}
-              yMin={Math.min(...fold(cashFlowData.map((d) => d.btcf)))}
-              yMax={
-                Math.max(
-                  Math.max(...fold(cashFlowData.map((d) => d.btcf))),
-                  0,
-                ) * 1.1
-              }
-              data={[xy(fold(cashFlowData.map((d) => d.btcf)))]}
-            />
-            <div className="overflow-x-auto w-[1800px]">
-              <CashFlowTable data={cashFlowData} />
-            </div>
-          </div>
-        ) : null}
-
-        {heat != null ? (
-          <div className="mt-8 flex flex-col items-center mx-auto">
-            <Select
-              value={zType}
-              onChange={onChangeDataType}
-              options={[
-                { value: "roi", text: "BTCF 利回り" },
-                { value: "ccr", text: "CCR" },
-              ]}
-            />
-            <GradientBar
-              width={canvasSize}
-              height={60}
-              zMin={heat[zType].zMin}
-              zMax={heat[zType].zMax}
-              render={(z) => `${z.toFixed(2)} %`}
-            />
-            <Range
-              label={zType == "roi" ? "BTCF 利回り" : "CCR"}
-              min={0}
-              max={zType == "roi" ? MAX_ROI : MAX_CCR}
-              value={minZ[zType]}
-              onChange={onChangeMinZ}
-            />
-            <HeatMap
-              width={canvasSize}
-              height={canvasSize}
-              xs={XS}
-              ys={heat.ys}
-              zs={heat[zType].zs}
-              xMin={X_MIN}
-              xMax={X_MAX}
-              yMin={heat.yMin}
-              yMax={heat.yMax}
-              zMin={heat[zType].zMin}
-              zMax={heat[zType].zMax}
-              renderX={renderX}
-              renderY={renderY}
-              renderZ={renderZ}
-            />
-            <div className="text-sm">X = 自己資金比率 Y = 総投資額</div>
-          </div>
-        ) : null}
       </div>
     </div>
   )

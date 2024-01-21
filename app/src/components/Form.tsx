@@ -3,6 +3,8 @@ import { Inputs, Errors, validate } from "../lib/form"
 import Select from "./Select"
 import Input from "./Input"
 
+// TODO: toggle simple and advance form
+
 const INPUTS: Inputs<string> = {
   property_price: "2000",
   building_price: "500",

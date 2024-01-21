@@ -45,7 +45,7 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
           <th className="border-slate-300 border-r-4"></th>
           {data.map((_, i) => (
             <td key={i} className="border border-slate-300 text-center">
-              {i}
+              {i + 1}
             </td>
           ))}
           <td></td>

@@ -243,14 +243,14 @@ export function calc_cf(params: {
       ? (book_values.building + initial_cost.brokerage_fee_building) /
         building_depreciation_period
       : 0
-  // TODO: equipment depreciation
+  // TODO: equipment depreciation?
   const equipment_depreciation_period = 0
   const equipment_depreciation = 0
   const principal = loan_sim.principals[delta_year]
   const taxable_income =
     btcf - (building_depreciation + equipment_depreciation) + principal
   const tax_rate = inputs.tax_rate / 100
-  // TODO: calc tax (residence, income, etc...)
+  // TODO: calc tax (residence, income, etc...)?
   const tax = Math.max(taxable_income * tax_rate, 0)
   const atcf = btcf - tax
 
