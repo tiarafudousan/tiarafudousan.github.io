@@ -115,6 +115,7 @@ function App() {
   const [heat, setHeatMapData] = useState<HeatMapData | null>(null)
   const [loanSimData, setLoanSimData] = useState<FixedRateLoan | null>(null)
   const [cashFlowData, setCashFlowData] = useState<CashFlowData[]>([])
+  const [cf_tree, set_cf_tree] = useState<CashFlowData | null>(null)
   const [initialCostData, setInitialCostData] = useState<InitialCost | null>(
     null,
   )
@@ -143,9 +144,18 @@ function App() {
       years: YEARS,
       is_small_scale_residential_land,
     })
+    const cf_tree = sim_cf({
+      inputs: values,
+      initial_cost,
+      loan_sim,
+      years: 1,
+      is_small_scale_residential_land,
+      exclude_initial_opex: true,
+    })[0]
 
     setInitialCostData(initial_cost)
     setCashFlowData(cf_data)
+    set_cf_tree(cf_tree)
     setLoanSimData(loan_sim)
 
     const total_invested = cf_data[0].total_invested
@@ -372,9 +382,9 @@ function App() {
             </div>
           ) : null}
 
-          {cashFlowData.length > 0 ? (
+          {cf_tree ? (
             <div className="py-4 px-4 min-w-[300px]">
-              <CashFlowTree data={cashFlowData[0]} />
+              <CashFlowTree data={cf_tree} />
             </div>
           ) : null}
         </div>

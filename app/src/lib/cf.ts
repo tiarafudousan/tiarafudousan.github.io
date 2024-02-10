@@ -157,6 +157,7 @@ export function calc_cf(params: {
   loan_sim: FixedRateLoan
   delta_year: number
   is_small_scale_residential_land: boolean
+  exclude_initial_opex: boolean
 }): CashFlowData {
   const {
     inputs,
@@ -164,6 +165,7 @@ export function calc_cf(params: {
     loan_sim,
     delta_year,
     is_small_scale_residential_land,
+    exclude_initial_opex,
   } = params
 
   const land_price = inputs.property_price - inputs.building_price
@@ -212,7 +214,7 @@ export function calc_cf(params: {
     inputs.ad_fee,
     inputs.insurance_fee,
     inputs.opex_misc_fee,
-    delta_year == 0 ? initial_cost_opex : 0,
+    delta_year == 0 && !exclude_initial_opex ? initial_cost_opex : 0,
   )
   const noi = egi - opex
 
@@ -307,6 +309,7 @@ export function sim_cf(params: {
   loan_sim: FixedRateLoan
   years: number
   is_small_scale_residential_land: boolean
+  exclude_initial_opex?: boolean
 }): CashFlowData[] {
   const {
     inputs,
@@ -314,6 +317,7 @@ export function sim_cf(params: {
     loan_sim,
     years,
     is_small_scale_residential_land,
+    exclude_initial_opex = false,
   } = params
   const cf_data: CashFlowData[] = []
 
@@ -329,6 +333,7 @@ export function sim_cf(params: {
       loan_sim,
       delta_year: i,
       is_small_scale_residential_land,
+      exclude_initial_opex,
     })
 
     gpi = Math.max(gpi * (1 + delta_gpi), 0)

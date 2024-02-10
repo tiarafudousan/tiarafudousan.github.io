@@ -36,38 +36,6 @@ const CashFlowTree: React.FC<{ data: CashFlowData }> = ({ data }) => {
               <Percent num={data.gross_yield} />
             </td>
           </tr>
-          {/*}
-          <tr>
-            <td>EGI (月)</td>
-            <td style={{ textAlign: "right" }}>
-              <Yen num={data.egi / 12} />
-            </td>
-          </tr>
-          <tr>
-            <td>OPEX (月)</td>
-            <td style={{ textAlign: "right" }}>
-              <Yen num={data.opex / 12} />
-            </td>
-          </tr>
-          <tr>
-            <td>NOI (月)</td>
-            <td style={{ textAlign: "right" }}>
-              <Yen num={data.noi / 12} />
-            </td>
-          </tr>
-          <tr>
-            <td>ADS (月)</td>
-            <td style={{ textAlign: "right" }}>
-              <Yen num={data.ads / 12} />
-            </td>
-          </tr>
-          <tr className="border-b-2 border-gray-200">
-            <td>返済比率</td>
-            <td style={{ textAlign: "right" }}>
-              <Percent num={data.egi > 0 ? data.ads / data.egi : 1} />
-            </td>
-          </tr>
-  */}
           <tr>
             <td>GPI</td>
             <td style={{ textAlign: "right" }}>
