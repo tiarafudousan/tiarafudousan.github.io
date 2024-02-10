@@ -206,6 +206,7 @@ function App() {
           loan_sim,
           delta_year: 0,
           is_small_scale_residential_land,
+          exclude_initial_opex: true,
         })
 
         const roi = (cfData.btcf / values.property_price) * 100
