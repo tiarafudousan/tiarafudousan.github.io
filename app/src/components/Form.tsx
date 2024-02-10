@@ -28,7 +28,7 @@ const INPUTS: Inputs<string> = {
   insurance_fee: "10",
   opex_misc_fee: "10",
   // loan //
-  principal: "2000",
+  principal: "1800",
   years: "15",
   interest_rate: "2",
   // tax //
