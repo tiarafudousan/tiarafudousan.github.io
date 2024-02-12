@@ -4,16 +4,13 @@ import Yen from "./Yen"
 import Percent from "./Percent"
 
 const CashFlowTree: React.FC<{ data: CashFlowData }> = ({ data }) => {
-  // TODO: fix ccr
-  // TODO: fix opex
-  // TODO: 返済比率 = ads / egi?
   return (
     <>
       <div className="text-xl font-semibold mb-2">収支試算</div>
       <table className="w-full">
         <tbody>
           <tr>
-            <td>総投資額</td>
+            <td>総事業費</td>
             <td style={{ textAlign: "right" }}>
               <Yen num={data.total_invested} />
             </td>
