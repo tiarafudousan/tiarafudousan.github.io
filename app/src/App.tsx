@@ -371,7 +371,7 @@ function App() {
                 renderY={renderY}
                 renderZ={renderZ}
               />
-              <div className="text-sm">X = 自己資金比率 Y = 総投資額</div>
+              <div className="text-sm">X = 自己資金比率 Y = 総事業費</div>
             </div>
           ) : null}
         </div>

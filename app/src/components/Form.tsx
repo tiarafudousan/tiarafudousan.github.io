@@ -29,7 +29,7 @@ const INPUTS: Inputs<string> = {
   opex_misc_fee: "10",
   // loan //
   principal: "1800",
-  years: "15",
+  years: "20",
   interest_rate: "2",
   // tax //
   tax_rate: "30",
