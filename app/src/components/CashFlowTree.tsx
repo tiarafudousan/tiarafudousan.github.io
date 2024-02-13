@@ -147,28 +147,10 @@ const CashFlowTree: React.FC<{ data: CashFlowData }> = ({ data }) => {
               <Yen num={data.tax} />
             </td>
           </tr>
-          <tr className="border-b-2 border-gray-200">
+          <tr>
             <td>ATCF</td>
             <td style={{ textAlign: "right" }}>
               <Yen num={data.atcf} />
-            </td>
-          </tr>
-          <tr>
-            <td>K</td>
-            <td style={{ textAlign: "right" }}>
-              <Percent num={data.k} />
-            </td>
-          </tr>
-          <tr>
-            <td>FCR</td>
-            <td style={{ textAlign: "right" }}>
-              <Percent num={data.fcr} />
-            </td>
-          </tr>
-          <tr>
-            <td>CCR</td>
-            <td style={{ textAlign: "right" }}>
-              <Percent num={data.ccr} />
             </td>
           </tr>
         </tbody>
