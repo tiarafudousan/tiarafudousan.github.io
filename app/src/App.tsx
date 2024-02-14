@@ -16,7 +16,6 @@ import { lerp, bound } from "./components/graphs/lib"
 import Form from "./components/Form"
 import CashFlowTable from "./components/CashFlowTable"
 import InitialCostTable from "./components/InitialCostTable"
-import CashFlowTree from "./components/CashFlowTree"
 import LineGraph from "./components/graphs/LineGraph"
 import BarGraph from "./components/graphs/BarGraph"
 import { xy } from "./components/graphs/Graph/utils"
@@ -28,15 +27,15 @@ import Select from "./components/Select"
 const YEARS = 30
 
 // Heat map
-function renderX(x: number): string {
+function render_x(x: number): string {
   return `${x} %`
 }
 
-function renderY(y: number): string {
+function render_y(y: number): string {
   return `${Math.floor(y)} 万`
 }
 
-function renderZ(z: number): string {
+function render_z(z: number): string {
   return z.toFixed(2)
 }
 
@@ -108,27 +107,27 @@ const DEFAULT_Z = {
 
 function App() {
   const ref = useRef(null)
-  const [canvasSize, setCanvasSize] = useState(0)
+  const [canvas_size, set_canvas_size] = useState(0)
 
-  const [zType, setDataType] = useState<ZType>("roi")
-  const [minZ, setMinZ] = useState(DEFAULT_Z)
-  const [heat, setHeatMapData] = useState<HeatMapData | null>(null)
-  const [loanSimData, setLoanSimData] = useState<FixedRateLoan | null>(null)
-  const [cashFlowData, setCashFlowData] = useState<CashFlowData[]>([])
-  const [cf_tree, set_cf_tree] = useState<CashFlowData | null>(null)
-  const [initialCostData, setInitialCostData] = useState<InitialCost | null>(
+  const [z_type, set_data_type] = useState<ZType>("roi")
+  const [min_z, set_min_z] = useState(DEFAULT_Z)
+  const [heat_map, set_heat_map_data] = useState<HeatMapData | null>(null)
+  const [loan_sim_data, set_loan_sim_data] = useState<FixedRateLoan | null>(
     null,
   )
+  const [cf_data, set_cf_data] = useState<CashFlowData[]>([])
+  const [initial_cost_data, set_initial_cost_data] =
+    useState<InitialCost | null>(null)
 
   useEffect(() => {
     if (ref.current) {
       // @ts-ignore
       const w = ref.current.offsetWidth
-      setCanvasSize(bound(w, MIN_GRAPH_WIDTH, MAX_GRAPH_WIDTH))
+      set_canvas_size(bound(w, MIN_GRAPH_WIDTH, MAX_GRAPH_WIDTH))
     }
   }, [])
 
-  function onSubmit(values: Inputs<number>) {
+  function on_submit(values: Inputs<number>) {
     const is_small_scale_residential_land = true
 
     const initial_cost = calc_initial_cost(values)
@@ -144,19 +143,10 @@ function App() {
       years: YEARS,
       is_small_scale_residential_land,
     })
-    const cf_tree = sim_cf({
-      inputs: values,
-      initial_cost,
-      loan_sim,
-      years: 1,
-      is_small_scale_residential_land,
-      exclude_initial_opex: true,
-    })[0]
 
-    setInitialCostData(initial_cost)
-    setCashFlowData(cf_data)
-    set_cf_tree(cf_tree)
-    setLoanSimData(loan_sim)
+    set_initial_cost_data(initial_cost)
+    set_cf_data(cf_data)
+    set_loan_sim_data(loan_sim)
 
     const total_invested = cf_data[0].total_invested
     const yMax = total_invested
@@ -197,7 +187,8 @@ function App() {
         )
 
         // TODO: simulate include initial cost?
-        const cfData = calc_cf({
+        // TODO: fix ccr for heat map
+        const cf_data = calc_cf({
           inputs: {
             ...values,
             principal,
@@ -209,8 +200,8 @@ function App() {
           exclude_initial_opex: true,
         })
 
-        const roi = (cfData.btcf / values.property_price) * 100
-        const ccr = cfData.ccr * 100
+        const roi = (cf_data.btcf / values.property_price) * 100
+        const ccr = cf_data.ccr * 100
 
         zMax.roi = Math.max(zMax.roi, roi)
         zMax.ccr = Math.max(zMax.ccr, ccr)
@@ -222,10 +213,10 @@ function App() {
       }
     }
 
-    zMax.roi = minZ.roi
-    zMax.ccr = minZ.ccr
+    zMax.roi = min_z.roi
+    zMax.ccr = min_z.ccr
 
-    setHeatMapData((state) => ({
+    set_heat_map_data((state) => ({
       ...state,
       yMax,
       yMin,
@@ -243,24 +234,24 @@ function App() {
     }))
   }
 
-  function onReset() {
-    setHeatMapData(null)
-    setLoanSimData(null)
-    setMinZ(DEFAULT_Z)
+  function on_reset() {
+    set_heat_map_data(null)
+    set_loan_sim_data(null)
+    set_min_z(DEFAULT_Z)
   }
 
-  function onChangeMinZ(value: number) {
-    setMinZ((state) => ({
+  function on_change_min_z(value: number) {
+    set_min_z((state) => ({
       ...state,
-      [zType]: value,
+      [z_type]: value,
     }))
 
-    setHeatMapData((state) => {
+    set_heat_map_data((state) => {
       if (state) {
         return {
           ...state,
-          [zType]: {
-            ...state[zType],
+          [z_type]: {
+            ...state[z_type],
             zMax: value,
           },
         }
@@ -269,8 +260,8 @@ function App() {
     })
   }
 
-  function onChangeDataType(value: string) {
-    setDataType(value as ZType)
+  function on_change_data_type(value: string) {
+    set_data_type(value as ZType)
   }
 
   // TODO: mobile
@@ -281,25 +272,25 @@ function App() {
   return (
     <div ref={ref} className="flex flex-row">
       <div className="min-w-[280px] h-screen overflow-y-auto px-6 py-6">
-        <Form onSubmit={onSubmit} onReset={onReset} />
+        <Form onSubmit={on_submit} onReset={on_reset} />
       </div>
       <div className="flex flex-col">
         <div className="flex flex-row overflow-x-auto py-6">
-          {loanSimData != null ? (
+          {loan_sim_data != null ? (
             <div className="flex flex-col px-4">
               <LineGraph
                 xMin={0}
                 xMax={YEARS - 1}
-                yMin={Math.min(0, ...cashFlowData.map((d) => d.atcf))}
-                yMax={cashFlowData[0].gpi}
+                yMin={Math.min(0, ...cf_data.map((d) => d.atcf))}
+                yMax={cf_data[0].gpi}
                 data={[
-                  xy(cashFlowData.map((d) => d.gpi)),
-                  xy(cashFlowData.map((d) => d.noi)),
-                  xy(cashFlowData.map((d) => d.btcf)),
-                  xy(cashFlowData.map((d) => d.atcf)),
-                  xy(loanSimData.principals),
-                  xy(loanSimData.interests),
-                  xy(loanSimData.debt_repayments),
+                  xy(cf_data.map((d) => d.gpi)),
+                  xy(cf_data.map((d) => d.noi)),
+                  xy(cf_data.map((d) => d.btcf)),
+                  xy(cf_data.map((d) => d.atcf)),
+                  xy(loan_sim_data.principals),
+                  xy(loan_sim_data.interests),
+                  xy(loan_sim_data.debt_repayments),
                 ]}
                 colors={COLORS}
                 ambientColors={AMBIENT_COLORS}
@@ -316,60 +307,58 @@ function App() {
               <BarGraph
                 xMin={0}
                 xMax={YEARS - 1}
-                yMin={Math.min(...fold(cashFlowData.map((d) => d.btcf)))}
+                yMin={Math.min(...fold(cf_data.map((d) => d.btcf)))}
                 yMax={
-                  Math.max(
-                    Math.max(...fold(cashFlowData.map((d) => d.btcf))),
-                    0,
-                  ) * 1.1
+                  Math.max(Math.max(...fold(cf_data.map((d) => d.btcf))), 0) *
+                  1.1
                 }
-                data={[xy(fold(cashFlowData.map((d) => d.btcf)))]}
+                data={[xy(fold(cf_data.map((d) => d.btcf)))]}
               />
               <div className="overflow-x-auto w-[1800px]">
-                <CashFlowTable data={cashFlowData} />
+                <CashFlowTable data={cf_data} />
               </div>
             </div>
           ) : null}
 
-          {heat != null ? (
+          {heat_map != null ? (
             <div className="mt-8 flex flex-col items-center mx-auto">
               <Select
-                value={zType}
-                onChange={onChangeDataType}
+                value={z_type}
+                onChange={on_change_data_type}
                 options={[
                   { value: "roi", text: "BTCF 利回り" },
                   { value: "ccr", text: "CCR" },
                 ]}
               />
               <GradientBar
-                width={canvasSize}
+                width={canvas_size}
                 height={60}
-                zMin={heat[zType].zMin}
-                zMax={heat[zType].zMax}
+                zMin={heat_map[z_type].zMin}
+                zMax={heat_map[z_type].zMax}
                 render={(z) => `${z.toFixed(2)} %`}
               />
               <Range
-                label={zType == "roi" ? "BTCF 利回り" : "CCR"}
+                label={z_type == "roi" ? "BTCF 利回り" : "CCR"}
                 min={0}
-                max={zType == "roi" ? MAX_ROI : MAX_CCR}
-                value={minZ[zType]}
-                onChange={onChangeMinZ}
+                max={z_type == "roi" ? MAX_ROI : MAX_CCR}
+                value={min_z[z_type]}
+                onChange={on_change_min_z}
               />
               <HeatMap
-                width={canvasSize}
-                height={canvasSize}
+                width={canvas_size}
+                height={canvas_size}
                 xs={XS}
-                ys={heat.ys}
-                zs={heat[zType].zs}
+                ys={heat_map.ys}
+                zs={heat_map[z_type].zs}
                 xMin={X_MIN}
                 xMax={X_MAX}
-                yMin={heat.yMin}
-                yMax={heat.yMax}
-                zMin={heat[zType].zMin}
-                zMax={heat[zType].zMax}
-                renderX={renderX}
-                renderY={renderY}
-                renderZ={renderZ}
+                yMin={heat_map.yMin}
+                yMax={heat_map.yMax}
+                zMin={heat_map[z_type].zMin}
+                zMax={heat_map[z_type].zMax}
+                renderX={render_x}
+                renderY={render_y}
+                renderZ={render_z}
               />
               <div className="text-sm">X = 自己資金比率 Y = 総事業費</div>
             </div>
@@ -377,15 +366,9 @@ function App() {
         </div>
 
         <div className="flex flex-col w-[360px]">
-          {initialCostData != null ? (
+          {initial_cost_data != null ? (
             <div className="px-4 min-w-[360px]">
-              <InitialCostTable data={initialCostData} />
-            </div>
-          ) : null}
-
-          {cf_tree ? (
-            <div className="py-4 px-4 min-w-[300px]">
-              <CashFlowTree data={cf_tree} />
+              <InitialCostTable data={initial_cost_data} />
             </div>
           ) : null}
         </div>
