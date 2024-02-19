@@ -6,19 +6,19 @@ const Color: React.FC<{ num: number }> = ({ num }) => {
 }
 
 const Row: React.FC<{
-  rowSpan?: number
+  row_span?: number
   header?: string
   text: string
-  backgroundColor?: string
+  bg_color?: string
   data: CashFlowData[]
   get: (d: CashFlowData) => number
-}> = ({ rowSpan = 0, header = "", text, backgroundColor = "", data, get }) => {
+}> = ({ row_span = 0, header = "", text, bg_color = "", data, get }) => {
   return (
-    <tr className={backgroundColor}>
-      {rowSpan >= 1 ? (
+    <tr className={bg_color}>
+      {row_span >= 1 ? (
         <th
           className="bg-white font-semibold border border-slate-300 text-left px-2 align-top whitespace-nowrap"
-          rowSpan={rowSpan}
+          rowSpan={row_span}
         >
           {header}
         </th>
@@ -36,6 +36,7 @@ const Row: React.FC<{
 }
 
 // TODO: sticky columns - freeze first 2 columns
+// TODO: hover info
 const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
   return (
     <table className="text-sm border-collapse border border-slate-300 w-[600px] overflow-x-auto">
@@ -54,7 +55,7 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
 
       <tbody>
         <Row
-          rowSpan={2}
+          row_span={2}
           header="収入"
           text="GPI"
           data={data}
@@ -62,13 +63,13 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
         />
         <Row
           text="EGI"
-          backgroundColor="bg-blue-100"
+          bg_color="bg-blue-100"
           data={data}
           get={(d) => Math.floor(d.egi)}
         />
 
         <Row
-          rowSpan={9}
+          row_span={9}
           header="OPEX"
           text="固定資産税"
           data={data}
@@ -107,13 +108,13 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
         />
         <Row
           text="OPEX"
-          backgroundColor="bg-blue-100"
+          bg_color="bg-blue-100"
           data={data}
           get={(d) => Math.floor(d.opex)}
         />
 
         <Row
-          rowSpan={3}
+          row_span={3}
           header="BTCF"
           text="NOI"
           data={data}
@@ -122,12 +123,12 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
         <Row text="ADS" data={data} get={(d) => Math.floor(d.ads)} />
         <Row
           text="BTCF"
-          backgroundColor="bg-blue-100"
+          bg_color="bg-blue-100"
           data={data}
           get={(d) => Math.floor(d.btcf)}
         />
         <Row
-          rowSpan={4}
+          row_span={6}
           header="ATCF"
           text="減価償却 建物"
           data={data}
@@ -140,22 +141,28 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
         />
         <Row text="元金" data={data} get={(d) => Math.floor(d.principal)} />
         <Row
+          text="所得"
+          data={data}
+          get={(d) => Math.floor(d.taxable_income)}
+        />
+        <Row text="税金" data={data} get={(d) => Math.floor(d.tax)} />
+        <Row
           text="ATCF"
-          backgroundColor="bg-blue-100"
+          bg_color="bg-blue-100"
           data={data}
           get={(d) => Math.floor(d.atcf)}
         />
         <Row
-          rowSpan={2}
+          row_span={2}
           header="CCR"
-          text="CCR"
-          data={data}
-          get={(d) => Math.round(d.ccr * 1000) / 1000}
-        />
-        <Row
           text="FCR"
           data={data}
           get={(d) => Math.round(d.fcr * 1000) / 1000}
+        />
+        <Row
+          text="CCR"
+          data={data}
+          get={(d) => Math.round(d.ccr * 1000) / 1000}
         />
       </tbody>
     </table>
