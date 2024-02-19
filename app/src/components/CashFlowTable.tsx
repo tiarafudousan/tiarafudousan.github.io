@@ -36,7 +36,6 @@ const Row: React.FC<{
 }
 
 // TODO: sticky columns - freeze first 2 columns
-// TODO: remove initial year cost
 const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
   return (
     <table className="text-sm border-collapse border border-slate-300 w-[600px] overflow-x-auto">
@@ -151,12 +150,12 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
           header="CCR"
           text="CCR"
           data={data}
-          get={(d) => Math.round(d.ccr * 100) / 100}
+          get={(d) => Math.round(d.ccr * 1000) / 1000}
         />
         <Row
           text="FCR"
           data={data}
-          get={(d) => Math.round(d.fcr * 100) / 100}
+          get={(d) => Math.round(d.fcr * 1000) / 1000}
         />
       </tbody>
     </table>
