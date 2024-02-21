@@ -225,7 +225,7 @@ export function calc_cf(params: {
 
   // BTCF //
   const ads = loan_sim.debt_repayments[delta_year]
-  const lb = p
+  const lb = loan_sim.unpaid_principals[delta_year]
   const btcf = ncf - ads
 
   // ATCF //
@@ -258,9 +258,9 @@ export function calc_cf(params: {
 
   const gross_yield = gpi / inputs.property_price
 
-  const fcr = noi / total_invested
-  const ccr = cash > 0 ? btcf / cash : 1
   const k = lb > 0 ? ads / lb : 0
+  const fcr = cash + lb > 0 ? noi / (cash + lb) : 0
+  const ccr = cash > 0 ? btcf / cash : 1
 
   return {
     total_invested,

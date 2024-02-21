@@ -1,4 +1,4 @@
-import { padd, chunk, sum, pipe } from "./utils"
+import { padd, chunk, sum, pipe, fold } from "./utils"
 
 const YEARS = 30
 
@@ -65,11 +65,12 @@ export function calc_fixed_rate_loan_monthly_payment(
 
 export interface FixedRateLoan {
   principals: number[]
+  unpaid_principals: number[]
   interests: number[]
   debt_repayments: number[]
   monthly_payment: number
   total: number
-  interest: number
+  total_interest: number
 }
 
 export function sim_fixed_rate_loan(
@@ -96,12 +97,25 @@ export function sim_fixed_rate_loan(
     interest = debt * r
   }
 
+  // Calculate cumulative unpaid principals
+  const paid_principals: number[] = fold(agg(principals))
+  const unpaid_principals: number[] = []
+  for (let i = 0; i < paid_principals.length; i++) {
+    const diff = p - paid_principals[i]
+    if (diff < 1) {
+      unpaid_principals.push(0)
+    } else {
+      unpaid_principals.push(diff)
+    }
+  }
+
   return {
     principals: agg(principals),
+    unpaid_principals,
     interests: agg(interests),
     debt_repayments: agg(debt_repayments),
     monthly_payment: x,
     total: x * n,
-    interest: x * n - p,
+    total_interest: x * n - p,
   }
 }
