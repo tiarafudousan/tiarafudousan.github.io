@@ -153,7 +153,7 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
           get={(d) => Math.floor(d.atcf)}
         />
         <Row
-          row_span={4}
+          row_span={5}
           header="CCR"
           text="LB"
           data={data}
@@ -169,6 +169,11 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
           text="CCR"
           data={data}
           get={(d) => Math.round(d.ccr * 1000) / 1000}
+        />
+        <Row
+          text="BER"
+          data={data}
+          get={(d) => Math.round(d.ber * 1000) / 1000}
         />
       </tbody>
     </table>

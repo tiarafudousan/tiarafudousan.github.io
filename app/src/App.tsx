@@ -186,7 +186,7 @@ function App() {
           values.years * 12,
         )
 
-        // TODO: simulate include initial cost?
+        // TODO: simulate exclude initial cost?
         // TODO: fix ccr for heat map
         const cf_data = calc_cf({
           inputs: {
