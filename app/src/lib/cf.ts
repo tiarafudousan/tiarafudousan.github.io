@@ -263,7 +263,7 @@ export function calc_cf(params: {
   const k = lb > 0 ? ads / lb : 0
   const fcr = cash + lb > 0 ? noi / (cash + lb) : 0
   const ccr = cash > 0 ? btcf / cash : 1
-  const ber = egi > 0 ? (opex + ads) / egi : 0
+  const ber = gpi > 0 ? (opex + ads) / gpi : 0
 
   return {
     total_invested,
