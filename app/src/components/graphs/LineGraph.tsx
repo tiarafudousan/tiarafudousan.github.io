@@ -9,14 +9,14 @@ import {
 } from "./Graph/canvas/types"
 import { isInside, findNearestIndex, getX, getY } from "./Graph/canvas/math"
 
-const GRAPH_WIDTH = 1000
-const GRAPH_HEIGHT = 260
-const HOVER_WIDTH = 300
+const HOVER_WIDTH = 180
 const HOVER_MARGIN = 20
-const HOVER_HEIGHT = 168
+const HOVER_ROW_HEIGHT = 26
 const XS: number[] = Array.from(Array(30).keys())
 
 interface Props {
+  width: number
+  height: number
   xMin: number
   xMax: number
   yMin: number
@@ -25,9 +25,12 @@ interface Props {
   colors: string[]
   ambientColors: string[]
   labels: string[]
+  renderYHover: (y: number) => string | number
 }
 
 const LineGraph: React.FC<Props> = ({
+  width,
+  height,
   xMin,
   xMax,
   yMin,
@@ -36,11 +39,14 @@ const LineGraph: React.FC<Props> = ({
   colors,
   ambientColors,
   labels,
+  renderYHover,
 }) => {
   const [mouse, setMouse] = useState<Point | null>(null)
   const [hover, setHover] = useState<Point | null>(null)
   const [hoverData, setHoverData] = useState<Point[]>([])
   const [points, setPoints] = useState<PointGraphType[]>([])
+
+  const HOVER_HEIGHT = data.length * HOVER_ROW_HEIGHT
 
   function onMouseMove(_: any, point: Point | null, layout: Layout) {
     if (!point) {
@@ -106,7 +112,7 @@ const LineGraph: React.FC<Props> = ({
     yMax,
   }
 
-  const yTickInterval = Math.max(Math.floor((yMax - yMin) / (8 * 10)) * 10, 10)
+  const yTickInterval = Math.max(Math.floor((yMax - yMin) / (8 * 10)) * 10, 1)
 
   const graphs: LineGraphType[] = data.map((d, i) => ({
     type: "line",
@@ -119,8 +125,8 @@ const LineGraph: React.FC<Props> = ({
   return (
     <div className="relative">
       <Graph
-        width={GRAPH_WIDTH}
-        height={GRAPH_HEIGHT}
+        width={width}
+        height={height}
         backgroundColor="beige"
         animate={true}
         range={range}
@@ -161,20 +167,26 @@ const LineGraph: React.FC<Props> = ({
             color: "black",
           }}
         >
-          {hoverData.map((d, i) => (
-            <div className="flex flex-row items-center" key={i}>
-              <Circle
-                size={10}
-                fill={true}
-                color={colors[i]}
-                className="mx-2"
-              />
-              <div className="flex flex-row">
-                <div className="w-[80px]">{labels[i]}</div>
-                <div className="truncate text-sm">{Math.floor(d.y)}</div>
-              </div>
-            </div>
-          ))}
+          <table>
+            <tbody>
+              {hoverData.map((d, i) => (
+                <tr key={i}>
+                  <td>
+                    <Circle
+                      size={10}
+                      fill={true}
+                      color={colors[i]}
+                      className="mx-2"
+                    />
+                  </td>
+                  <td className="w-[80px]">{labels[i]}</td>
+                  <td align="right" className="truncate text-sm">
+                    {renderYHover(d.y)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ) : null}
     </div>

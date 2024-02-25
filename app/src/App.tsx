@@ -63,7 +63,7 @@ const XS = [
 
 const MIN_GRAPH_WIDTH = 350
 const MAX_GRAPH_WIDTH = 600
-const COLORS = [
+const CF_COLORS = [
   "rgba(107, 142, 35, 1)",
   "rgba(154, 205, 50, 1)",
   "rgba(128, 0, 128, 1)",
@@ -72,11 +72,31 @@ const COLORS = [
   "rgba(255, 165, 0, 1)",
   "rgba(255, 99, 71, 1)",
 ]
-const AMBIENT_COLORS = [
+const CF_AMBIENT_COLORS = [
   "rgba(107, 142, 35, 0.2)",
   "rgba(154, 205, 50, 0.2)",
   "rgba(128, 0, 128, 0.2)",
   "rgba(0, 128, 128, 0.2)",
+  "rgba(255, 215, 0, 0.2)",
+  "rgba(255, 165, 0, 0.2)",
+  "rgba(255, 99, 71, 0.2)",
+]
+const RATE_COLORS = [
+  "rgba(128, 0, 128, 1)",
+  "rgba(154, 205, 50, 1)",
+  "rgba(255, 165, 0, 1)",
+  "rgba(0, 128, 128, 1)",
+  "rgba(255, 99, 71, 1)",
+  "rgba(255, 215, 0, 1)",
+  "rgba(255, 165, 0, 1)",
+  "rgba(255, 99, 71, 1)",
+]
+const RATE_AMBIENT_COLORS = [
+  "rgba(128, 0, 128, 0.2)",
+  "rgba(154, 205, 50, 0.2)",
+  "rgba(255, 165, 0, 0.2)",
+  "rgba(0, 128, 128, 0.2)",
+  "rgba(255, 99, 71, 0.2)",
   "rgba(255, 215, 0, 0.2)",
   "rgba(255, 165, 0, 0.2)",
   "rgba(255, 99, 71, 0.2)",
@@ -279,6 +299,8 @@ function App() {
           {loan_sim_data != null ? (
             <div className="flex flex-col px-4">
               <LineGraph
+                width={1000}
+                height={200}
                 xMin={0}
                 xMax={YEARS - 1}
                 yMin={Math.min(0, ...cf_data.map((d) => d.atcf))}
@@ -292,8 +314,8 @@ function App() {
                   xy(loan_sim_data.interests),
                   xy(loan_sim_data.debt_repayments),
                 ]}
-                colors={COLORS}
-                ambientColors={AMBIENT_COLORS}
+                colors={CF_COLORS}
+                ambientColors={CF_AMBIENT_COLORS}
                 labels={[
                   "GPI",
                   "NOI",
@@ -303,6 +325,7 @@ function App() {
                   "金利",
                   "返済額",
                 ]}
+                renderYHover={(y) => Math.floor(y)}
               />
               <BarGraph
                 xMin={0}
@@ -313,6 +336,25 @@ function App() {
                   1.1
                 }
                 data={[xy(fold(cf_data.map((d) => d.btcf)))]}
+              />
+              <LineGraph
+                width={1000}
+                height={160}
+                xMin={0}
+                xMax={YEARS - 1}
+                yMin={-1}
+                yMax={2}
+                data={[
+                  xy(cf_data.map((d) => d.k)),
+                  xy(cf_data.map((d) => d.fcr)),
+                  xy(cf_data.map((d) => d.ccr)),
+                  xy(cf_data.map((d) => d.ber)),
+                  xy(cf_data.map((d) => d.dcr)),
+                ]}
+                colors={RATE_COLORS}
+                ambientColors={RATE_AMBIENT_COLORS}
+                labels={["K", "FCR", "CCR", "BER", "DCR"]}
+                renderYHover={(y) => y.toFixed(2)}
               />
               <div className="overflow-x-auto w-[1800px]">
                 <CashFlowTable data={cf_data} />
