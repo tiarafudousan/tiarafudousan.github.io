@@ -147,12 +147,14 @@ export interface CashFlowData {
   ccr: number
   k: number
   ber: number
+  dcr: number
 }
 
 // TODO: 積算
 // TODO: capex - 大規模修繕
-// TODO: BER, DCR, IRR?
+// TODO: IRR?
 // BER - break even ratio
+// DCR - debt coverage ratio
 export function calc_cf(params: {
   inputs: Inputs<number>
   initial_cost: InitialCost
@@ -264,6 +266,7 @@ export function calc_cf(params: {
   const fcr = cash + lb > 0 ? noi / (cash + lb) : 0
   const ccr = cash > 0 ? btcf / cash : 1
   const ber = gpi > 0 ? (opex + ads) / gpi : 0
+  const dcr = ads > 0 ? noi / ads : 0
 
   return {
     total_invested,
@@ -304,6 +307,7 @@ export function calc_cf(params: {
     ccr,
     k,
     ber,
+    dcr,
   }
 }
 
