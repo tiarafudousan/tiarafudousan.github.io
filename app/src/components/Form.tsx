@@ -54,13 +54,11 @@ const BUILDING_OPTIONS = [
   },
 ]
 
-interface Props {
+// TODO: option to include brokerage fee into property price
+const Form: React.FC<{
   onSubmit: (values: Inputs<number>) => void
   onReset: () => void
-}
-
-// TODO: option to include brokerage fee into property price
-const Form: React.FC<Props> = ({ onSubmit, onReset }) => {
+}> = ({ onSubmit, onReset }) => {
   const [inputs, setInputs] = useState<Inputs<string>>(INPUTS)
   const [errors, setErrors] = useState<Errors>({})
 
