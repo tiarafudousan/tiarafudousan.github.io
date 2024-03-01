@@ -152,7 +152,7 @@ export interface CashFlowData {
 
 // TODO: 積算
 // TODO: capex - 大規模修繕
-// TODO: IRR?
+// TODO: IRR, NPV, DCF
 // BER - break even ratio
 // DCR - debt coverage ratio
 export function calc_cf(params: {
@@ -187,7 +187,6 @@ export function calc_cf(params: {
   const cash = Math.floor(
     inputs.property_price + initial_cost.total - inputs.principal,
   )
-  const p = Math.floor(inputs.principal)
   const total_invested = inputs.property_price + initial_cost.total
   const total_debt_payment = loan_sim.total
 
@@ -261,6 +260,9 @@ export function calc_cf(params: {
   const atcf = btcf - tax
 
   const gross_yield = gpi / inputs.property_price
+
+  // if BTCF = NOI - ADS
+  //    BTCF = (FCR - K) * LB + FCR * cash
 
   const k = lb > 0 ? ads / lb : 0
   const fcr = cash + lb > 0 ? noi / (cash + lb) : 0

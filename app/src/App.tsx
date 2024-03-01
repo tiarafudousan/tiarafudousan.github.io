@@ -14,6 +14,7 @@ import * as loan_lib from "./lib/loan"
 import { FixedRateLoan } from "./lib/loan"
 import { lerp, bound } from "./components/graphs/lib"
 import Form from "./components/Form"
+import MarketPriceEstimator from "./components/MarketPriceEstimator"
 import CashFlowTable from "./components/CashFlowTable"
 import InitialCostTable from "./components/InitialCostTable"
 import LineGraph from "./components/graphs/LineGraph"
@@ -288,11 +289,13 @@ function App() {
   // TODO: sticky to bottom, form buttons?
   // TODO: simple and advance forms
   // TODO: fix graph - line rendered below y = 0
+  // TODO: where to place MarketPriceEstimator
 
   return (
     <div ref={ref} className="flex flex-row">
       <div className="min-w-[280px] h-screen overflow-y-auto px-6 py-6">
         <Form onSubmit={on_submit} onReset={on_reset} />
+        <MarketPriceEstimator />
       </div>
       <div className="flex flex-col">
         <div className="flex flex-row overflow-x-auto py-6">
