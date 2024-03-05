@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import Input from "./Input"
 
-const MarketPriceEstimator: React.FC<{}> = ({}) => {
+// TODO: 積算価格
+const PriceEstimator: React.FC<{}> = ({}) => {
   const [inputs, setInputs] = useState({
     inheritance_tax_value: "0",
     land_area: "0",
@@ -60,4 +61,4 @@ const MarketPriceEstimator: React.FC<{}> = ({}) => {
   )
 }
 
-export default MarketPriceEstimator
+export default PriceEstimator
