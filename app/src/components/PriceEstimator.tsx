@@ -26,6 +26,8 @@ const PriceEstimator: React.FC<{}> = ({}) => {
   const land_val =
     parseInt(inputs.inheritance_tax_value) * parseInt(inputs.land_area)
   const val = land_val / 0.8
+  const min_market_land_val = val / 0.9
+  const max_market_land_val = val / 0.5
 
   return (
     <div>
@@ -54,6 +56,13 @@ const PriceEstimator: React.FC<{}> = ({}) => {
           <tr>
             <td className="px-2">公示価格</td>
             <td align="right">{Math.floor(val).toLocaleString()} 万円</td>
+          </tr>
+          <tr>
+            <td className="px-2">実勢価格</td>
+            <td align="right">
+              {Math.floor(min_market_land_val).toLocaleString()} ~{" "}
+              {Math.floor(max_market_land_val).toLocaleString()} 万円
+            </td>
           </tr>
         </tbody>
       </table>
