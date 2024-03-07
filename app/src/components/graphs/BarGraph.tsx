@@ -88,8 +88,6 @@ const BarGraph: React.FC<Props> = ({ xMin, xMax, yMin, yMax, data }) => {
     y0: yMin >= 0 ? yMin : 0,
   }))
 
-  // TODO: toggle BTCF and ATCF
-
   return (
     <div className="relative">
       <Graph
