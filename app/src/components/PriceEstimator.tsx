@@ -1,6 +1,5 @@
 import React, { useState } from "react"
-import { BUILDING_OPTIONS } from "../constants"
-import Select from "./Select"
+import Select, { BUILDING_OPTIONS } from "./Select"
 import Input from "./Input"
 import { estimate_building_price, BuildingType } from "../lib/building"
 

@@ -1,12 +1,29 @@
 import React from "react"
 
-interface Props {
+export const BUILDING_OPTIONS = [
+  {
+    value: "RC",
+    text: "RC",
+  },
+  {
+    value: "S",
+    text: "鉄骨",
+  },
+  {
+    value: "LGS",
+    text: "軽量鉄骨",
+  },
+  {
+    value: "WOOD",
+    text: "木造",
+  },
+]
+
+const Select: React.FC<{
   value: string
   options: { value: string; text: string }[]
   onChange: (value: string) => void
-}
-
-const Select: React.FC<Props> = ({ value, options, onChange }) => {
+}> = ({ value, options, onChange }) => {
   function _onChange(e: React.ChangeEvent<HTMLSelectElement>) {
     onChange(e.target.value)
   }

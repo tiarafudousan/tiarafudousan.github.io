@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { Inputs, Errors, validate } from "../lib/form"
-import { BUILDING_OPTIONS } from "../constants"
-import Select from "./Select"
+import Select, { BUILDING_OPTIONS } from "./Select"
 import Input from "./Input"
 
 // TODO: toggle simple and advance form
