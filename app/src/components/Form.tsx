@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Inputs, Errors, validate } from "../lib/form"
+import { BUILDING_OPTIONS } from "../constants"
 import Select from "./Select"
 import Input from "./Input"
 
@@ -34,25 +35,6 @@ const INPUTS: Inputs<string> = {
   // tax //
   tax_rate: "30",
 }
-
-const BUILDING_OPTIONS = [
-  {
-    value: "RC",
-    text: "RC",
-  },
-  {
-    value: "S",
-    text: "鉄骨",
-  },
-  {
-    value: "LGS",
-    text: "軽量鉄骨",
-  },
-  {
-    value: "WOOD",
-    text: "木造",
-  },
-]
 
 // TODO: option to include brokerage fee into property price
 const Form: React.FC<{

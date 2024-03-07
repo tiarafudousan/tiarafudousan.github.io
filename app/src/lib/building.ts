@@ -62,10 +62,10 @@ export function calc_depreciation_period(
 }
 
 //  建物の積算価格
-function estimate_building_price(args: {
+export function estimate_building_price(args: {
   type: BuildingType
   age: number
-  area: number
+  building_area: number
 }): [number, number] {
   // 建物の積算価格
   // 築年数が法定耐用年数内の物件の場合
@@ -74,15 +74,19 @@ function estimate_building_price(args: {
   // 0
   const building_type = args.type
   const age = args.age
-  const area = args.area
+  const building_area = args.building_area
 
   const legal_duration = LEGAL_DURATIONS[building_type]
   const cost = REPLACEMENT_COSTS[building_type]
 
   if (age < legal_duration) {
     return [
-      Math.floor((cost[0] * area * (legal_duration - age)) / legal_duration),
-      Math.floor((cost[1] * area * (legal_duration - age)) / legal_duration),
+      Math.floor(
+        (cost[0] * building_area * (legal_duration - age)) / legal_duration,
+      ),
+      Math.floor(
+        (cost[1] * building_area * (legal_duration - age)) / legal_duration,
+      ),
     ]
   }
 
