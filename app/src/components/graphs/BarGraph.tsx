@@ -8,26 +8,18 @@ const GRAPH_HEIGHT = 150
 const HOVER_WIDTH = 100
 const HOVER_MARGIN = 20
 const HOVER_HEIGHT = 22
+const BAR_WIDTH = 6
 
-interface Props {
+const BarGraph: React.FC<{
   xMin: number
   xMax: number
   yMin: number
   yMax: number
   data: Point[][]
-}
-
-const BarGraph: React.FC<Props> = ({ xMin, xMax, yMin, yMax, data }) => {
+}> = ({ xMin, xMax, yMin, yMax, data }) => {
   const [mouse, setMouse] = useState<Point | null>(null)
   const [hover, setHover] = useState<Point | null>(null)
   const [hoverData, setHoverData] = useState<Point | null>(null)
-
-  const range = {
-    xMin,
-    xMax,
-    yMin,
-    yMax,
-  }
 
   function onMouseMove(_: any, point: Point | null, layout: Layout) {
     if (!point) {
@@ -75,6 +67,13 @@ const BarGraph: React.FC<Props> = ({ xMin, xMax, yMin, yMax, data }) => {
     setHoverData(null)
   }
 
+  const range = {
+    xMin,
+    xMax,
+    yMin,
+    yMax,
+  }
+
   const yTickInterval = Math.max(Math.floor((yMax - yMin) / (6 * 10)) * 10, 10)
 
   const graphs: BarGraphType[] = data.map((d, i) => ({
@@ -84,9 +83,19 @@ const BarGraph: React.FC<Props> = ({ xMin, xMax, yMin, yMax, data }) => {
     getBarColor: (bar) => {
       return bar.y >= 0 ? "green" : "red"
     },
-    barWidth: 4,
+    barWidth: BAR_WIDTH,
     y0: yMin >= 0 ? yMin : 0,
   }))
+
+  if (hoverData) {
+    graphs.push({
+      type: "bar",
+      data: [{ x: hoverData.x, y: yMax }],
+      getBarColor: () => "rgba(200,200,200,0.6)",
+      barWidth: BAR_WIDTH,
+      y0: yMin >= 0 ? yMin : 0,
+    })
+  }
 
   return (
     <div className="relative">
