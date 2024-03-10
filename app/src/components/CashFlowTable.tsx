@@ -1,5 +1,6 @@
 import React from "react"
 import { CashFlowData } from "../lib/cf"
+import ToolTip from "./ToolTip"
 
 const Color: React.FC<{ num: number }> = ({ num }) => {
   return <span className={num >= 0 ? "" : "text-red-500"}>{num}</span>
@@ -12,7 +13,16 @@ const Row: React.FC<{
   bg_color?: string
   data: CashFlowData[]
   get: (d: CashFlowData) => number
-}> = ({ row_span = 0, header = "", text, bg_color = "", data, get }) => {
+  tool_tip?: React.ReactNode
+}> = ({
+  row_span = 0,
+  header = "",
+  text,
+  bg_color = "",
+  data,
+  get,
+  tool_tip,
+}) => {
   return (
     <tr className={bg_color}>
       {row_span >= 1 ? (
@@ -24,7 +34,14 @@ const Row: React.FC<{
         </th>
       ) : null}
       <th className="font-medium border border-r-4 border-slate-300 text-left px-2 whitespace-nowrap">
-        {text}
+        <div className="flex flex-row items-center">
+          <div>{text}</div>
+          {tool_tip ? (
+            <div className="mx-1">
+              <ToolTip>{tool_tip}</ToolTip>
+            </div>
+          ) : null}
+        </div>
       </th>
       {data.map((d, i) => (
         <td key={i} className="border border-slate-300 px-2 text-right">
@@ -36,7 +53,7 @@ const Row: React.FC<{
 }
 
 // TODO: sticky columns - freeze first 2 columns
-// TODO: hover info
+// TODO: hover info (WIP)
 const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
   return (
     <table className="text-sm border-collapse border border-slate-300 w-[600px] overflow-x-auto">
@@ -60,12 +77,14 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
           text="GPI"
           data={data}
           get={(d) => d.gpi}
+          tool_tip="Gross potential income - 総潜在収入"
         />
         <Row
           text="EGI"
           bg_color="bg-blue-100"
           data={data}
           get={(d) => Math.floor(d.egi)}
+          tool_tip="Effective gross income - 実効総収入"
         />
 
         <Row

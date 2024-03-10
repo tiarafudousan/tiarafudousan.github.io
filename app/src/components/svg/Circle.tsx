@@ -1,18 +1,11 @@
 import React from "react"
 
-interface Props {
+const Circle: React.FC<{
   size: number
   className?: string
   color?: string
   fill?: boolean
-}
-
-const Circle: React.FC<Props> = ({
-  size,
-  className = "",
-  color = "",
-  fill = false,
-}) => {
+}> = ({ size, className = "", color = "", fill = false }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
