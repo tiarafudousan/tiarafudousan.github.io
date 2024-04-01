@@ -11,6 +11,15 @@ TODO:
   - [ ] 金融機関計算方法 - 収益評価、担保評価
 - [ ] 物件管理シート
 
+TODO:
+
+- CAPEX
+- 売却益試算
+- 経費率
+- 物件売却利回り（期待利益率）年率+
+- 期待売却金額
+- 売却金額
+
 ### Cash flow tree
 
 ```
@@ -69,7 +78,9 @@ CCR > FCR > K%
 | LB | Loan balance | ローン残債 |
 | K% | Loan constant | ローン定数 | ADS / LB |
 | FCR | Free and clear return | 総収益率 | NOI / (property price + misc costs) |
-| CCR | Cash and cash return | 自己資金配当率 | BTCF / cash invested |
+| CCR | Cash on cash return | 自己資金配当率 | BTCF / cash invested |
+| BER | Beak even ratio | 損益分岐点 | (OPEX + ADS) / GPI |
+| DCR | Debt coverage ratio | 債務回収比率 | NOI / ADS |
 
 TODO: equations
 

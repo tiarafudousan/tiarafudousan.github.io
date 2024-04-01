@@ -77,14 +77,14 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
           text="GPI"
           data={data}
           get={(d) => d.gpi}
-          tool_tip="Gross potential income - 総潜在収入"
+          tool_tip="Gross potential income | 総潜在収入"
         />
         <Row
           text="EGI"
           bg_color="bg-blue-100"
           data={data}
           get={(d) => Math.floor(d.egi)}
-          tool_tip="Effective gross income - 実効総収入"
+          tool_tip="Effective gross income | 実効総収入"
         />
 
         <Row
@@ -130,6 +130,7 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
           bg_color="bg-blue-100"
           data={data}
           get={(d) => Math.floor(d.opex)}
+          tool_tip="Operating expenses | 事業経費"
         />
 
         <Row
@@ -138,8 +139,14 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
           text="NOI"
           data={data}
           get={(d) => Math.floor(d.noi)}
+          tool_tip="Net operating income | 営業純利益 | NOI = EGI - OPEX"
         />
-        <Row text="ADS" data={data} get={(d) => Math.floor(d.ads)} />
+        <Row
+          text="ADS"
+          data={data}
+          get={(d) => Math.floor(d.ads)}
+          tool_tip="Annual debt service | 年間負債支払額"
+        />
         <Row
           text="BTCF"
           bg_color="bg-blue-100"
@@ -177,27 +184,37 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
           text="LB"
           data={data}
           get={(d) => Math.floor(d.lb)}
+          tool_tip="Loan balance | ローン残債"
         />
-        <Row text="K" data={data} get={(d) => Math.round(d.k * 1000) / 1000} />
+        <Row
+          text="K"
+          data={data}
+          get={(d) => Math.round(d.k * 1000) / 1000}
+          tool_tip="Loan constant | ローン定数 | K = ADS / LB"
+        />
         <Row
           text="FCR"
           data={data}
           get={(d) => Math.round(d.fcr * 1000) / 1000}
+          tool_tip="Free and clear return | 総収益率 | NOI / 投資総額"
         />
         <Row
           text="CCR"
           data={data}
           get={(d) => Math.round(d.ccr * 1000) / 1000}
+          tool_tip="Cash on cash return | 自己資金配当率 | BTCF / 自己資金"
         />
         <Row
           text="BER"
           data={data}
           get={(d) => Math.round(d.ber * 1000) / 1000}
+          tool_tip="Beak even ratio | 損益分岐点 | (OPEX + ADS) / GPI"
         />
         <Row
           text="DCR"
           data={data}
           get={(d) => Math.round(d.dcr * 1000) / 1000}
+          tool_tip="Debt coverage ratio | 債務回収比率 | NOI / ADS"
         />
       </tbody>
     </table>
