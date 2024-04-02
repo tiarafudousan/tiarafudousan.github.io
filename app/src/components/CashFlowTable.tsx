@@ -53,7 +53,6 @@ const Row: React.FC<{
 }
 
 // TODO: sticky columns - freeze first 2 columns
-// TODO: hover info (WIP)
 const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
   return (
     <table className="text-sm border-collapse border border-slate-300 w-[600px] overflow-x-auto">
@@ -179,7 +178,7 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
           get={(d) => Math.floor(d.atcf)}
         />
         <Row
-          row_span={6}
+          row_span={7}
           header="CCR"
           text="LB"
           data={data}
@@ -191,6 +190,12 @@ const CashFlowTable: React.FC<{ data: CashFlowData[] }> = ({ data }) => {
           data={data}
           get={(d) => Math.round(d.k * 1000) / 1000}
           tool_tip="Loan constant | ローン定数 | K = ADS / LB"
+        />
+        <Row
+          text="Cap rate"
+          data={data}
+          get={(d) => Math.round(d.cap_rate * 1000) / 1000}
+          tool_tip="Cap rate | NOI / 物件価格"
         />
         <Row
           text="FCR"

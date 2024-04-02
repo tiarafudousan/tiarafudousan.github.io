@@ -142,6 +142,7 @@ export interface CashFlowData {
   taxable_income: number
   tax: number
   atcf: number
+  cap_rate: number
   lb: number
   fcr: number
   ccr: number
@@ -150,7 +151,6 @@ export interface CashFlowData {
   dcr: number
 }
 
-// TODO: 積算
 // TODO: capex - 大規模修繕
 // TODO: IRR, NPV, DCF
 // BER - break even ratio
@@ -264,6 +264,7 @@ export function calc_cf(params: {
   // if BTCF = NOI - ADS
   //    BTCF = (FCR - K) * LB + FCR * cash
 
+  const cap_rate = noi / inputs.property_price
   const k = lb > 0 ? ads / lb : 0
   const fcr = cash + lb > 0 ? noi / (cash + lb) : 0
   const ccr = cash > 0 ? btcf / cash : 1
@@ -304,6 +305,7 @@ export function calc_cf(params: {
     taxable_income,
     tax,
     atcf,
+    cap_rate,
     lb,
     fcr,
     ccr,
