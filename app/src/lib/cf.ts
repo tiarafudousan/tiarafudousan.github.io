@@ -151,7 +151,10 @@ export interface CashFlowData {
   dcr: number
 }
 
+// TODO: 修繕費（当期一括償却）
+// TODO: 大規模修繕費(10年償却CAPEX)
 // TODO: capex - 大規模修繕
+
 // TODO: IRR, NPV, DCF
 // BER - break even ratio
 // DCR - debt coverage ratio
@@ -221,7 +224,6 @@ export function calc_cf(params: {
   )
   const noi = egi - opex
 
-  // TODO: capex
   // TODO: carry loss from previous year
   const capex = 0
   const ncf = noi - capex

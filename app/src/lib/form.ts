@@ -1,3 +1,8 @@
+export interface LargeScaleRepairInput<a> {
+  cost: a
+  year: a
+}
+
 export interface Inputs<a> {
   // building //
   property_price: a
@@ -27,6 +32,7 @@ export interface Inputs<a> {
   interest_rate: a
   // tax //
   tax_rate: a
+  large_scale_repairs: LargeScaleRepairInput<a>[]
 }
 
 export interface Errors {
@@ -112,6 +118,7 @@ export function validate(
     interest_rate: 0,
     // tax //
     tax_rate: 0,
+    large_scale_repairs: [],
   }
   const errors: Errors = {}
 

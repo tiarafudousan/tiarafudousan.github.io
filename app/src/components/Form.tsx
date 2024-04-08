@@ -33,6 +33,7 @@ const INPUTS: Inputs<string> = {
   interest_rate: "2",
   // tax //
   tax_rate: "30",
+  large_scale_repairs: [],
 }
 
 // TODO: option to include brokerage fee into property price
@@ -279,6 +280,7 @@ const Form: React.FC<{
         onChange={onChange}
         error={errors?.tax_rate}
       />
+      <h1 className="text-xl font-semibold">大規模修繕費</h1>
       <div className="flex flex-row justify-center space-x-2 mt-4">
         <button
           className="px-5 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white transition ease-in-out duration-150 focus:outline-none focus:ring-2 focus:ring-green-300"
