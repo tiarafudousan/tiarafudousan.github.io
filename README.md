@@ -82,7 +82,7 @@ CCR > FCR > K%
 | BER | Beak even ratio | 損益分岐点 | (OPEX + ADS) / GPI |
 | DCR | Debt coverage ratio | 債務回収比率 | NOI / ADS |
 
-TODO: equations
+TODO: equations page
 
 ```
 # ROE - return on equity 自己資本利益率
